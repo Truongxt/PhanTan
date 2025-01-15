@@ -31,4 +31,10 @@ public class VaiTro {
         this.tenVaiTro = tenVaiTro;
     }
 
+    public VaiTro(String maVT) {
+        this.maVaiTro = maVT;
+    }
+
+    public VaiTro() {
+    }
 }

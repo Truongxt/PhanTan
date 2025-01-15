@@ -24,9 +24,8 @@ public class HoaDon {
     @JoinColumn(name = "maKH", nullable = false)
     private KhachHang maKH;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "maVoucher")
-    private Voucher maVoucher;
+
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "maKetToan")
@@ -81,13 +80,7 @@ public class HoaDon {
         this.maKH = maKH;
     }
 
-    public Voucher getMaVoucher() {
-        return maVoucher;
-    }
 
-    public void setMaVoucher(Voucher maVoucher) {
-        this.maVoucher = maVoucher;
-    }
 
     public KetToan getMaKetToan() {
         return maKetToan;

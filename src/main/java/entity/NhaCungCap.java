@@ -68,7 +68,7 @@ public class NhaCungCap {
         this.sdt = sdt;
     }
 
-    public Boolean getTrangThai() {
+    public Boolean getTrangThai(boolean bool) {
         return trangThai;
     }
 

@@ -3,6 +3,7 @@ package entity;
 import jakarta.persistence.*;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 @Entity
 public class KetToan {
@@ -11,10 +12,10 @@ public class KetToan {
     private String maKetToan;
 
     @Column(name = "ngayBatDau", nullable = false)
-    private Instant ngayBatDau;
+    private LocalDate ngayBatDau;
 
     @Column(name = "ngayKetThuc", nullable = false)
-    private Instant ngayKetThuc;
+    private LocalDate ngayKetThuc;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "maBangKiemTien", nullable = false)
@@ -28,19 +29,19 @@ public class KetToan {
         this.maKetToan = maKetToan;
     }
 
-    public Instant getNgayBatDau() {
+    public LocalDate getNgayBatDau() {
         return ngayBatDau;
     }
 
-    public void setNgayBatDau(Instant ngayBatDau) {
+    public void setNgayBatDau(LocalDate ngayBatDau) {
         this.ngayBatDau = ngayBatDau;
     }
 
-    public Instant getNgayKetThuc() {
+    public LocalDate getNgayKetThuc() {
         return ngayKetThuc;
     }
 
-    public void setNgayKetThuc(Instant ngayKetThuc) {
+    public void setNgayKetThuc(LocalDate ngayKetThuc) {
         this.ngayKetThuc = ngayKetThuc;
     }
 

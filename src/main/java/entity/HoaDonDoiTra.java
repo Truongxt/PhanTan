@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.Nationalized;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 @Entity
 public class HoaDonDoiTra {
@@ -12,7 +13,7 @@ public class HoaDonDoiTra {
     private String maHoaDonDoiTra;
 
     @Column(name = "ngayDoiTra", nullable = false)
-    private Instant ngayDoiTra;
+    private LocalDate ngayDoiTra;
 
     @Column(name = "soTienTra", nullable = false)
     private Double soTienTra;
@@ -40,11 +41,11 @@ public class HoaDonDoiTra {
         this.maHoaDonDoiTra = maHoaDonDoiTra;
     }
 
-    public Instant getNgayDoiTra() {
+    public LocalDate getNgayDoiTra() {
         return ngayDoiTra;
     }
 
-    public void setNgayDoiTra(Instant ngayDoiTra) {
+    public void setNgayDoiTra(LocalDate ngayDoiTra) {
         this.ngayDoiTra = ngayDoiTra;
     }
 

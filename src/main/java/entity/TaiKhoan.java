@@ -11,8 +11,7 @@ public class TaiKhoan {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "trangThai")
-    private Boolean trangThai;
+
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "maVaiTro", nullable = false)
@@ -38,13 +37,7 @@ public class TaiKhoan {
         this.password = password;
     }
 
-    public Boolean getTrangThai() {
-        return trangThai;
-    }
 
-    public void setTrangThai(Boolean trangThai) {
-        this.trangThai = trangThai;
-    }
 
     public VaiTro getMaVaiTro() {
         return maVaiTro;

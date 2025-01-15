@@ -12,8 +12,8 @@ import org.hibernate.annotations.Nationalized;
 public class XuatXu {
     @Id
     @Column(name = "maXuatXu", nullable = false)
-    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
-    private int maXuatXu;
+
+    private String maXuatXu;
 
     @Nationalized
     @Column(name = "tenXuatXu", nullable = false)

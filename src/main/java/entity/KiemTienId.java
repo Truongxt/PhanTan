@@ -11,16 +11,16 @@ import java.util.Objects;
 public class KiemTienId implements Serializable {
     private static final long serialVersionUID = -5796613238098279727L;
     @Column(name = "giaTri", nullable = false)
-    private Float giaTri;
+    private Double giaTri;
 
     @Column(name = "maBangKiemTien", nullable = false)
     private String maBangKiemTien;
 
-    public Float getGiaTri() {
+    public Double getGiaTri() {
         return giaTri;
     }
 
-    public void setGiaTri(Float giaTri) {
+    public void setGiaTri(Double giaTri) {
         this.giaTri = giaTri;
     }
 

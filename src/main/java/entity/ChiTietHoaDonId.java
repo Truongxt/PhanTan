@@ -32,6 +32,10 @@ public class ChiTietHoaDonId implements Serializable {
         this.maThuoc = maThuoc;
     }
 
+    public ChiTietHoaDonId(String maHD, String maThuoc) {
+        this.maHD = maHD;
+        this.maThuoc = maThuoc;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

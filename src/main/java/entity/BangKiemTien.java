@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 @Entity
 public class BangKiemTien {
@@ -13,10 +14,10 @@ public class BangKiemTien {
     private String maBangKiemTien;
 
     @Column(name = "ngayBatDau", nullable = false)
-    private Instant ngayBatDau;
+    private LocalDate ngayBatDau;
 
     @Column(name = "ngayKetThuc", nullable = false)
-    private Instant ngayKetThuc;
+    private LocalDate ngayKetThuc;
 
     public String getMaBangKiemTien() {
         return maBangKiemTien;
@@ -26,19 +27,19 @@ public class BangKiemTien {
         this.maBangKiemTien = maBangKiemTien;
     }
 
-    public Instant getNgayBatDau() {
+    public LocalDate getNgayBatDau() {
         return ngayBatDau;
     }
 
-    public void setNgayBatDau(Instant ngayBatDau) {
+    public void setNgayBatDau(LocalDate ngayBatDau) {
         this.ngayBatDau = ngayBatDau;
     }
 
-    public Instant getNgayKetThuc() {
+    public LocalDate getNgayKetThuc() {
         return ngayKetThuc;
     }
 
-    public void setNgayKetThuc(Instant ngayKetThuc) {
+    public void setNgayKetThuc(LocalDate ngayKetThuc) {
         this.ngayKetThuc = ngayKetThuc;
     }
 

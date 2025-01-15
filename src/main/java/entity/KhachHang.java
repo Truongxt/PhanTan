@@ -21,7 +21,7 @@ public class KhachHang {
     private String sdt;
 
     @Nationalized
-    @Column(name = "diaChi", length = 50)
+    @Column(name = "diaChi", length = 150)
     private String diaChi;
 
     @Column(name = "NgayLapTaiKhoan")
