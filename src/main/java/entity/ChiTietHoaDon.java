@@ -1,8 +1,10 @@
 package entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
+@Data
 public class ChiTietHoaDon {
     @EmbeddedId
     private ChiTietHoaDonId id;

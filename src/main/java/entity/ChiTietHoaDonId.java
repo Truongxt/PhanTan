@@ -10,11 +10,21 @@ import java.util.Objects;
 @Embeddable
 public class ChiTietHoaDonId implements Serializable {
     private static final long serialVersionUID = -3379715772813315407L;
+
     @Column(name = "maHD", nullable = false)
     private String maHD;
 
     @Column(name = "maThuoc", nullable = false)
     private String maThuoc;
+
+    // Default constructor
+    public ChiTietHoaDonId() {
+    }
+
+    public ChiTietHoaDonId(String maHD, String maThuoc) {
+        this.maHD = maHD;
+        this.maThuoc = maThuoc;
+    }
 
     public String getMaHD() {
         return maHD;
@@ -32,10 +42,6 @@ public class ChiTietHoaDonId implements Serializable {
         this.maThuoc = maThuoc;
     }
 
-    public ChiTietHoaDonId(String maHD, String maThuoc) {
-        this.maHD = maHD;
-        this.maThuoc = maThuoc;
-    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -49,5 +55,4 @@ public class ChiTietHoaDonId implements Serializable {
     public int hashCode() {
         return Objects.hash(maHD, maThuoc);
     }
-
 }
