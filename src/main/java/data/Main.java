@@ -1,19 +1,13 @@
-import entity.*;
+package data;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
-import jakarta.persistence.TypedQuery;
 import net.datafaker.Faker;
-import org.hibernate.Transaction;
-import org.hibernate.boot.archive.internal.JarProtocolArchiveDescriptor;
-import org.hibernate.boot.jaxb.mapping.spi.JaxbPersistentAttribute;
-import org.hibernate.boot.xsd.MappingXsdSupport;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.List;
 import java.util.Random;
 
 public class Main {
