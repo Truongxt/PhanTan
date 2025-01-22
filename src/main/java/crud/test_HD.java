@@ -3,11 +3,7 @@ package crud;
 
 import dao.ChiTietHoaDon_DAO;
 import dao.HoaDon_DAO;
-import entity.ChiTietHoaDon;
-import entity.ChiTietHoaDonId;
-import entity.HoaDon;
-import entity.KhachHang;
-import entity.Thuoc;
+import entity.*;
 import jakarta.persistence.*;
 import net.datafaker.Faker;
 
@@ -33,14 +29,15 @@ public class test_HD {
         System.out.println("Danh sách chi tiết hóa đơn có mã hóa đơn là " + hd.getMaHD() + " là: " + cthdDAO.getChiTietHoaDon(hd.getMaHD()));
 
         // Tạo một HoaDon mới
+        NhanVien nv = em.find(NhanVien.class, "NV-32945738");
         HoaDon newHoaDon = new HoaDon();
         String maHD = faker.bothify("HD-########");
         newHoaDon.setMaHD(maHD);
         newHoaDon.setNgayLap(java.time.LocalDate.now());
         newHoaDon.setTongTien(100000.0);
-
+        newHoaDon.setMaNhanVien(nv);
         // Thiết lập một thực thể KhachHang hợp lệ
-        KhachHang khachHang = em.find(KhachHang.class, "KH-12345678"); // Giả sử KhachHang này đã tồn tại
+        KhachHang khachHang = em.find(KhachHang.class, "KH-00048227"); // Giả sử KhachHang này đã tồn tại
         newHoaDon.setMaKH(khachHang);
 
         try {
@@ -79,8 +76,8 @@ public class test_HD {
 
         // Cập nhật giá của một hóa đơn
         if (newHoaDon != null) {
-            // Update the price
-            newHoaDon.setTongTien(200000.0); // Set the new price
+
+            newHoaDon.setTongTien(200000.0);
 
             try {
                 tr.begin();
@@ -93,6 +90,15 @@ public class test_HD {
             }
         } else {
             System.out.println("Hóa đơn không tồn tại.");
+        }
+    // tìm hóa đơn
+        String maHD1 = "HD-03055932";
+
+        HoaDon hoaDon2 = hdDAO.findById(maHD1).orElse(null);
+        if (hoaDon2 != null) {
+            System.out.println("Hóa đơn tìm thấy: " + hoaDon2);
+        } else {
+            System.out.println("Không tìm thấy hóa đơn với mã: " + maHD1);
         }
 
         em.close();

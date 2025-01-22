@@ -25,7 +25,9 @@ public class XuatXu_DAO {
                 .setParameter("country", "%" + country + "%")
                 .getResultList();
     }
-
+    public XuatXu findById(String maXuatXu) {
+        return em.find(XuatXu.class, maXuatXu);
+    }
 //    public List<XuatXu> listXuatXuByRange(int from, int to) {
 //        String query = "select x from XuatXu x where x.range between :from and :to";
 //        return em.createQuery(query, XuatXu.class)
@@ -34,7 +36,7 @@ public class XuatXu_DAO {
 //                .getResultList();
 //    }
 
-    public boolean save(XuatXu xuatXu) {
+    public boolean create(XuatXu xuatXu) {
         EntityTransaction tr = em.getTransaction();
         try {
             tr.begin();

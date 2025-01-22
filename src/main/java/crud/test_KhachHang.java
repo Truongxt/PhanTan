@@ -7,14 +7,15 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
+import net.datafaker.Faker;
 
 public class test_KhachHang {
 
     public static void main(String[] args) {
         EntityManagerFactory emf = null;
         EntityManager em = null;
+        Faker faker = new Faker();
 
-        try {
             emf = Persistence.createEntityManagerFactory("default");
             em = emf.createEntityManager();
 
@@ -22,11 +23,12 @@ public class test_KhachHang {
 
             // Create a new KhachHang
             KhachHang newKhachHang = new KhachHang();
-            newKhachHang.setMaKhachHang("KH-001");
+            String maKH=faker.bothify("KH-########");
+            newKhachHang.setMaKhachHang("maKH");
             newKhachHang.setTenKhachHang("Nguyen Van A");
             newKhachHang.setDiaChi("123 Le Loi");
+            newKhachHang.setSdt("0123456789");
 
-            EntityTransaction tr = em.getTransaction();
 
             khachHangDAO.create(newKhachHang);
 
@@ -47,15 +49,19 @@ public class test_KhachHang {
             
             System.out.println("KhachHang da duoc xoa: " + newKhachHang.getMaKhachHang());
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (em != null) {
-                em.close();
-            }
-            if (emf != null) {
-                emf.close();
-            }
+
+
+        // Find and print a customer by its ID
+        String maKhachHang = "KH-00908051"; // Replace with the actual customer ID
+        KhachHang khachHang1 = khachHangDAO.findById(maKhachHang).orElse(null);
+        if (khachHang1 != null) {
+            System.out.println("Khách hàng tìm thấy: " + khachHang1);
+        } else {
+            System.out.println("Không tìm thấy khách hàng với mã: " + maKhachHang);
         }
+        em.close();
+        emf.close();
+
+
     }
 }

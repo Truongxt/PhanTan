@@ -42,7 +42,15 @@ public class test_LoaiThuoc {
             loaiThuocDAO.delete(newLoaiThuoc.getMaLoai());
 
             System.out.println("Loai thuoc da duoc xoa: " + newLoaiThuoc.getMaLoai());
+        String maLoai = "LT-001"; // Replace with the actual LoaiThuoc ID
 
+
+        LoaiThuoc loaiThuoc1 = loaiThuocDAO.findById(maLoai).orElse(null);
+        if (loaiThuoc1 != null) {
+            System.out.println("Loai thuoc tim thay: " + loaiThuoc1);
+        } else {
+            System.out.println("Khong tim thay loai thuoc voi ma: " + maLoai);
+        }
 
         em.close();
         emf.close();
