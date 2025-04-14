@@ -1,13 +1,14 @@
 package dao;
 
 import entity.NhaCungCap;
+import interfaces.INhaCungCap;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
-public class NhaCungCap_DAO {
+public class NhaCungCap_DAO implements INhaCungCap {
 
     private EntityManager em;
 
@@ -15,16 +16,19 @@ public class NhaCungCap_DAO {
         this.em = em;
     }
 
+    @Override
     public Optional<NhaCungCap> findById(String maNhaCungCap) {
         return Optional.ofNullable(em.find(NhaCungCap.class, maNhaCungCap));
     }
 
+    @Override
     public List<NhaCungCap> findByTen(String tenNhaCungCap) {
         TypedQuery<NhaCungCap> query = em.createQuery("SELECT ncc FROM NhaCungCap ncc WHERE ncc.tenNCC LIKE :tenNhaCungCap", NhaCungCap.class);
         query.setParameter("tenNhaCungCap", "%" + tenNhaCungCap + "%");
         return query.getResultList();
     }
 
+    @Override
     public boolean create(NhaCungCap nhaCungCap) {
         EntityTransaction tr = em.getTransaction();
         try {
@@ -39,6 +43,7 @@ public class NhaCungCap_DAO {
         return false;
     }
 
+    @Override
     public boolean update(NhaCungCap nhaCungCap) {
         EntityTransaction tr = em.getTransaction();
         try {
@@ -53,6 +58,7 @@ public class NhaCungCap_DAO {
         return false;
     }
 
+    @Override
     public boolean delete(String maNhaCungCap) {
         EntityTransaction tr = em.getTransaction();
         try {
