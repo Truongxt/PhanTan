@@ -1,14 +1,14 @@
 package dao;
 
 import entity.ChiTietDoiTra;
-import entity.ChiTietDoiTraId;
+import interfaces.IChiTietDoiTra;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
-public class ChiTietDoiTra_DAO implements DAOBase<ChiTietDoiTra> {
+public class ChiTietDoiTra_DAO implements IChiTietDoiTra {
 
     private EntityManager em;
 

@@ -2,13 +2,14 @@ package dao;
 
 import entity.ChiTietBangKiemTien;
 import entity.ChiTietBangKiemTienId;
+import interfaces.IChiTietBangKiemTien;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
-public class ChiTietBangKiemTien_DAO {
+public class ChiTietBangKiemTien_DAO implements IChiTietBangKiemTien {
 
     private EntityManager em;
 

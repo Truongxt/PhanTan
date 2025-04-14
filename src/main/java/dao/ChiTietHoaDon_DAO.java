@@ -3,12 +3,13 @@ package dao;
 import entity.ChiTietHoaDon;
 import entity.ChiTietHoaDonId;
 import entity.HoaDon;
+import interfaces.IChiTietHoaDon;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 import java.util.List;
 
-public class ChiTietHoaDon_DAO {
+public class ChiTietHoaDon_DAO implements IChiTietHoaDon {
 
     private EntityManager em;
 
