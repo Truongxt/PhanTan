@@ -1,13 +1,14 @@
 package dao;
 
 import entity.Otp;
+import interfaces.IOTP;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
-public class OTP_DAO {
+public class OTP_DAO implements IOTP {
 
     private EntityManager em;
 
@@ -15,20 +16,23 @@ public class OTP_DAO {
         this.em = em;
     }
 
+    @Override
     public Optional<Otp> findById(String maOtp) {
         return Optional.ofNullable(em.find(Otp.class, maOtp));
     }
 
+    @Override
     public List<Otp> findAll() {
         TypedQuery<Otp> query = em.createQuery("SELECT o FROM Otp o", Otp.class);
         return query.getResultList();
     }
 
-    public boolean create(Otp Otp) {
+    @Override
+    public boolean create(Otp otp) {
         EntityTransaction tr = em.getTransaction();
         try {
             tr.begin();
-            em.persist(Otp);
+            em.persist(otp);
             tr.commit();
             return true;
         } catch (Exception e) {
@@ -38,11 +42,12 @@ public class OTP_DAO {
         return false;
     }
 
-    public boolean update(Otp Otp) {
+    @Override
+    public boolean update(Otp otp) {
         EntityTransaction tr = em.getTransaction();
         try {
             tr.begin();
-            em.merge(Otp);
+            em.merge(otp);
             tr.commit();
             return true;
         } catch (Exception e) {
@@ -52,13 +57,14 @@ public class OTP_DAO {
         return false;
     }
 
+    @Override
     public boolean delete(String maOtp) {
         EntityTransaction tr = em.getTransaction();
         try {
             tr.begin();
-            Otp Otp = em.find(Otp.class, maOtp);
-            if (Otp != null) {
-                em.remove(Otp);
+            Otp otp = em.find(Otp.class, maOtp);
+            if (otp != null) {
+                em.remove(otp);
                 tr.commit();
                 return true;
             }

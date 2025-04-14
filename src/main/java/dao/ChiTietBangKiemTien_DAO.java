@@ -17,15 +17,19 @@ public class ChiTietBangKiemTien_DAO implements IChiTietBangKiemTien {
         this.em = em;
     }
 
+    @Override
     public Optional<ChiTietBangKiemTien> findById(ChiTietBangKiemTienId id) {
         return Optional.ofNullable(em.find(ChiTietBangKiemTien.class, id));
     }
 
+    @Override
     public List<ChiTietBangKiemTien> findAll() {
-        TypedQuery<ChiTietBangKiemTien> query = em.createQuery("SELECT ctbkt FROM ChiTietBangKiemTien ctbkt", ChiTietBangKiemTien.class);
+        TypedQuery<ChiTietBangKiemTien> query =
+                em.createQuery("SELECT ctbkt FROM ChiTietBangKiemTien ctbkt", ChiTietBangKiemTien.class);
         return query.getResultList();
     }
 
+    @Override
     public boolean create(ChiTietBangKiemTien chiTietBangKiemTien) {
         EntityTransaction tr = em.getTransaction();
         try {
@@ -40,6 +44,7 @@ public class ChiTietBangKiemTien_DAO implements IChiTietBangKiemTien {
         return false;
     }
 
+    @Override
     public boolean update(ChiTietBangKiemTien chiTietBangKiemTien) {
         EntityTransaction tr = em.getTransaction();
         try {
@@ -54,6 +59,7 @@ public class ChiTietBangKiemTien_DAO implements IChiTietBangKiemTien {
         return false;
     }
 
+    @Override
     public boolean delete(ChiTietBangKiemTienId id) {
         EntityTransaction tr = em.getTransaction();
         try {

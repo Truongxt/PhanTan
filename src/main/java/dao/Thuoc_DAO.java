@@ -1,5 +1,6 @@
 package dao;
 
+import interfaces.IThuoc;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import lombok.AllArgsConstructor;
@@ -8,10 +9,11 @@ import entity.Thuoc;
 import java.util.List;
 
 @AllArgsConstructor
-public class Thuoc_DAO {
+public class Thuoc_DAO implements IThuoc {
 
     private EntityManager em;
 
+    @Override
     public boolean create(Thuoc thuoc) {
         EntityTransaction tr = em.getTransaction();
         try {
@@ -26,6 +28,7 @@ public class Thuoc_DAO {
         return false;
     }
 
+    @Override
     public Thuoc getThuocTheoMa(String mt) {
         try {
             return em.find(Thuoc.class, mt);
@@ -35,6 +38,7 @@ public class Thuoc_DAO {
         return null;
     }
 
+    @Override
     public List<Thuoc> getAllThuoc() {
         try {
             return em.createQuery("SELECT t FROM Thuoc t", Thuoc.class).getResultList();
@@ -44,6 +48,7 @@ public class Thuoc_DAO {
         return null;
     }
 
+    @Override
     public boolean update(Thuoc thuoc) {
         EntityTransaction tr = em.getTransaction();
         try {
@@ -58,6 +63,7 @@ public class Thuoc_DAO {
         return false;
     }
 
+    @Override
     public boolean delete(String maThuoc) {
         EntityTransaction tr = em.getTransaction();
         try {

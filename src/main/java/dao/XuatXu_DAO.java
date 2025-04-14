@@ -1,5 +1,6 @@
 package dao;
 
+import interfaces.IXuatXu;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import lombok.AllArgsConstructor;
@@ -8,10 +9,11 @@ import entity.XuatXu;
 import java.util.List;
 
 @AllArgsConstructor
-public class XuatXu_DAO {
+public class XuatXu_DAO implements IXuatXu {
 
     private EntityManager em;
 
+    @Override
     public long countXuatXuByCountry(String country) {
         String query = "select count(*) from XuatXu where tenXuatXu = :country";
         Object obj = em.createQuery(query)
@@ -20,22 +22,19 @@ public class XuatXu_DAO {
         return (long) obj;
     }
 
+    @Override
     public List<XuatXu> listXuatXuByCountry(String country) {
         return em.createQuery("select x from XuatXu x where x.tenXuatXu like :country", XuatXu.class)
                 .setParameter("country", "%" + country + "%")
                 .getResultList();
     }
+
+    @Override
     public XuatXu findById(String maXuatXu) {
         return em.find(XuatXu.class, maXuatXu);
     }
-//    public List<XuatXu> listXuatXuByRange(int from, int to) {
-//        String query = "select x from XuatXu x where x.range between :from and :to";
-//        return em.createQuery(query, XuatXu.class)
-//                .setParameter("from", from)
-//                .setParameter("to", to)
-//                .getResultList();
-//    }
 
+    @Override
     public boolean create(XuatXu xuatXu) {
         EntityTransaction tr = em.getTransaction();
         try {
@@ -50,6 +49,7 @@ public class XuatXu_DAO {
         return false;
     }
 
+    @Override
     public boolean update(XuatXu xuatXu) {
         EntityTransaction tr = em.getTransaction();
         try {
@@ -64,6 +64,7 @@ public class XuatXu_DAO {
         return false;
     }
 
+    @Override
     public boolean delete(String id) {
         EntityTransaction tr = em.getTransaction();
         try {

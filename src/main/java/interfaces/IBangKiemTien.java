@@ -7,17 +7,16 @@ import java.util.Optional;
 
 public interface IBangKiemTien {
 
-    public interface IBangKiemTien_DAO {
+    Optional<BangKiemTien> findById(String id);
 
-        Optional<BangKiemTien> findById(String id);
+    List<BangKiemTien> findAll();
 
-        List<BangKiemTien> findAll();
+    boolean create(BangKiemTien bangKiemTien);
 
-        boolean create(BangKiemTien bangKiemTien);
+    boolean update(BangKiemTien bangKiemTien);
 
-        boolean update(BangKiemTien bangKiemTien);
+    boolean delete(String id);
 
-        boolean delete(String id);
-    }
+    
 
 }
