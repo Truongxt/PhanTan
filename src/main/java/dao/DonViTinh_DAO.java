@@ -16,15 +16,18 @@ public class DonViTinh_DAO implements IDonViTinh {
         this.em = em;
     }
 
+    @Override
     public Optional<DonViTinh> findById(String maDonViTinh) {
         return Optional.ofNullable(em.find(DonViTinh.class, maDonViTinh));
     }
 
+    @Override
     public List<DonViTinh> findAll() {
         TypedQuery<DonViTinh> query = em.createQuery("SELECT dvt FROM DonViTinh dvt", DonViTinh.class);
         return query.getResultList();
     }
 
+    @Override
     public boolean create(DonViTinh donViTinh) {
         EntityTransaction tr = em.getTransaction();
         try {
@@ -39,6 +42,7 @@ public class DonViTinh_DAO implements IDonViTinh {
         return false;
     }
 
+    @Override
     public boolean update(DonViTinh donViTinh) {
         EntityTransaction tr = em.getTransaction();
         try {
@@ -53,6 +57,7 @@ public class DonViTinh_DAO implements IDonViTinh {
         return false;
     }
 
+    @Override
     public boolean delete(String maDonViTinh) {
         EntityTransaction tr = em.getTransaction();
         try {

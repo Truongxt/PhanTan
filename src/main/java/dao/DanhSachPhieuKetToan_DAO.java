@@ -16,15 +16,18 @@ public class DanhSachPhieuKetToan_DAO implements IDanhSachPhieuKetToan {
         this.em = em;
     }
 
+    @Override
     public Optional<KetToan> findById(String id) {
         return Optional.ofNullable(em.find(KetToan.class, id));
     }
 
+    @Override
     public List<KetToan> findAll() {
         TypedQuery<KetToan> query = em.createQuery("SELECT kt FROM KetToan kt", KetToan.class);
         return query.getResultList();
     }
 
+    @Override
     public boolean create(KetToan ketToan) {
         EntityTransaction tr = em.getTransaction();
         try {
@@ -39,6 +42,7 @@ public class DanhSachPhieuKetToan_DAO implements IDanhSachPhieuKetToan {
         return false;
     }
 
+    @Override
     public boolean update(KetToan ketToan) {
         EntityTransaction tr = em.getTransaction();
         try {
@@ -53,6 +57,7 @@ public class DanhSachPhieuKetToan_DAO implements IDanhSachPhieuKetToan {
         return false;
     }
 
+    @Override
     public boolean delete(String id) {
         EntityTransaction tr = em.getTransaction();
         try {

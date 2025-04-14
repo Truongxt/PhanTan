@@ -15,14 +15,17 @@ public class KetToan_DAO implements IKetToan {
         this.em = em;
     }
 
+    @Override
     public Optional<KetToan> findById(String maKetToan) {
         return Optional.ofNullable(em.find(KetToan.class, maKetToan));
     }
 
+    @Override
     public List<KetToan> findAll() {
         return em.createQuery("SELECT kt FROM KetToan kt", KetToan.class).getResultList();
     }
 
+    @Override
     public boolean create(KetToan ketToan) {
         EntityTransaction tr = em.getTransaction();
         try {
@@ -37,6 +40,7 @@ public class KetToan_DAO implements IKetToan {
         return false;
     }
 
+    @Override
     public boolean update(KetToan ketToan) {
         EntityTransaction tr = em.getTransaction();
         try {
@@ -51,6 +55,7 @@ public class KetToan_DAO implements IKetToan {
         return false;
     }
 
+    @Override
     public boolean delete(String maKetToan) {
         EntityTransaction tr = em.getTransaction();
         try {

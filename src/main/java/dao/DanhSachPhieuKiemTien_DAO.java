@@ -16,15 +16,18 @@ public class DanhSachPhieuKiemTien_DAO implements IDanhSachPhieuKiemTien {
         this.em = em;
     }
 
+    @Override
     public Optional<BangKiemTien> findById(String id) {
         return Optional.ofNullable(em.find(BangKiemTien.class, id));
     }
 
+    @Override
     public List<BangKiemTien> findAll() {
         TypedQuery<BangKiemTien> query = em.createQuery("SELECT b FROM BangKiemTien b", BangKiemTien.class);
         return query.getResultList();
     }
 
+    @Override
     public boolean create(BangKiemTien bangKiemTien) {
         EntityTransaction tr = em.getTransaction();
         try {
@@ -39,6 +42,7 @@ public class DanhSachPhieuKiemTien_DAO implements IDanhSachPhieuKiemTien {
         return false;
     }
 
+    @Override
     public boolean update(BangKiemTien bangKiemTien) {
         EntityTransaction tr = em.getTransaction();
         try {
@@ -53,6 +57,7 @@ public class DanhSachPhieuKiemTien_DAO implements IDanhSachPhieuKiemTien {
         return false;
     }
 
+    @Override
     public boolean delete(String id) {
         EntityTransaction tr = em.getTransaction();
         try {

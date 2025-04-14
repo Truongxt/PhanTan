@@ -14,6 +14,7 @@ public class KiemTien_DAO implements IKiemTien {
         this.em = em;
     }
 
+    @Override
     public boolean create(KiemTien kiemTien) {
         EntityTransaction tr = em.getTransaction();
         try {
@@ -28,6 +29,7 @@ public class KiemTien_DAO implements IKiemTien {
         return false;
     }
 
+    @Override
     public KiemTien getKiemTienTheoMa(String maKiemTien) {
         try {
             return em.find(KiemTien.class, maKiemTien);
@@ -37,6 +39,7 @@ public class KiemTien_DAO implements IKiemTien {
         return null;
     }
 
+    @Override
     public List<KiemTien> getAllKiemTien() {
         try {
             return em.createQuery("SELECT kt FROM KiemTien kt", KiemTien.class).getResultList();
@@ -46,6 +49,7 @@ public class KiemTien_DAO implements IKiemTien {
         return null;
     }
 
+    @Override
     public boolean update(KiemTien kiemTien) {
         EntityTransaction tr = em.getTransaction();
         try {
@@ -60,6 +64,7 @@ public class KiemTien_DAO implements IKiemTien {
         return false;
     }
 
+    @Override
     public boolean delete(String maKiemTien) {
         EntityTransaction tr = em.getTransaction();
         try {

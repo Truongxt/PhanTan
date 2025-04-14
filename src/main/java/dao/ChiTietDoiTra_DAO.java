@@ -9,18 +9,19 @@ import java.util.List;
 import java.util.Optional;
 
 public class ChiTietDoiTra_DAO implements IChiTietDoiTra {
-
     private EntityManager em;
 
     public ChiTietDoiTra_DAO(EntityManager em) {
         this.em = em;
     }
 
+    @Override
     public List<ChiTietDoiTra> getAll() {
         TypedQuery<ChiTietDoiTra> query = em.createQuery("SELECT ctdt FROM ChiTietDoiTra ctdt", ChiTietDoiTra.class);
         return query.getResultList();
     }
 
+    @Override
     public boolean create(ChiTietDoiTra chiTietDoiTra) {
         EntityTransaction tr = em.getTransaction();
         try {
@@ -35,6 +36,7 @@ public class ChiTietDoiTra_DAO implements IChiTietDoiTra {
         return false;
     }
 
+    @Override
     public boolean update(ChiTietDoiTra chiTietDoiTra) {
         EntityTransaction tr = em.getTransaction();
         try {
@@ -49,6 +51,7 @@ public class ChiTietDoiTra_DAO implements IChiTietDoiTra {
         return false;
     }
 
+    @Override
     public boolean delete(String maHDDT, String maThuoc) {
         EntityTransaction tr = em.getTransaction();
         try {
@@ -66,6 +69,7 @@ public class ChiTietDoiTra_DAO implements IChiTietDoiTra {
         return false;
     }
 
+    @Override
     public Optional<ChiTietDoiTra> getOne(String maHDDT, String maThuoc) {
         TypedQuery<ChiTietDoiTra> query = em.createQuery("SELECT ctdt FROM ChiTietDoiTra ctdt WHERE ctdt.id.maHoaDonDoiTra = :maHDDT AND ctdt.id.maThuoc = :maThuoc", ChiTietDoiTra.class);
         query.setParameter("maHDDT", maHDDT);
