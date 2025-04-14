@@ -1,12 +1,13 @@
 package dao;
 
 import entity.KetToan;
+import interfaces.IKetToan;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import java.util.List;
 import java.util.Optional;
 
-public class KetToan_DAO {
+public class KetToan_DAO implements IKetToan {
 
     private EntityManager em;
 

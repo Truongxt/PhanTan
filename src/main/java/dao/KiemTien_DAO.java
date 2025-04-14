@@ -1,11 +1,12 @@
 package dao;
 
 import entity.KiemTien;
+import interfaces.IKiemTien;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import java.util.List;
 
-public class KiemTien_DAO {
+public class KiemTien_DAO implements IKiemTien {
 
     private EntityManager em;
 

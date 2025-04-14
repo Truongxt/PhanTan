@@ -1,13 +1,14 @@
 package dao;
 
 import entity.DonViTinh;
+import interfaces.IDonViTinh;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
-public class DonViTinh_DAO {
+public class DonViTinh_DAO implements IDonViTinh {
 
     private EntityManager em;
 
