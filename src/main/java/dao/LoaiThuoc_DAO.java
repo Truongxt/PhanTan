@@ -1,77 +1,123 @@
 package dao;
 
 import entity.LoaiThuoc;
-import interfaces.ILoaiThuoc;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.TypedQuery;
-import java.util.List;
-import java.util.Optional;
+import java.sql.PreparedStatement;
+import connect.ConnectDB;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.sql.*;
 
-public class LoaiThuoc_DAO implements ILoaiThuoc {
-    private EntityManager em;
+/**
+ *
+ * @author Xuân Trường
+ */
+public class LoaiThuoc_DAO {
 
-    public LoaiThuoc_DAO(EntityManager em) {
-        this.em = em;
-    }
-
-    @Override
-    public Optional<LoaiThuoc> findById(String maLoaiThuoc) {
-        return Optional.ofNullable(em.find(LoaiThuoc.class, maLoaiThuoc));
-    }
-
-    @Override
-    public List<LoaiThuoc> findAll() {
-        TypedQuery<LoaiThuoc> query = em.createQuery("SELECT lt FROM LoaiThuoc lt", LoaiThuoc.class);
-        return query.getResultList();
-    }
-
-    @Override
-    public boolean create(LoaiThuoc loaiThuoc) {
-        EntityTransaction tr = em.getTransaction();
+    public Boolean create(LoaiThuoc loaiThuoc) {
+        int n = 0;
         try {
-            tr.begin();
-            em.persist(loaiThuoc);
-            tr.commit();
-            return true;
+            PreparedStatement ps = ConnectDB.conn.prepareStatement("INSERT INTO LoaiThuoc VALUES (?,?)");
+            ps.setString(1, loaiThuoc.getMaLoai());
+            ps.setString(2, loaiThuoc.getTenLoai());
+            n = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
-            tr.rollback();
         }
-        return false;
+        return n > 0;
     }
 
-    @Override
-    public boolean update(LoaiThuoc loaiThuoc) {
-        EntityTransaction tr = em.getTransaction();
+    public ArrayList<LoaiThuoc> getAllLoaiThuoc() {
+        ArrayList<LoaiThuoc> list = new ArrayList<>();
         try {
-            tr.begin();
-            em.merge(loaiThuoc);
-            tr.commit();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            tr.rollback();
-        }
-        return false;
-    }
-
-    @Override
-    public boolean delete(String maLoaiThuoc) {
-        EntityTransaction tr = em.getTransaction();
-        try {
-            tr.begin();
-            LoaiThuoc loaiThuoc = em.find(LoaiThuoc.class, maLoaiThuoc);
-            if (loaiThuoc != null) {
-                em.remove(loaiThuoc);
-                tr.commit();
-                return true;
+            PreparedStatement ps = ConnectDB.conn.prepareStatement("SELECT * FROM LoaiThuoc");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String maLoai = rs.getString("maLoai");
+                String tenLoai = rs.getString("tenLoai");
+                LoaiThuoc loaiThuoc = new LoaiThuoc(maLoai, tenLoai);
+                list.add(loaiThuoc);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            tr.rollback();
+        } catch (SQLException ex) {
+            Logger.getLogger(LoaiThuoc_DAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return false;
+        return list;
     }
 
+    public LoaiThuoc getLoaiThuoc(String maLoai) {
+        try {
+            PreparedStatement ps = ConnectDB.conn.prepareStatement("SELECT * FROM LoaiThuoc WHERE maLoai = ?");
+            ps.setString(1, maLoai);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                String tenLoai = rs.getString("tenLoai");
+                return new LoaiThuoc(maLoai, tenLoai);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LoaiThuoc_DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public boolean updateLoaiThuoc(String maLoai, LoaiThuoc newLoaiThuoc) {
+        int n = 0;
+        try {
+            PreparedStatement st = ConnectDB.conn.prepareStatement("UPDATE LoaiThuoc SET tenLoai = ? WHERE maLoai = ?");
+            st.setString(1, newLoaiThuoc.getTenLoai());
+            st.setString(2, maLoai);
+            n = st.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(LoaiThuoc_DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return n > 0;
+    }
+
+    public int getSize() {
+        int n = 0;
+        try {
+            PreparedStatement ps = ConnectDB.conn.prepareStatement("SELECT COUNT(*) FROM LoaiThuoc");
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                n = rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LoaiThuoc_DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return n;
+    }
+
+    public ArrayList<LoaiThuoc> searchByMaLoai(String maLoai) {
+        ArrayList<LoaiThuoc> list = new ArrayList<>();
+        try {
+            PreparedStatement ps = ConnectDB.conn.prepareStatement("SELECT * FROM LoaiThuoc WHERE maLoai LIKE ?");
+            ps.setString(1, "%" + maLoai + "%");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String ma = rs.getString("maLoai");
+                String tenLoai = rs.getString("tenLoai");
+                list.add(new LoaiThuoc(ma, tenLoai));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LoaiThuoc_DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+
+    public ArrayList<LoaiThuoc> searchByTenLoai(String tenLoai) {
+        ArrayList<LoaiThuoc> list = new ArrayList<>();
+        try {
+            PreparedStatement ps = ConnectDB.conn.prepareStatement("SELECT * FROM LoaiThuoc WHERE tenLoai LIKE ?");
+            ps.setString(1, "%" + tenLoai + "%");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String maLoai = rs.getString("maLoai");
+                String ten = rs.getString("tenLoai");
+                list.add(new LoaiThuoc(maLoai, ten));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LoaiThuoc_DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
 }

@@ -1,77 +1,39 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package dao;
 
 import entity.KetToan;
-import interfaces.IDanhSachPhieuKetToan;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.TypedQuery;
-import java.util.List;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 
-public class DanhSachPhieuKetToan_DAO implements IDanhSachPhieuKetToan {
+/**
+ *
+ * @author lemin
+ */
+public class DanhSachPhieuKetToan_DAO {
 
-    private EntityManager em;
+    private KetToan_DAO ketToan_DAO = new KetToan_DAO();
+    private BangKiemTien_DAO bangKiemTien_DAO = new BangKiemTien_DAO();
 
-    public DanhSachPhieuKetToan_DAO(EntityManager em) {
-        this.em = em;
+    public KetToan getOne(String maKetToan) {
+        return ketToan_DAO.getOne(maKetToan);
     }
 
-    @Override
-    public Optional<KetToan> findById(String id) {
-        return Optional.ofNullable(em.find(KetToan.class, id));
-    }
-
-    @Override
-    public List<KetToan> findAll() {
-        TypedQuery<KetToan> query = em.createQuery("SELECT kt FROM KetToan kt", KetToan.class);
-        return query.getResultList();
-    }
-
-    @Override
-    public boolean create(KetToan ketToan) {
-        EntityTransaction tr = em.getTransaction();
-        try {
-            tr.begin();
-            em.persist(ketToan);
-            tr.commit();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            tr.rollback();
+    public ArrayList<KetToan> getAll() {
+        ArrayList<KetToan> list = new ArrayList<>();
+        for (KetToan ketToan : ketToan_DAO.getAll()) {
+            ketToan.setBangKiemTien(bangKiemTien_DAO.getOne(ketToan.getBangKiemTien().getMaBangKiemTien()));
+            list.add(ketToan);
         }
-        return false;
+        Collections.sort(list, Collections.reverseOrder());
+        return list;
     }
 
-    @Override
-    public boolean update(KetToan ketToan) {
-        EntityTransaction tr = em.getTransaction();
-        try {
-            tr.begin();
-            em.merge(ketToan);
-            tr.commit();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            tr.rollback();
-        }
-        return false;
-    }
-
-    @Override
-    public boolean delete(String id) {
-        EntityTransaction tr = em.getTransaction();
-        try {
-            tr.begin();
-            KetToan ketToan = em.find(KetToan.class, id);
-            if (ketToan != null) {
-                em.remove(ketToan);
-                tr.commit();
-                return true;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            tr.rollback();
-        }
-        return false;
+    public ArrayList<KetToan> getByDate(Date start, Date end) {
+        ArrayList<KetToan> list = getAll();
+        return list;
     }
 }

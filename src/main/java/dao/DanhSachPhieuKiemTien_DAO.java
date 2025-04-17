@@ -1,77 +1,29 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package dao;
 
 import entity.BangKiemTien;
-import interfaces.IDanhSachPhieuKiemTien;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.TypedQuery;
-import java.util.List;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.Collections;
+import utilities.CashCountSheetPrinter;
 
-public class DanhSachPhieuKiemTien_DAO implements IDanhSachPhieuKiemTien {
+/**
+ *
+ * @author lemin
+ */
+public class DanhSachPhieuKiemTien_DAO {
 
-    private EntityManager em;
+    private BangKiemTien_DAO bangKiemTien_DAO = new BangKiemTien_DAO();
 
-    public DanhSachPhieuKiemTien_DAO(EntityManager em) {
-        this.em = em;
+    public ArrayList<BangKiemTien> getAll() {
+        ArrayList<BangKiemTien> list = bangKiemTien_DAO.getAll();
+        Collections.sort(list, Collections.reverseOrder());
+        return list;
     }
 
-    @Override
-    public Optional<BangKiemTien> findById(String id) {
-        return Optional.ofNullable(em.find(BangKiemTien.class, id));
-    }
-
-    @Override
-    public List<BangKiemTien> findAll() {
-        TypedQuery<BangKiemTien> query = em.createQuery("SELECT b FROM BangKiemTien b", BangKiemTien.class);
-        return query.getResultList();
-    }
-
-    @Override
-    public boolean create(BangKiemTien bangKiemTien) {
-        EntityTransaction tr = em.getTransaction();
-        try {
-            tr.begin();
-            em.persist(bangKiemTien);
-            tr.commit();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            tr.rollback();
-        }
-        return false;
-    }
-
-    @Override
-    public boolean update(BangKiemTien bangKiemTien) {
-        EntityTransaction tr = em.getTransaction();
-        try {
-            tr.begin();
-            em.merge(bangKiemTien);
-            tr.commit();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            tr.rollback();
-        }
-        return false;
-    }
-
-    @Override
-    public boolean delete(String id) {
-        EntityTransaction tr = em.getTransaction();
-        try {
-            tr.begin();
-            BangKiemTien bangKiemTien = em.find(BangKiemTien.class, id);
-            if (bangKiemTien != null) {
-                em.remove(bangKiemTien);
-                tr.commit();
-                return true;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            tr.rollback();
-        }
-        return false;
+    public BangKiemTien getOne(String id) {
+        return bangKiemTien_DAO.getOne(id);
     }
 }

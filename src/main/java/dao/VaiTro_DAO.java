@@ -1,77 +1,55 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package dao;
 
+import connect.ConnectDB;
+import entity.NhanVien;
 import entity.VaiTro;
-import interfaces.IVaiTro;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.TypedQuery;
-import java.util.List;
-import java.util.Optional;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class VaiTro_DAO implements IVaiTro {
-
-    private EntityManager em;
-
-    public VaiTro_DAO(EntityManager em) {
-        this.em = em;
-    }
-
-    @Override
-    public Optional<VaiTro> findById(String maVaiTro) {
-        return Optional.ofNullable(em.find(VaiTro.class, maVaiTro));
-    }
-
-    @Override
-    public List<VaiTro> findAll() {
-        TypedQuery<VaiTro> query = em.createQuery("SELECT vt FROM VaiTro vt", VaiTro.class);
-        return query.getResultList();
-    }
-
-    @Override
-    public boolean create(VaiTro vaiTro) {
-        EntityTransaction tr = em.getTransaction();
+/**
+ *
+ * @author Xuân Trường
+ */
+public class VaiTro_DAO {
+     public ArrayList<VaiTro> getAllVaiTro() {
+        ArrayList<VaiTro> list = new ArrayList<>();
         try {
-            tr.begin();
-            em.persist(vaiTro);
-            tr.commit();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            tr.rollback();
-        }
-        return false;
-    }
-
-    @Override
-    public boolean update(VaiTro vaiTro) {
-        EntityTransaction tr = em.getTransaction();
-        try {
-            tr.begin();
-            em.merge(vaiTro);
-            tr.commit();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            tr.rollback();
-        }
-        return false;
-    }
-
-    @Override
-    public boolean delete(String maVaiTro) {
-        EntityTransaction tr = em.getTransaction();
-        try {
-            tr.begin();
-            VaiTro vaiTro = em.find(VaiTro.class, maVaiTro);
-            if (vaiTro != null) {
-                em.remove(vaiTro);
-                tr.commit();
-                return true;
+            PreparedStatement ps = ConnectDB.conn.prepareStatement("Select * from VaiTro");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String maVT = rs.getString("maVaiTro");
+                String tenVT = rs.getString("tenVaiTro");
+                VaiTro vt = new VaiTro(maVT,tenVT);
+                list.add(vt);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            tr.rollback();
+        } catch (SQLException ex) {
+            Logger.getLogger(NhanVien_DAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return false;
+        return list;
+    }
+     public VaiTro getVaiTro (String maVaiTro){
+         try {
+            PreparedStatement ps = ConnectDB.conn.prepareStatement("Select * from VaiTro where maVaiTro = ?");
+            ps.setString(1, maVaiTro);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String maVT = rs.getString("maVaiTro");
+                String tenVT = rs.getString("tenVaiTro");
+                return new VaiTro(maVT,tenVT);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(NhanVien_DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         return null;
     }
 }

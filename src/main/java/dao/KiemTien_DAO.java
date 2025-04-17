@@ -1,84 +1,100 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package dao;
 
+import connect.ConnectDB;
 import entity.KiemTien;
-import interfaces.IKiemTien;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
-import java.util.List;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
-public class KiemTien_DAO implements IKiemTien {
+/**
+ *
+ * @author lemin
+ */
+public class KiemTien_DAO {
 
-    private EntityManager em;
-
-    public KiemTien_DAO(EntityManager em) {
-        this.em = em;
+    public KiemTien_DAO() {
     }
 
-    @Override
-    public boolean create(KiemTien kiemTien) {
-        EntityTransaction tr = em.getTransaction();
-        try {
-            tr.begin();
-            em.persist(kiemTien);
-            tr.commit();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            tr.rollback();
-        }
-        return false;
-    }
+    public KiemTien getKiemTien(double giaTri, String maBangKiemTien) {
+        KiemTien kiemTien = null;
 
-    @Override
-    public KiemTien getKiemTienTheoMa(String maKiemTien) {
         try {
-            return em.find(KiemTien.class, maKiemTien);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+            String sql = "SELECT * FROM KiemTien WHERE maBangKiemTien = ? AND value = ?";
+            PreparedStatement preparedStatement = ConnectDB.conn.prepareStatement(sql);
+            preparedStatement.setString(1, maBangKiemTien);
+            preparedStatement.setDouble(2, giaTri);
 
-    @Override
-    public List<KiemTien> getAllKiemTien() {
-        try {
-            return em.createQuery("SELECT kt FROM KiemTien kt", KiemTien.class).getResultList();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+            ResultSet resultSet = preparedStatement.executeQuery();
 
-    @Override
-    public boolean update(KiemTien kiemTien) {
-        EntityTransaction tr = em.getTransaction();
-        try {
-            tr.begin();
-            em.merge(kiemTien);
-            tr.commit();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            tr.rollback();
-        }
-        return false;
-    }
+            if (resultSet.next()) {
+                int soLuong = resultSet.getInt("soLuong");
+                double tong = resultSet.getDouble("tong");
 
-    @Override
-    public boolean delete(String maKiemTien) {
-        EntityTransaction tr = em.getTransaction();
-        try {
-            tr.begin();
-            KiemTien kiemTien = em.find(KiemTien.class, maKiemTien);
-            if (kiemTien != null) {
-                em.remove(kiemTien);
-                tr.commit();
-                return true;
+                kiemTien = new KiemTien(soLuong, giaTri);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            tr.rollback();
         }
-        return false;
+
+        return kiemTien;
     }
+
+    public ArrayList<KiemTien> getAll(String maBangKiemTien) {
+        ArrayList<KiemTien> kiemTiens = new ArrayList<>();
+
+        try {
+            String sql = "SELECT * FROM KiemTien WHERE maBangKiemTien = ?";
+            PreparedStatement preparedStatement = ConnectDB.conn.prepareStatement(sql);
+            preparedStatement.setString(1, maBangKiemTien);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                double giaTri = resultSet.getDouble("giaTri");
+                int soLuong = resultSet.getInt("soLuong");
+
+                KiemTien kiemTien = new KiemTien(soLuong, giaTri);
+                kiemTiens.add(kiemTien);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return kiemTiens;
+    }
+
+    public Boolean create(KiemTien kiemTien, String maBangKiemTien) {
+        try {
+            String sql = "INSERT INTO KiemTien (maBangKiemTien, giaTri, soLuong) VALUES (?, ?, ?)";
+            PreparedStatement preparedStatement = ConnectDB.conn.prepareStatement(sql);
+
+            preparedStatement.setString(1, maBangKiemTien);
+            preparedStatement.setDouble(2, kiemTien.getGiaTri());
+            preparedStatement.setInt(3, kiemTien.getSoLuong());
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                return true; // Thành công
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false; // Thất bại
+    }
+
+
+    public double getTongTien(ArrayList<KiemTien> list) {
+        double sum = 0;
+        for (KiemTien kiemTien : list) {
+            sum += kiemTien.getTong();
+        }
+        return sum;
+    }
+
 }

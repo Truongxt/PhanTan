@@ -1,82 +1,99 @@
 package dao;
 
-import interfaces.IXuatXu;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
-import lombok.AllArgsConstructor;
 import entity.XuatXu;
+import connect.ConnectDB;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+/**
+ *
+ * @author Xuân Trường
+ */
+public class XuatXu_DAO {
 
-import java.util.List;
-
-@AllArgsConstructor
-public class XuatXu_DAO implements IXuatXu {
-
-    private EntityManager em;
-
-    @Override
-    public long countXuatXuByCountry(String country) {
-        String query = "select count(*) from XuatXu where tenXuatXu = :country";
-        Object obj = em.createQuery(query)
-                .setParameter("country", country)
-                .getSingleResult();
-        return (long) obj;
-    }
-
-    @Override
-    public List<XuatXu> listXuatXuByCountry(String country) {
-        return em.createQuery("select x from XuatXu x where x.tenXuatXu like :country", XuatXu.class)
-                .setParameter("country", "%" + country + "%")
-                .getResultList();
-    }
-
-    @Override
-    public XuatXu findById(String maXuatXu) {
-        return em.find(XuatXu.class, maXuatXu);
-    }
-
-    @Override
-    public boolean create(XuatXu xuatXu) {
-        EntityTransaction tr = em.getTransaction();
+    public boolean create(XuatXu xx) {
+        int n = 0;
         try {
-            tr.begin();
-            em.persist(xuatXu);
-            tr.commit();
-            return true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            tr.rollback();
+            PreparedStatement ps = ConnectDB.conn.prepareStatement("INSERT INTO XuatXu VALUES (?, ?)");
+            ps.setString(1, xx.getMaXuatXu());
+            ps.setString(2, xx.getTen());
+            n = ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return false;
+        return n > 0;
     }
 
-    @Override
-    public boolean update(XuatXu xuatXu) {
-        EntityTransaction tr = em.getTransaction();
+    public ArrayList<XuatXu> getAllXuatXu() {
+        ArrayList<XuatXu> list = new ArrayList<>();
         try {
-            tr.begin();
-            em.merge(xuatXu);
-            tr.commit();
-            return true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            tr.rollback();
+            PreparedStatement ps = ConnectDB.conn.prepareStatement("SELECT * FROM XuatXu");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String maXuatXu = rs.getString("maXuatXu");
+                String ten = rs.getString("tenXuatXu");
+                XuatXu xx = new XuatXu(maXuatXu, ten);
+                list.add(xx);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(XuatXu_DAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return false;
+        return list;
     }
 
-    @Override
-    public boolean delete(String id) {
-        EntityTransaction tr = em.getTransaction();
+    public XuatXu getXuatXuById(String maXuatXu) {
+        XuatXu xx = null;
         try {
-            tr.begin();
-            XuatXu xuatXu = em.find(XuatXu.class, id);
-            em.remove(xuatXu);
-            tr.commit();
-            return true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            tr.rollback();
+            PreparedStatement ps = ConnectDB.conn.prepareStatement("SELECT * FROM XuatXu WHERE maXuatXu = ?");
+            ps.setString(1, maXuatXu);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                String ten = rs.getString("tenXuatXu");
+                xx = new XuatXu(maXuatXu, ten);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(XuatXu_DAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return false;
+        return xx;
+    }
+
+    public boolean updateXuatXu(String maXuatXu, XuatXu newXuatXu) {
+        int n = 0;
+        try {
+            PreparedStatement ps = ConnectDB.conn.prepareStatement("UPDATE XuatXu SET ten = ? WHERE maXuatXu = ?");
+            ps.setString(1, newXuatXu.getTen());
+            ps.setString(2, maXuatXu);
+            n = ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(XuatXu_DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return n > 0;
+    }
+
+    public boolean deleteXuatXu(String maXuatXu) {
+        int n = 0;
+        try {
+            PreparedStatement ps = ConnectDB.conn.prepareStatement("DELETE FROM XuatXu WHERE maXuatXu = ?");
+            ps.setString(1, maXuatXu);
+            n = ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(XuatXu_DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return n > 0;
+    }
+
+    public int getSize() {
+        int count = 0;
+        try {
+            PreparedStatement ps = ConnectDB.conn.prepareStatement("SELECT COUNT(*) FROM XuatXu");
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(XuatXu_DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return count;
     }
 }
