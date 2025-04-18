@@ -2,17 +2,18 @@ package interfaces;
 
 import entity.KiemTien;
 
+import java.rmi.Remote;
 import java.util.List;
 
-public interface IKiemTien {
+public interface IKiemTien extends Remote {
 
-    boolean create(KiemTien kiemTien);
+    boolean create(KiemTien kiemTien) throws Exception;
 
-    KiemTien getKiemTienTheoMa(String maKiemTien);
+    KiemTien getKiemTienTheoMa(String maKiemTien) throws Exception;
 
-    List<KiemTien> getAllKiemTien();
+    List<KiemTien> getAllKiemTien() throws Exception;
 
-    boolean update(KiemTien kiemTien);
+    boolean update(KiemTien kiemTien) throws Exception;
 
-    boolean delete(String maKiemTien);
+    boolean delete(String maKiemTien) throws Exception;
 }

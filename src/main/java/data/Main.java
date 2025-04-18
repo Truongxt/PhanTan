@@ -14,13 +14,14 @@ public class Main {
 
 
     public static void main(String[] args) {
-        EntityManager em = Persistence.createEntityManagerFactory("default").createEntityManager();
-        EntityTransaction tr = em.getTransaction();
-
-        Faker faker = new Faker();
-        Random rd= new Random();
-        Date startDate = Date.from(LocalDate.of(2024, 1, 1).atStartOfDay(ZoneId.systemDefault()).toInstant());
-        Date endDate = Date.from(LocalDate.of(2024, 12, 31).atStartOfDay(ZoneId.systemDefault()).toInstant());
+//        EntityManager em = Persistence.createEntityManagerFactory("default").createEntityManager();
+//        EntityTransaction tr = em.getTransaction();
+//
+//        Faker faker = new Faker();
+//        Random rd= new Random();
+//        Date startDate = Date.from(LocalDate.of(2024, 1, 1).atStartOfDay(ZoneId.systemDefault()).toInstant());
+//        Date endDate = Date.from(LocalDate.of(2024, 12, 31).atStartOfDay(ZoneId.systemDefault()).toInstant());
+        System.out.println("Hello world");
 
 //XuatXu
 //        for (int i = 0; i < 20; i++) {

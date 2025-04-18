@@ -7,13 +7,13 @@ import java.util.Optional;
 
 public interface ILoaiThuoc {
 
-    Optional<LoaiThuoc> findById(String maLoaiThuoc);
+    Optional<LoaiThuoc> findById(String maLoaiThuoc) throws Exception;
 
-    List<LoaiThuoc> findAll();
+    List<LoaiThuoc> findAll() throws Exception;
 
-    boolean create(LoaiThuoc loaiThuoc);
+    boolean create(LoaiThuoc loaiThuoc) throws Exception;
 
-    boolean update(LoaiThuoc loaiThuoc);
+    boolean update(LoaiThuoc loaiThuoc) throws Exception;
 
-    boolean delete(String maLoaiThuoc);
+    boolean delete(String maLoaiThuoc) throws Exception;
 }
