@@ -5,16 +5,231 @@ import entity.Thuoc;
 import entity.HoaDon;
 import entity.ThuocVaLuotBan;
 
+import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
 import java.util.ArrayList;
 import entity.ThuocvaDoanhThu;
 import interfaces.IChiTietHoaDon;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.Persistence;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.List;
 
 public class ChiTietHoaDon_DAO extends UnicastRemoteObject implements IChiTietHoaDon {
+    private EntityManager em;
+
+    public ChiTietHoaDon_DAO(EntityManager em) throws RemoteException {
+        super();
+        this.em = Persistence.createEntityManagerFactory("default").createEntityManager();
+    }
+
+    @Override
+    public boolean create(ChiTietHoaDon chiTiet) throws RemoteException {
+        try {
+            em.getTransaction().begin();
+            em.persist(chiTiet);
+            em.getTransaction().commit();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            em.getTransaction().rollback();
+            return false;
+        }
+    }
+
+    @Override
+    public List<ChiTietHoaDon> getAllChiTietHoaDon() throws RemoteException {
+        try {
+            return em.createQuery("SELECT c FROM ChiTietHoaDon c", ChiTietHoaDon.class).getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public ChiTietHoaDon getChiTietHoaDon(String maThuoc, String maHoaDon) throws RemoteException {
+        try {
+            return em.createQuery(
+                            "SELECT c FROM ChiTietHoaDon c WHERE c.thuoc.maThuoc = :maThuoc AND c.hoaDon.maHD = :maHD", ChiTietHoaDon.class)
+                    .setParameter("maThuoc", maThuoc)
+                    .setParameter("maHD", maHoaDon)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public boolean suaChiTietHoaDon(String maThuoc, String maHoaDon, ChiTietHoaDon newChiTiet) throws RemoteException {
+        try {
+            em.getTransaction().begin();
+            ChiTietHoaDon existing = getChiTietHoaDon(maThuoc, maHoaDon);
+            if (existing != null) {
+                existing.setSoLuong(newChiTiet.getSoLuong());
+                existing.setDonGia(newChiTiet.getDonGia());
+                em.merge(existing);
+                em.getTransaction().commit();
+                return true;
+            }
+            em.getTransaction().rollback();
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            em.getTransaction().rollback();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean deleteChiTietHoaDon(String maThuoc, String maHoaDon) throws RemoteException {
+        try {
+            em.getTransaction().begin();
+            ChiTietHoaDon chiTiet = getChiTietHoaDon(maThuoc, maHoaDon);
+            if (chiTiet != null) {
+                em.remove(chiTiet);
+                em.getTransaction().commit();
+                return true;
+            }
+            em.getTransaction().rollback();
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            em.getTransaction().rollback();
+            return false;
+        }
+    }
+
+    @Override
+    public int getSize() throws RemoteException {
+        try {
+            Long count = em.createQuery("SELECT COUNT(c) FROM ChiTietHoaDon c", Long.class).getSingleResult();
+            return count.intValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    @Override
+    public List<ThuocvaDoanhThu> getTop10ThuocCoDoanhThuCaoNhat() throws RemoteException {
+        try {
+            List<Object[]> results = em.createQuery(
+                            "SELECT c.thuoc, SUM(c.soLuong * c.donGia) FROM ChiTietHoaDon c " +
+                                    "GROUP BY c.thuoc ORDER BY SUM(c.soLuong * c.donGia) DESC",
+                            Object[].class)
+                    .setMaxResults(10)
+                    .getResultList();
+
+            List<ThuocvaDoanhThu> list = new ArrayList<>();
+            for (Object[] obj : results) {
+                list.add(new ThuocvaDoanhThu((Thuoc) obj[0], (Double) obj[1]));
+            }
+            return list;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public double getDoanhThu(String maThuoc) throws RemoteException {
+        try {
+            Double doanhThu = em.createQuery(
+                            "SELECT SUM(c.soLuong * c.donGia) FROM ChiTietHoaDon c WHERE c.thuoc.maThuoc = :maThuoc",
+                            Double.class)
+                    .setParameter("maThuoc", maThuoc)
+                    .getSingleResult();
+            return doanhThu != null ? doanhThu : 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    @Override
+    public int getsoLuongBan(String maThuoc) throws RemoteException {
+        try {
+            Long soLuong = em.createQuery(
+                            "SELECT SUM(c.soLuong) FROM ChiTietHoaDon c WHERE c.thuoc.maThuoc = :maThuoc",
+                            Long.class)
+                    .setParameter("maThuoc", maThuoc)
+                    .getSingleResult();
+            return soLuong != null ? soLuong.intValue() : 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    @Override
+    public List<ThuocVaLuotBan> getThuocCoLuotBanCaoNhatTrongThang(int thang, int nam) throws RemoteException {
+        try {
+            LocalDate start = YearMonth.of(nam, thang).atDay(1);
+            LocalDate end = YearMonth.of(nam, thang).atEndOfMonth();
+
+            List<Object[]> results = em.createQuery(
+                            "SELECT c.thuoc, SUM(c.soLuong) FROM ChiTietHoaDon c " +
+                                    "WHERE c.hoaDon.ngayLap BETWEEN :start AND :end " +
+                                    "GROUP BY c.thuoc ORDER BY SUM(c.soLuong) DESC", Object[].class)
+                    .setParameter("start", start)
+                    .setParameter("end", end)
+                    .getResultList();
+
+            List<ThuocVaLuotBan> list = new ArrayList<>();
+            for (Object[] obj : results) {
+                list.add(new ThuocVaLuotBan((Thuoc) obj[0], ((Long) obj[1]).intValue()));
+            }
+            return list;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public ThuocVaLuotBan getTop1ThuocCoLuotBanCaoNhatTrongThang(int thang, int nam) throws RemoteException {
+        try {
+            List<ThuocVaLuotBan> list = getThuocCoLuotBanCaoNhatTrongThang(thang, nam);
+            return list.isEmpty() ? null : list.get(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public ThuocvaDoanhThu getTop1ThuocCoDoanhThuCaoNhatTrongThang(int thang, int nam) throws RemoteException {
+        try {
+            LocalDate start = YearMonth.of(nam, thang).atDay(1);
+            LocalDate end = YearMonth.of(nam, thang).atEndOfMonth();
+
+            List<Object[]> results = em.createQuery(
+                            "SELECT c.thuoc, SUM(c.soLuong * c.donGia) FROM ChiTietHoaDon c " +
+                                    "WHERE c.hoaDon.ngayLap BETWEEN :start AND :end " +
+                                    "GROUP BY c.thuoc ORDER BY SUM(c.soLuong * c.donGia) DESC", Object[].class)
+                    .setParameter("start", start)
+                    .setParameter("end", end)
+                    .setMaxResults(1)
+                    .getResultList();
+
+            if (!results.isEmpty()) {
+                Object[] row = results.get(0);
+                return new ThuocvaDoanhThu((Thuoc) row[0], (Double) row[1]);
+            }
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 //    // Phương thức tạo mới một đối tượng ChiTietHoaDon
 //    public boolean create(ChiTietHoaDon chiTiet) {
