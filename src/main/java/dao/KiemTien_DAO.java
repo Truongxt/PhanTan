@@ -1,100 +1,118 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package dao;
 
-import connect.ConnectDB;
 import entity.KiemTien;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.text.SimpleDateFormat;
+import interfaces.IKiemTien;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.List;
 
-/**
- *
- * @author lemin
- */
-public class KiemTien_DAO {
+public class KiemTien_DAO extends UnicastRemoteObject implements IKiemTien {
 
-    public KiemTien_DAO() {
+    private final EntityManagerFactory emf;
+
+    public KiemTien_DAO() throws RemoteException {
+        super();
+        emf = Persistence.createEntityManagerFactory("default");
     }
 
-    public KiemTien getKiemTien(double giaTri, String maBangKiemTien) {
-        KiemTien kiemTien = null;
-
+    @Override
+    public boolean create(KiemTien kiemTien) throws Exception {
+        EntityManager em = emf.createEntityManager();
         try {
-            String sql = "SELECT * FROM KiemTien WHERE maBangKiemTien = ? AND value = ?";
-            PreparedStatement preparedStatement = ConnectDB.conn.prepareStatement(sql);
-            preparedStatement.setString(1, maBangKiemTien);
-            preparedStatement.setDouble(2, giaTri);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()) {
-                int soLuong = resultSet.getInt("soLuong");
-                double tong = resultSet.getDouble("tong");
-
-                kiemTien = new KiemTien(soLuong, giaTri);
-            }
+            em.getTransaction().begin();
+            em.persist(kiemTien);
+            em.getTransaction().commit();
+            return true;
         } catch (Exception e) {
+            em.getTransaction().rollback();
             e.printStackTrace();
+            return false;
+        } finally {
+            em.close();
         }
-
-        return kiemTien;
     }
 
-    public ArrayList<KiemTien> getAll(String maBangKiemTien) {
-        ArrayList<KiemTien> kiemTiens = new ArrayList<>();
-
+    @Override
+    public KiemTien getKiemTienTheoMa(String maKiemTien) throws Exception {
+        EntityManager em = emf.createEntityManager();
         try {
-            String sql = "SELECT * FROM KiemTien WHERE maBangKiemTien = ?";
-            PreparedStatement preparedStatement = ConnectDB.conn.prepareStatement(sql);
-            preparedStatement.setString(1, maBangKiemTien);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                double giaTri = resultSet.getDouble("giaTri");
-                int soLuong = resultSet.getInt("soLuong");
-
-                KiemTien kiemTien = new KiemTien(soLuong, giaTri);
-                kiemTiens.add(kiemTien);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+            return em.find(KiemTien.class, maKiemTien);
+        } finally {
+            em.close();
         }
-
-        return kiemTiens;
     }
 
-    public Boolean create(KiemTien kiemTien, String maBangKiemTien) {
+    @Override
+    public List<KiemTien> getAllKiemTien() throws Exception {
+        EntityManager em = emf.createEntityManager();
         try {
-            String sql = "INSERT INTO KiemTien (maBangKiemTien, giaTri, soLuong) VALUES (?, ?, ?)";
-            PreparedStatement preparedStatement = ConnectDB.conn.prepareStatement(sql);
+            List<KiemTien> result = em.createQuery("SELECT k FROM KiemTien k", KiemTien.class).getResultList();
+            return new ArrayList<>(result);
+        } finally {
+            em.close();
+        }
+    }
 
-            preparedStatement.setString(1, maBangKiemTien);
-            preparedStatement.setDouble(2, kiemTien.getGiaTri());
-            preparedStatement.setInt(3, kiemTien.getSoLuong());
-
-            int rowsAffected = preparedStatement.executeUpdate();
-            if (rowsAffected > 0) {
-                return true; // Thành công
+    @Override
+    public boolean update(KiemTien kiemTien) throws Exception {
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            KiemTien existingEntity = em.find(KiemTien.class, kiemTien.getMaBangKiemTien());
+            if (existingEntity != null) {
+                existingEntity.setGiaTri(kiemTien.getGiaTri());
+                existingEntity.setSoLuong(kiemTien.getSoLuong());
+                em.merge(existingEntity);
+                em.getTransaction().commit();
+                return true;
             }
+            return false;
         } catch (Exception e) {
+            em.getTransaction().rollback();
             e.printStackTrace();
+            return false;
+        } finally {
+            em.close();
         }
-        return false; // Thất bại
     }
 
-
-    public double getTongTien(ArrayList<KiemTien> list) {
-        double sum = 0;
-        for (KiemTien kiemTien : list) {
-            sum += kiemTien.getTong();
+    @Override
+    public boolean delete(String maKiemTien) throws Exception {
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            KiemTien kiemTien = em.find(KiemTien.class, maKiemTien);
+            if (kiemTien != null) {
+                em.remove(kiemTien);
+                em.getTransaction().commit();
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+            e.printStackTrace();
+            return false;
+        } finally {
+            em.close();
         }
-        return sum;
     }
 
+//    public double getTongTien(String maBangKiemTien) throws Exception {
+//        EntityManager em = emf.createEntityManager();
+//        try {
+//            Double total = em.createQuery(
+//                            "SELECT SUM(k.giaTri * k.soLuong) FROM KiemTien k WHERE k.maBangKiemTien.maBangKiemTien = :maBangKiemTien",
+//                            Double.class)
+//                    .setParameter("maBangKiemTien", maBangKiemTien)
+//                    .getSingleResult();
+//            return total != null ? total : 0.0;
+//        } finally {
+//            em.close();
+//        }
+//    }
 }

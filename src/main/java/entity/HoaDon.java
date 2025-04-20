@@ -1,45 +1,40 @@
 package entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class HoaDon {
+
     @Id
-    @Column(name = "maHD", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String maHD;
 
-    @Column(name = "ngayLap", nullable = false)
     private LocalDate ngayLap;
+    private double tongTien;
 
-    @Column(name = "tongTien", nullable = false)
-    private Double tongTien;
+    @ManyToOne
+    @JoinColumn(name = "khachHang_id", nullable = false)
+    private KhachHang khachHang;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "maNhanVien", nullable = false)
-    private NhanVien maNhanVien;
+    @ManyToOne
+    @JoinColumn(name = "nhanVien_id", nullable = false)
+    private NhanVien nhanVien;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "maKH", nullable = false)
-    private KhachHang maKH;
+    @ManyToOne
+    @JoinColumn(name = "maKetToan", nullable = false)
+    private KetToan ketToan;
 
-
-
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "maKetToan")
-    private KetToan maKetToan;
-
-    @Column(name = "atm")
-    private Boolean atm;
-
-    @Column(name = "tienDaDua")
-    private Double tienDaDua;
-
-    @Column(name = "trangThai")
-    private Boolean trangThai;
-
+    // Getters and Setters
     public String getMaHD() {
         return maHD;
     }
@@ -56,62 +51,35 @@ public class HoaDon {
         this.ngayLap = ngayLap;
     }
 
-    public Double getTongTien() {
+    public double getTongTien() {
         return tongTien;
     }
 
-    public void setTongTien(Double tongTien) {
+    public void setTongTien(double tongTien) {
         this.tongTien = tongTien;
     }
 
-    public NhanVien getMaNhanVien() {
-        return maNhanVien;
+    public KhachHang getKhachHang() {
+        return khachHang;
     }
 
-    public void setMaNhanVien(NhanVien maNhanVien) {
-        this.maNhanVien = maNhanVien;
+    public void setKhachHang(KhachHang khachHang) {
+        this.khachHang = khachHang;
     }
 
-    public KhachHang getMaKH() {
-        return maKH;
+    public NhanVien getNhanVien() {
+        return nhanVien;
     }
 
-    public void setMaKH(KhachHang maKH) {
-        this.maKH = maKH;
+    public void setNhanVien(NhanVien nhanVien) {
+        this.nhanVien = nhanVien;
     }
 
-
-
-    public KetToan getMaKetToan() {
-        return maKetToan;
+    public KetToan getKetToan() {
+        return ketToan;
     }
 
-    public void setMaKetToan(KetToan maKetToan) {
-        this.maKetToan = maKetToan;
+    public void setKetToan(KetToan ketToan) {
+        this.ketToan = ketToan;
     }
-
-    public Boolean getAtm() {
-        return atm;
-    }
-
-    public void setAtm(Boolean atm) {
-        this.atm = atm;
-    }
-
-    public Double getTienDaDua() {
-        return tienDaDua;
-    }
-
-    public void setTienDaDua(Double tienDaDua) {
-        this.tienDaDua = tienDaDua;
-    }
-
-    public Boolean getTrangThai() {
-        return trangThai;
-    }
-
-    public void setTrangThai(Boolean trangThai) {
-        this.trangThai = trangThai;
-    }
-
 }

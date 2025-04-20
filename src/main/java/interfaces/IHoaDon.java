@@ -17,7 +17,7 @@ public interface IHoaDon extends Remote {
 
     ArrayList<HoaDon> getAllHoaDon() throws RemoteException;
     HoaDon getHoaDon(String maHD) throws RemoteException;
-    boolean suaHoaDon(String maHD, HoaDon newHoaDon) throws RemoteException;
+   // boolean suaHoaDon(String maHD, HoaDon newHoaDon) throws RemoteException;
     boolean deleteHoaDon(String maHD) throws RemoteException;
     int getSize() throws RemoteException;
     ArrayList<HoaDon> getChiTietHoaDon(String maHD) throws RemoteException;

@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 @Setter
 @ToString
 @AllArgsConstructor
+//@NoArgsConstructor
 public class DoiTra {
     private final String ORDER_ERROR="Order không được rỗng";
     private final String EMPLOYEE_ERROR="Employee không được rỗng";
@@ -71,7 +72,11 @@ public class DoiTra {
         this.liDO = liDO;
     }
 
-
+    public DoiTra(int sldd, int sldt, double ttdt) {
+        this.sldd = sldd;
+        this.sldt = sldt;
+        this.ttdt = ttdt;
+    }
 
     public DoiTra(String maHDDT) {
         this.maHDDT = maHDDT;

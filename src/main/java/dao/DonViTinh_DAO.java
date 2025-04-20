@@ -1,98 +1,104 @@
 package dao;
 
 import entity.DonViTinh;
-import java.sql.*;
+import interfaces.IDonViTinh;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-/**
- *
- * @author Xuân Trường
- */
-public class DonViTinh_DAO {
+import java.util.List;
+import java.util.Optional;
 
-    public boolean create(DonViTinh dvt) {
-        int n = 0;
+public class DonViTinh_DAO extends UnicastRemoteObject implements IDonViTinh {
+
+    private final EntityManagerFactory emf;
+
+    public DonViTinh_DAO() throws RemoteException {
+        super();
+        emf = Persistence.createEntityManagerFactory("default");
+    }
+
+    @Override
+    public Optional<DonViTinh> findById(String maDonViTinh) throws Exception {
+        var em = emf.createEntityManager();
         try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("INSERT INTO DonViTinh VALUES (?, ?)");
-            ps.setString(1, dvt.getMaDonViTinh());
-            ps.setString(2, dvt.getTen());
-            n = ps.executeUpdate();
-        } catch (SQLException e) {
+            DonViTinh dvt = em.find(DonViTinh.class, maDonViTinh);
+            return Optional.ofNullable(dvt);
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public List<DonViTinh> findAll() throws Exception {
+        var em = emf.createEntityManager();
+        try {
+            List<DonViTinh> result = em.createQuery("SELECT d FROM DonViTinh d", DonViTinh.class).getResultList();
+            return new ArrayList<>(result);
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public boolean create(DonViTinh donViTinh) throws Exception {
+        var em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.persist(donViTinh);
+            em.getTransaction().commit();
+            return true;
+        } catch (Exception e) {
+            em.getTransaction().rollback();
             e.printStackTrace();
+            return false;
+        } finally {
+            em.close();
         }
-        return n > 0;
     }
 
-    public ArrayList<DonViTinh> getAllDonViTinh() {
-        ArrayList<DonViTinh> list = new ArrayList<>();
+    @Override
+    public boolean update(DonViTinh donViTinh) throws Exception {
+        var em = emf.createEntityManager();
         try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("SELECT * FROM DonViTinh");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String maDonViTinh = rs.getString("maDonViTinh");
-                String ten = rs.getString("ten");
-                DonViTinh dvt = new DonViTinh(maDonViTinh, ten);
-                list.add(dvt);
+            em.getTransaction().begin();
+            DonViTinh existingEntity = em.find(DonViTinh.class, donViTinh.getMaDonViTinh());
+            if (existingEntity != null) {
+                existingEntity.setTen(donViTinh.getTen());
+                em.merge(existingEntity);
+                em.getTransaction().commit();
+                return true;
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(DonViTinh_DAO.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+            e.printStackTrace();
+            return false;
+        } finally {
+            em.close();
         }
-        return list;
     }
 
-    public DonViTinh getDonViTinhById(String maDonViTinh) {
-        DonViTinh dvt = null;
+    @Override
+    public boolean delete(String maDonViTinh) throws Exception {
+        var em = emf.createEntityManager();
         try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("SELECT * FROM DonViTinh WHERE maDonViTinh = ?");
-            ps.setString(1, maDonViTinh);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                String ten = rs.getString("ten");
-                dvt = new DonViTinh(maDonViTinh, ten);
+            em.getTransaction().begin();
+            DonViTinh existingEntity = em.find(DonViTinh.class, maDonViTinh);
+            if (existingEntity != null) {
+                em.remove(existingEntity);
+                em.getTransaction().commit();
+                return true;
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(DonViTinh_DAO.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+            e.printStackTrace();
+            return false;
+        } finally {
+            em.close();
         }
-        return dvt;
-    }
-
-    public boolean updateDonViTinh(String maDonViTinh, DonViTinh newDonViTinh) {
-        int n = 0;
-        try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("UPDATE DonViTinh SET ten = ? WHERE maDonViTinh = ?");
-            ps.setString(1, newDonViTinh.getTen());
-            ps.setString(2, maDonViTinh);
-            n = ps.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(DonViTinh_DAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return n > 0;
-    }
-
-    public boolean deleteDonViTinh(String maDonViTinh) {
-        int n = 0;
-        try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("DELETE FROM DonViTinh WHERE maDonViTinh = ?");
-            ps.setString(1, maDonViTinh);
-            n = ps.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(DonViTinh_DAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return n > 0;
-    }
-
-    public int getSize() {
-        int count = 0;
-        try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("SELECT COUNT(*) FROM DonViTinh");
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                count = rs.getInt(1);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(DonViTinh_DAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return count;
     }
 }

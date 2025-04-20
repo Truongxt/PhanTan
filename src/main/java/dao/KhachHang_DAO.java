@@ -1,364 +1,156 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package dao;
 
-import connect.ConnectDB;
 import entity.KhachHang;
-import entity.NhanVien;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.sql.PreparedStatement;
+import interfaces.IKhachHang;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.sql.*;
-import java.time.LocalDate;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.Month;
-import java.time.format.DateTimeFormatter;
-import utilities.ConvertDate;
+import java.util.List;
+import java.util.Optional;
 
-/**
- *
- * @author lemin
- */
-public class KhachHang_DAO {
+public class KhachHang_DAO extends UnicastRemoteObject implements IKhachHang {
 
-    public Boolean create(KhachHang kh) {
-        int n = 0;
+    private final EntityManagerFactory emf;
+
+    public KhachHang_DAO() throws RemoteException {
+        super();
+        emf = Persistence.createEntityManagerFactory("default");
+    }
+
+    @Override
+    public Optional<KhachHang> findById(String maKhachHang) throws Exception {
+        EntityManager em = emf.createEntityManager();
         try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("insert KhachHang values (?,?,?,?,?) ");
-            ps.setString(1, kh.getMaKH());
-            ps.setString(2, kh.getTenKhachHang());
-            ps.setString(3, kh.getSdt());
-            ps.setString(4, kh.getDiaChi());
-            ps.setDate(4, (Date) kh.getNgayLapTaiKhoan());
+            KhachHang khachHang = em.find(KhachHang.class, maKhachHang);
+            return Optional.ofNullable(khachHang);
+        } finally {
+            em.close();
+        }
+    }
 
-            n = ps.executeUpdate();
+    @Override
+    public List<KhachHang> findByTen(String tenKhachHang) throws Exception {
+        EntityManager em = emf.createEntityManager();
+        try {
+            return em.createQuery("SELECT k FROM KhachHang k WHERE k.tenKhachHang LIKE :ten", KhachHang.class)
+                    .setParameter("ten", "%" + tenKhachHang + "%")
+                    .getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public List<KhachHang> findBySdt(String sdt) throws Exception {
+        EntityManager em = emf.createEntityManager();
+        try {
+            return em.createQuery("SELECT k FROM KhachHang k WHERE k.sdt = :sdt", KhachHang.class)
+                    .setParameter("sdt", sdt)
+                    .getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public boolean create(KhachHang khachHang) throws Exception {
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.persist(khachHang);
+            em.getTransaction().commit();
+            return true;
         } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return n > 0;
-    }
-
-    public ArrayList<KhachHang> getAllKhachHang() {
-        ArrayList<KhachHang> list = new ArrayList<>();
-
-        try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("Select * from KhachHang");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String maKhachHang = rs.getString("maKhachHang");
-                String tenKhachHang = rs.getString("tenKhachHang");
-                String sdt = rs.getString("sdt");
-                String diaChi = rs.getString("diaChi");
-                Date ngayTao = rs.getDate("ngayLapTaiKhoan");
-                KhachHang kh = new KhachHang(maKhachHang, tenKhachHang, sdt, diaChi, ngayTao);
-                list.add(kh);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(KhachHang_DAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return list;
-    }
-
-    public ArrayList<KhachHang> timKiemTheoMa(String maKhachHang) {
-        ArrayList<KhachHang> listKH = new ArrayList<>();
-        try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("select * from KhachHang where maKhachHang = ?");
-            ps.setString(1, "%" + maKhachHang + "%");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String tenKhachHang = rs.getString("tenKhachHang");
-                String sdt = rs.getString("sdt");
-                String diaChi = rs.getString("diaChi");
-                Date ngayTao = rs.getDate("ngayLapTaiKhoan");
-                KhachHang kh = new KhachHang(maKhachHang, tenKhachHang, sdt, diaChi, ngayTao);
-                listKH.add(kh);
-
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(NhanVien_DAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return listKH;
-    }
-
-    public KhachHang getKhachHangSDT(String soDienThoai) {
-        KhachHang khachHang = null;
-        try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("SELECT * FROM KhachHang WHERE sdt = ?");
-            ps.setString(1, soDienThoai);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String maKhachHang = rs.getString("maKhachHang");
-                String tenKhachHang = rs.getString("tenKhachHang");
-                String sdt = rs.getString("sdt");
-                String diaChi = rs.getString("diaChi");
-                Date ngayTao = rs.getDate("ngayLapTaiKhoan");
-                KhachHang kh = new KhachHang(maKhachHang, tenKhachHang, sdt, diaChi, ngayTao);
-                return kh;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return khachHang;
-    }
-
-    public static KhachHang getKhachHang(String maKH) {
-        KhachHang khachHang = null;
-        try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("SELECT * FROM KhachHang WHERE maKhachHang = ?");
-            ps.setString(1, maKH);
-            ResultSet rs = ps.executeQuery();
-            if(rs.next()) {
-                String maKhachHang = rs.getString("maKhachHang");
-                String tenKhachHang = rs.getString("tenKhachHang");
-                System.out.println(tenKhachHang);
-                String sdt = rs.getString("sdt");
-                String diaChi = rs.getString("diaChi");
-                Date ngayTao = rs.getDate("ngayLapTaiKhoan");
-                khachHang = new KhachHang(maKhachHang, tenKhachHang, sdt, diaChi, ngayTao);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return khachHang;
-    }
-
-    public String TaoID(java.util.Date date, boolean gender) {
-        //Khởi tạo mã Khách hàng KH
-        String prefix = "KH";
-        //4 Kí tự kế tiếp là năm sinh khách hàng
-        int nam = LocalDate.now().getYear();
-        int thang = LocalDate.now().getMonthValue();
-        int ngay = LocalDate.now().getDayOfMonth();
-        prefix += nam + thang + ngay + generateRandomString(6);
-
-        return prefix;
-    }
-
-    public String generateRandomString(int length) {
-
-        char[] number = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
-        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-        char[] charArray = chars.toCharArray();
-
-        StringBuilder sb = new StringBuilder(length);
-        for (int i = 0; i < length; i++) {
-            int randomNumber = (int) Math.floor(Math.random() * 2);
-            if (randomNumber == 0) {
-                sb.append(number[(int) (Math.random() * 9)]);
-            } else {
-                sb.append(charArray[(int) (Math.random() * charArray.length)]);
-            }
-        }
-
-        return sb.toString();
-    }
-
-    public static Boolean taoMoi(KhachHang kh) {
-        try {
-            String phoneCheck = "select * from KhachHang where sdt = ?";
-            PreparedStatement phoneStatement = ConnectDB.conn.prepareStatement(phoneCheck);
-            phoneStatement.setString(1, kh.getSdt());
-            if (phoneStatement.executeQuery().next()) {
-                return false;
-            }
-
-            String sql = "INSERT INTO KhachHang (maKhachHang, tenKhachHang, sdt, diaChi, ngayLapTaiKhoan) " + "VALUES (?, ?, ?, ?,?)";
-            PreparedStatement preparedStatement = ConnectDB.conn.prepareStatement(sql);
-
-            preparedStatement.setString(1, kh.getMaKH());
-            preparedStatement.setString(2, kh.getTenKhachHang());
-            preparedStatement.setString(3, kh.getSdt());
-            preparedStatement.setString(4, kh.getDiaChi());
-            preparedStatement.setDate(5, (Date) kh.getNgayLapTaiKhoan());
-
-            int rowsAffected = preparedStatement.executeUpdate();
-
-            return rowsAffected > 0;
-        } catch (Exception e) {
+            em.getTransaction().rollback();
             e.printStackTrace();
             return false;
+        } finally {
+            em.close();
         }
     }
 
-    public static Boolean capNhat(String ma, KhachHang newKh) {
+    @Override
+    public boolean update(KhachHang khachHang) throws Exception {
+        EntityManager em = emf.createEntityManager();
         try {
-            String sql = "UPDATE KhachHang SET tenKhachHang=?, sdt=?, diaChi=?, ngayLapTaiKhoan = ? " + "WHERE maKhachHang=?";
-            PreparedStatement preparedStatement = ConnectDB.conn.prepareStatement(sql);
-
-            preparedStatement.setString(1, newKh.getTenKhachHang());
-            preparedStatement.setString(2, newKh.getSdt());
-            preparedStatement.setString(3, newKh.getDiaChi());
-            preparedStatement.setDate(4, (Date) newKh.getNgayLapTaiKhoan());
-
-            preparedStatement.setString(4, ma);
-
-            int rowsAffected = preparedStatement.executeUpdate();
-            return rowsAffected > 0;
+            em.getTransaction().begin();
+            KhachHang existingKhachHang = em.find(KhachHang.class, khachHang.getMaKhachHang());
+            if (existingKhachHang != null) {
+                existingKhachHang.setTenKhachHang(khachHang.getTenKhachHang());
+                existingKhachHang.setSdt(khachHang.getSdt());
+                existingKhachHang.setDiaChi(khachHang.getDiaChi());
+                existingKhachHang.setNgayLapTaiKhoan(khachHang.getNgayLapTaiKhoan());
+                em.merge(existingKhachHang);
+                em.getTransaction().commit();
+                return true;
+            }
+            return false;
         } catch (Exception e) {
+            em.getTransaction().rollback();
             e.printStackTrace();
             return false;
+        } finally {
+            em.close();
         }
     }
 
-    public String generateID() {
-        String result = "KH";
-        LocalDate time = LocalDate.now();
-        DateTimeFormatter dateFormater = DateTimeFormatter.ofPattern("ddMMyy");
-
-        result += dateFormater.format(time);
-        String query = """
-                       select top 1 * from [KhachHang]
-                       where maKhachHang like ?
-                       order by maKhachHang desc
-                       """;
-
+    @Override
+    public boolean delete(String maKhachHang) throws Exception {
+        EntityManager em = emf.createEntityManager();
         try {
-            PreparedStatement st = ConnectDB.conn.prepareStatement(query);
-            st.setString(1, result + "%");
-            ResultSet rs = st.executeQuery();
-            if (rs.next()) {
-                String lastID = rs.getString("maKhachHang");
-                String sNumber = lastID.substring(lastID.length() - 2);
-                int num = Integer.parseInt(sNumber) + 1;
-                result += String.format("%05d", num);
-            } else {
-                result += String.format("%05d", 0);
+            em.getTransaction().begin();
+            KhachHang khachHang = em.find(KhachHang.class, maKhachHang);
+            if (khachHang != null) {
+                em.remove(khachHang);
+                em.getTransaction().commit();
+                return true;
             }
+            return false;
         } catch (Exception e) {
+            em.getTransaction().rollback();
             e.printStackTrace();
+            return false;
+        } finally {
+            em.close();
         }
-
-        return result;
     }
 
-    public ArrayList<KhachHang> getAllTKKhachHang() {
-        ArrayList<KhachHang> list = new ArrayList<>();
-
+    public List<KhachHang> getAll() throws Exception {
+        EntityManager em = emf.createEntityManager();
         try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("Select * from KhachHang");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String maKhachHang = rs.getString("maKhachHang");
-                String tenKhachHang = rs.getString("tenKhachHang");
-                String sdt = rs.getString("sdt");
-                String diaChi = rs.getString("diaChi");
-                Date ngayTaoTK = rs.getDate("NgayLapTaiKhoan");
-                KhachHang kh = new KhachHang(maKhachHang, tenKhachHang, sdt, diaChi, ngayTaoTK);
-                list.add(kh);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(KhachHang_DAO.class.getName()).log(Level.SEVERE, null, ex);
+            return em.createQuery("SELECT k FROM KhachHang k", KhachHang.class).getResultList();
+        } finally {
+            em.close();
         }
-        return list;
     }
 
-    public ArrayList<KhachHang> getAllTKKhachHangMonth(int month, int year) {
-        ArrayList<KhachHang> list = new ArrayList<>();
-
+    public List<KhachHang> getByMonthAndYear(int month, int year) throws Exception {
+        EntityManager em = emf.createEntityManager();
         try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("SELECT TOP (1000) "
-                    + "    [maKhachHang],"
-                    + "    [tenKhachHang],"
-                    + "    [sdt],"
-                    + "    [diaChi],"
-                    + "    [NgayLapTaiKhoan]"
-                    + "FROM "
-                    + "    [QLNT].[dbo].[KhachHang]"
-                    + "WHERE "
-                    + "    MONTH(NgayLapTaiKhoan)=? and year(ngaylaptaikhoan)=?");
-            ps.setInt(1, month);
-            ps.setInt(2, year);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String maKhachHang = rs.getString("maKhachHang");
-                String tenKhachHang = rs.getString("tenKhachHang");
-                String sdt = rs.getString("sdt");
-                String diaChi = rs.getString("diaChi");
-                Date ngayTaoTK = rs.getDate("NgayLapTaiKhoan");
-                KhachHang kh = new KhachHang(maKhachHang, tenKhachHang, sdt, diaChi, ngayTaoTK);
-                list.add(kh);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(KhachHang_DAO.class.getName()).log(Level.SEVERE, null, ex);
+            return em.createQuery(
+                            "SELECT k FROM KhachHang k WHERE MONTH(k.ngayLapTaiKhoan) = :month AND YEAR(k.ngayLapTaiKhoan) = :year",
+                            KhachHang.class)
+                    .setParameter("month", month)
+                    .setParameter("year", year)
+                    .getResultList();
+        } finally {
+            em.close();
         }
-        return list;
     }
 
-    public ArrayList<KhachHang> getAllTKKhachHangYear(int year) {
-        ArrayList<KhachHang> list = new ArrayList<>();
-
+    public List<KhachHang> getByYear(int year) throws Exception {
+        EntityManager em = emf.createEntityManager();
         try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("SELECT TOP (1000) "
-                    + "    [maKhachHang],"
-                    + "    [tenKhachHang],"
-                    + "    [sdt],"
-                    + "    [diaChi],"
-                    + "    [NgayLapTaiKhoan]"
-                    + "FROM "
-                    + "    [QLNT].[dbo].[KhachHang]"
-                    + "WHERE "
-                    + "   year(ngaylaptaikhoan)=?");
-
-            ps.setInt(1, year);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String maKhachHang = rs.getString("maKhachHang");
-                String tenKhachHang = rs.getString("tenKhachHang");
-                String sdt = rs.getString("sdt");
-                String diaChi = rs.getString("diaChi");
-                Date ngayTaoTK = rs.getDate("NgayLapTaiKhoan");
-                KhachHang kh = new KhachHang(maKhachHang, tenKhachHang, sdt, diaChi, ngayTaoTK);
-                list.add(kh);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(KhachHang_DAO.class.getName()).log(Level.SEVERE, null, ex);
+            return em.createQuery(
+                            "SELECT k FROM KhachHang k WHERE YEAR(k.ngayLapTaiKhoan) = :year", KhachHang.class)
+                    .setParameter("year", year)
+                    .getResultList();
+        } finally {
+            em.close();
         }
-        return list;
-    }
-
-    public ArrayList<KhachHang> getTKKhachHangDoanhThu(String dau) {
-        ArrayList<KhachHang> list = new ArrayList<>();
-
-        try {
-            String sql = "SELECT "
-                    + "    k.maKhachHang, " // Lấy mã khách hàng
-                    + "    k.sdt, "
-                    + "    k.tenKhachHang, "
-                    + "    k.NgayLapTaiKhoan, " // Thêm NgayLapTaiKhoan vào SELECT
-                    + "    COUNT(h.maHD) AS soHoaDon, "
-                    + "    SUM(h.tongTien) AS doanhThu, "
-                    + "    k.diaChi "
-                    + "FROM "
-                    + "    HoaDon h "
-                    + "JOIN "
-                    + "    KhachHang k "
-                    + "ON "
-                    + "    h.maKH = k.maKhachHang "
-                    + "GROUP BY "
-                    + "    k.maKhachHang, k.sdt, k.tenKhachHang, k.diaChi, k.NgayLapTaiKhoan " // Thêm NgayLapTaiKhoan vào GROUP BY
-                    + dau;  // Điều kiện động từ tham số dau (HAVING)
-            // Điều kiện động từ tham số dau (HAVING)
-
-            PreparedStatement ps = ConnectDB.conn.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                String maKhachHang = rs.getString("maKhachHang");
-                String tenKhachHang = rs.getString("tenKhachHang");
-                String sdt = rs.getString("sdt");
-                String diaChi = rs.getString("diaChi");
-                Date ngayTaoTK = rs.getDate("NgayLapTaiKhoan");
-                KhachHang kh = new KhachHang(maKhachHang, tenKhachHang, sdt, diaChi, ngayTaoTK);
-                list.add(kh);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(KhachHang_DAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return list;
     }
 }
