@@ -3,23 +3,32 @@ package interfaces;
 import entity.NhanVien;
 
 import java.rmi.Remote;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public interface INhanVien extends Remote {
-    Optional<NhanVien> findById(String maNhanVien) throws Exception;
+    Boolean create(NhanVien nv);
 
-    List<NhanVien> findByMa(String maNhanVien) throws Exception;
+    ArrayList<NhanVien> getAllNhanVien();
 
-    List<NhanVien> findByTen(String tenNhanVien) throws Exception;
+    NhanVien getNhanVien(String maNhanVien);
 
-    List<NhanVien> findByTrangThai(boolean trangThai) throws Exception;
+    boolean suaNhanVien(String maNhanVien, NhanVien newNV);
 
-    List<NhanVien> findBySdt(String sdt) throws Exception;
+    int getSize();
 
-    boolean create(NhanVien nhanVien) throws Exception;
+    NhanVien getLastNhanVien();
 
-    boolean update(NhanVien nhanVien) throws Exception;
+    ArrayList<NhanVien> timKiemTheoMa(String maNhanVien);
 
-    boolean delete(String maNhanVien) throws Exception;
+    NhanVien timKiemTheoMa1(String maNhanVien);
+
+    ArrayList<NhanVien> timKiemTheoTen(String ten);
+
+    ArrayList<NhanVien> timKiemTheoTrangThai(boolean tt);
+
+    ArrayList<NhanVien> timTheoSDT(String soDT);
+
+    String generateID();
 }

@@ -2,18 +2,23 @@ package interfaces;
 
 import entity.LoaiThuoc;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public interface ILoaiThuoc {
 
-    Optional<LoaiThuoc> findById(String maLoaiThuoc) throws Exception;
+    Boolean create(LoaiThuoc loaiThuoc);
 
-    List<LoaiThuoc> findAll() throws Exception;
+    ArrayList<LoaiThuoc> getAllLoaiThuoc();
 
-    boolean create(LoaiThuoc loaiThuoc) throws Exception;
+    LoaiThuoc getLoaiThuoc(String maLoai);
 
-    boolean update(LoaiThuoc loaiThuoc) throws Exception;
+    boolean updateLoaiThuoc(String maLoai, LoaiThuoc newLoaiThuoc);
 
-    boolean delete(String maLoaiThuoc) throws Exception;
+    int getSize();
+
+    ArrayList<LoaiThuoc> searchByMaLoai(String maLoai);
+
+    ArrayList<LoaiThuoc> searchByTenLoai(String tenLoai);
 }

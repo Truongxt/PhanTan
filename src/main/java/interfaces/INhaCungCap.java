@@ -7,13 +7,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface INhaCungCap extends Remote {
-    Optional<NhaCungCap> findById(String maNhaCungCap) throws Exception;
-
-    List<NhaCungCap> findByTen(String tenNhaCungCap) throws Exception;
-
-    boolean create(NhaCungCap nhaCungCap) throws Exception;
-
-    boolean update(NhaCungCap nhaCungCap) throws Exception;
-
-    boolean delete(String maNhaCungCap) throws Exception;
+    NhaCungCap create(NhaCungCap ncc);
+    NhaCungCap getById(String maNCC);
+    List<NhaCungCap> getAll();
+    boolean update(String maNCC, NhaCungCap newNCC);
+    boolean delete(String maNCC);
+    List<NhaCungCap> searchByName(String name);
+    List<NhaCungCap> searchByPhoneNumber(String phoneNumber);
 }

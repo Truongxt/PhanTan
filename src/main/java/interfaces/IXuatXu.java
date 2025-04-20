@@ -1,14 +1,19 @@
 package interfaces;
 
 import entity.XuatXu;
-
-import java.util.List;
+import java.util.ArrayList;
 
 public interface IXuatXu {
-    long countXuatXuByCountry(String country) throws Exception;
-    List<XuatXu> listXuatXuByCountry(String country) throws Exception;
-    XuatXu findById(String maXuatXu) throws Exception;
-    boolean create(XuatXu xuatXu) throws Exception;
-    boolean update(XuatXu xuatXu) throws Exception;
-    boolean delete(String id) throws Exception;
+
+    boolean create(XuatXu xx);
+
+    ArrayList<XuatXu> getAllXuatXu();
+
+    XuatXu getXuatXuById(String maXuatXu);
+
+    boolean updateXuatXu(String maXuatXu, XuatXu newXuatXu);
+
+    boolean deleteXuatXu(String maXuatXu);
+
+    int getSize();
 }
