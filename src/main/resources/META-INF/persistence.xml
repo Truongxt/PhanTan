@@ -20,7 +20,6 @@
         <class>entity.XuatXu</class>
         <class>entity.VaiTro</class>
         <class>entity.BangKiemTien</class>
-        <class>entity.Voucher</class>
         <class>entity.Sysdiagram</class>
         <class>entity.Thuoc</class>
         <class>entity.Otp</class>
@@ -29,7 +28,6 @@
         <class>entity.KetToan</class>
         <class>entity.KiemTien</class>
         <class>entity.KiemTienId</class>
-<!--     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>-->
         <properties>
             <property name="jakarta.persistence.jdbc.url"
                       value="jdbc:sqlserver://localhost:1433;databaseName=QLNT;trustServerCertificate=

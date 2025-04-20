@@ -1,7 +1,6 @@
 package dao;
 
 import entity.DonViTinh;
-import connect.ConnectDB;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.logging.Level;

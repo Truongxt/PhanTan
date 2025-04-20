@@ -14,8 +14,8 @@ public class Main {
 
 
     public static void main(String[] args) {
-//        EntityManager em = Persistence.createEntityManagerFactory("default").createEntityManager();
-//        EntityTransaction tr = em.getTransaction();
+        EntityManager em = Persistence.createEntityManagerFactory("default").createEntityManager();
+        EntityTransaction tr = em.getTransaction();
 //
 //        Faker faker = new Faker();
 //        Random rd= new Random();

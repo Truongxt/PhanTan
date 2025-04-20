@@ -20,9 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import jakarta.persistence.EntityManager;
 import utilities.ConvertDate;
 
 public class HoaDon_DAO {
+
+    public HoaDon_DAO(EntityManager em) {
+    }
 
     public Boolean create(HoaDon hoaDon) {
         int n = 0;

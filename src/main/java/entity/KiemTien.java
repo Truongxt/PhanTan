@@ -1,8 +1,14 @@
 package entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class KiemTien {
     @EmbeddedId
     private KiemTienId id;
@@ -14,29 +20,5 @@ public class KiemTien {
 
     @Column(name = "soLuong", nullable = false)
     private Integer soLuong;
-
-    public KiemTienId getId() {
-        return id;
-    }
-
-    public void setId(KiemTienId id) {
-        this.id = id;
-    }
-
-    public BangKiemTien getMaBangKiemTien() {
-        return maBangKiemTien;
-    }
-
-    public void setMaBangKiemTien(BangKiemTien maBangKiemTien) {
-        this.maBangKiemTien = maBangKiemTien;
-    }
-
-    public Integer getSoLuong() {
-        return soLuong;
-    }
-
-    public void setSoLuong(Integer soLuong) {
-        this.soLuong = soLuong;
-    }
 
 }

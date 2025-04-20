@@ -1,14 +1,19 @@
 package entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.io.Serializable;
-import java.time.Instant;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class BangKiemTien implements Serializable {
     @Id
     @Column(name = "maBangKiemTien", nullable = false)
@@ -20,28 +25,11 @@ public class BangKiemTien implements Serializable {
     @Column(name = "ngayKetThuc", nullable = false)
     private LocalDate ngayKetThuc;
 
-    public String getMaBangKiemTien() {
-        return maBangKiemTien;
-    }
 
-    public void setMaBangKiemTien(String maBangKiemTien) {
-        this.maBangKiemTien = maBangKiemTien;
-    }
+    @OneToMany(mappedBy = "maBangKiemTien",fetch = FetchType.LAZY)
+    private List<KiemTien> listKiemTien;
 
-    public LocalDate getNgayBatDau() {
-        return ngayBatDau;
-    }
-
-    public void setNgayBatDau(LocalDate ngayBatDau) {
-        this.ngayBatDau = ngayBatDau;
-    }
-
-    public LocalDate getNgayKetThuc() {
-        return ngayKetThuc;
-    }
-
-    public void setNgayKetThuc(LocalDate ngayKetThuc) {
-        this.ngayKetThuc = ngayKetThuc;
-    }
+    @OneToMany(mappedBy = "bangKiemTien", fetch = FetchType.LAZY)
+    private ArrayList<ChiTietBangKiemTien> listChiTietBangKiemTien;
 
 }
