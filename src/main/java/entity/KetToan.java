@@ -1,26 +1,38 @@
 package entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.time.Instant;
-import java.time.LocalDate;
+import java.util.Date;
+import java.util.List;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class KetToan {
+
     @Id
-    @Column(name = "maKetToan", nullable = false)
     private String maKetToan;
 
-    @Column(name = "ngayBatDau", nullable = false)
-    private LocalDate ngayBatDau;
+    @Temporal(TemporalType.DATE)
+    private Date ngayBatDau;
 
-    @Column(name = "ngayKetThuc", nullable = false)
-    private LocalDate ngayKetThuc;
+    @Temporal(TemporalType.DATE)
+    private Date ngayKetThuc;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "maBangKiemTien", nullable = false)
-    private BangKiemTien maBangKiemTien;
+    @ManyToOne
+    @JoinColumn(name = "maBangKiemTien")
+    private BangKiemTien bangKiemTien;
 
+    @OneToMany(mappedBy = "ketToan")
+    private List<HoaDon> hoaDons;
+
+    // Getters and Setters
     public String getMaKetToan() {
         return maKetToan;
     }
@@ -29,28 +41,35 @@ public class KetToan {
         this.maKetToan = maKetToan;
     }
 
-    public LocalDate getNgayBatDau() {
+    public Date getNgayBatDau() {
         return ngayBatDau;
     }
 
-    public void setNgayBatDau(LocalDate ngayBatDau) {
+    public void setNgayBatDau(Date ngayBatDau) {
         this.ngayBatDau = ngayBatDau;
     }
 
-    public LocalDate getNgayKetThuc() {
+    public Date getNgayKetThuc() {
         return ngayKetThuc;
     }
 
-    public void setNgayKetThuc(LocalDate ngayKetThuc) {
+    public void setNgayKetThuc(Date ngayKetThuc) {
         this.ngayKetThuc = ngayKetThuc;
     }
 
-    public BangKiemTien getMaBangKiemTien() {
-        return maBangKiemTien;
+    public BangKiemTien getBangKiemTien() {
+        return bangKiemTien;
     }
 
-    public void setMaBangKiemTien(BangKiemTien maBangKiemTien) {
-        this.maBangKiemTien = maBangKiemTien;
+    public void setBangKiemTien(BangKiemTien bangKiemTien) {
+        this.bangKiemTien = bangKiemTien;
     }
 
+    public List<HoaDon> getHoaDons() {
+        return hoaDons;
+    }
+
+    public void setHoaDons(List<HoaDon> hoaDons) {
+        this.hoaDons = hoaDons;
+    }
 }

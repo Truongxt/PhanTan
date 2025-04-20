@@ -1,242 +1,135 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package dao;
 
-import connect.ConnectDB;
 import entity.KetToan;
-import entity.BangKiemTien;
-import entity.HoaDon;
-import entity.KiemTien;
-import gui.KetToan_GUI;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
+import interfaces.IKetToan;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import main.Main;
-import raven.toast.Notifications;
-import utilities.AcountingVoucherPrinter;
-import utilities.ConvertDate;
-//import utilities.ConvertDate;
+import java.util.List;
+import java.util.Optional;
 
-/**
- *
- * @author lemin
- */
-public class KetToan_DAO {
+public class KetToan_DAO extends UnicastRemoteObject implements IKetToan {
 
-    private BangKiemTien_DAO bangKiemTien_DAO = new BangKiemTien_DAO();
-    private HoaDon_DAO hoaDon_DAO = new HoaDon_DAO();
+    private final EntityManagerFactory emf;
 
-    public KetToan_DAO() {
+    public KetToan_DAO() throws RemoteException {
+        super();
+        emf = Persistence.createEntityManagerFactory("default");
     }
 
-    public KetToan getOne(String maKetToan) {
-        KetToan ketToan = null;
+
+
+    @Override
+    public Optional<KetToan> findById(String maKetToan) throws Exception {
+        EntityManager em = emf.createEntityManager();
         try {
-            String sql = "SELECT * FROM KetToan WHERE maKetToan = ?";
-            PreparedStatement preparedStatement = ConnectDB.conn.prepareStatement(sql);
-            preparedStatement.setString(1, maKetToan);
+            KetToan ketToan = em.find(KetToan.class, maKetToan);
+            return Optional.ofNullable(ketToan);
+        } finally {
+            em.close();
+        }
+    }
 
-            ResultSet resultSet = preparedStatement.executeQuery();
+    @Override
+    public List<KetToan> findAll() throws Exception {
+        EntityManager em = emf.createEntityManager();
+        try {
+            return em.createQuery("SELECT k FROM KetToan k", KetToan.class).getResultList();
+        } finally {
+            em.close();
+        }
+    }
 
-            if (resultSet.next()) {
-
-                Timestamp diemBatDau = resultSet.getTimestamp("ngayBatDau");
-                Timestamp diemKetThuc = resultSet.getTimestamp("ngayKetThuc");
-
-                Date ngayBatDau = new java.sql.Date(diemBatDau.getTime());
-                Date ngayKetThuc = new java.sql.Date(diemKetThuc.getTime());
-                String maBangKiemTien = resultSet.getString("maBangKiemTien");
-
-                ketToan = new KetToan(maKetToan, ngayBatDau, ngayKetThuc, bangKiemTien_DAO.getOne(maBangKiemTien), hoaDon_DAO.getAllOrderInAcountingVoucher(maKetToan));
-            }
+    @Override
+    public boolean create(KetToan ketToan) throws Exception {
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.persist(ketToan);
+            em.getTransaction().commit();
+            return true;
         } catch (Exception e) {
+            em.getTransaction().rollback();
             e.printStackTrace();
+            return false;
+        } finally {
+            em.close();
         }
-        return ketToan;
     }
 
-    public ArrayList<KetToan> getAll() {
-        ArrayList<KetToan> ketToans = new ArrayList<>();
-
+    @Override
+    public boolean update(KetToan ketToan) throws Exception {
+        EntityManager em = emf.createEntityManager();
         try {
-            String sql = "SELECT * FROM KetToan";
-            PreparedStatement preparedStatement = ConnectDB.conn.prepareStatement(sql);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                String maKetToan = resultSet.getString("maKetToan");
-                Timestamp diemBatDau = resultSet.getTimestamp("ngayBatDau");
-                Timestamp diemKetThuc = resultSet.getTimestamp("ngayKetThuc");
-
-                Date ngayBatDau = new java.sql.Date(diemBatDau.getTime());
-                Date ngayKetThuc = new java.sql.Date(diemKetThuc.getTime());
-
-                String maBangKiemTien = resultSet.getString("maBangKiemTien");
-                BangKiemTien bangKiemTien = bangKiemTien_DAO.getOne(maBangKiemTien);
-
-                ArrayList<HoaDon> listHoaDon = new HoaDon_DAO().getTatCaHoaDonTrongKetToan(maKetToan);
-                KetToan ketToan = new KetToan(maKetToan, ngayBatDau, ngayKetThuc, bangKiemTien, new HoaDon_DAO().getTatCaHoaDonTrongKetToan(maKetToan));
-                ketToans.add(ketToan);
+            em.getTransaction().begin();
+            KetToan existingKetToan = em.find(KetToan.class, ketToan.getMaKetToan());
+            if (existingKetToan != null) {
+                existingKetToan.setNgayBatDau(ketToan.getNgayBatDau());
+                existingKetToan.setNgayKetThuc(ketToan.getNgayKetThuc());
+                existingKetToan.setBangKiemTien(ketToan.getBangKiemTien());
+                existingKetToan.setHoaDons(ketToan.getHoaDons());
+                em.merge(existingKetToan);
+                em.getTransaction().commit();
+                return true;
             }
+            return false;
         } catch (Exception e) {
+            em.getTransaction().rollback();
             e.printStackTrace();
+            return false;
+        } finally {
+            em.close();
         }
-
-        return ketToans;
     }
 
-    public Boolean create(KetToan ketToan) {
+    @Override
+    public boolean delete(String maKetToan) throws Exception {
+        EntityManager em = emf.createEntityManager();
         try {
-            String sql = "INSERT INTO KetToan (maKetToan, ngayBatDau, ngayKetThuc, maBangKiemTien) VALUES (?, ?, ?, ?)";
-            PreparedStatement preparedStatement = ConnectDB.conn.prepareStatement(sql);
-
-            preparedStatement.setString(1, ketToan.getMaKetToan());
-
-            Timestamp end = new Timestamp(ketToan.getNgayKetThuc().getTime());
-            preparedStatement.setTimestamp(3, end);
-
-            Timestamp start = new Timestamp(ketToan.getNgayBatDau().getTime());
-            preparedStatement.setTimestamp(2, start);
-
-            preparedStatement.setString(4, ketToan.getBangKiemTien().getMaBangKiemTien());
-            int rowsAffected = preparedStatement.executeUpdate();
-            if (rowsAffected > 0) {
-                return true; // Thành công
+            em.getTransaction().begin();
+            KetToan ketToan = em.find(KetToan.class, maKetToan);
+            if (ketToan != null) {
+                em.remove(ketToan);
+                em.getTransaction().commit();
+                return true;
             }
+            return false;
         } catch (Exception e) {
+            em.getTransaction().rollback();
             e.printStackTrace();
+            return false;
+        } finally {
+            em.close();
         }
-        return false; // Thất bại
     }
 
-    public String getMaMoiNhat(String ma) {
+    public List<KetToan> filterByDateRange(java.util.Date startDate, java.util.Date endDate) throws Exception {
+        EntityManager em = emf.createEntityManager();
         try {
-            ma += "%";
-            String sql = "SELECT TOP 1  * FROM KetToan WHERE maKetToan LIKE '" + ma + "' ORDER BY maKetToan DESC";
-            PreparedStatement st = ConnectDB.conn.prepareStatement(sql);
-            ResultSet rs = st.executeQuery();
-            if (rs.next()) {
-                String maKetToan = rs.getString("maKetToan");
-                return maKetToan;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            return em.createQuery(
+                            "SELECT k FROM KetToan k WHERE k.ngayBatDau >= :startDate AND k.ngayKetThuc <= :endDate", KetToan.class)
+                    .setParameter("startDate", startDate)
+                    .setParameter("endDate", endDate)
+                    .getResultList();
+        } finally {
+            em.close();
         }
-        return null;
     }
 
-    public String TaoMa(Date date) {
-        //Khởi tạo mã phiếu kết toán
-        String prefix = "KTOAN";
-        //8 Kí tự tiếp theo là ngày và giờ bắt đầu kết toán
-        SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
-        String format = dateFormat.format(date);
-        prefix += format;
-        String maxID = getMaMoiNhat(prefix);
-        //4 Kí tự tiếp theo là số thứ tự tăng dần
-        if (maxID == null) {
-            prefix += "0000";
-        } else {
-            String bonKiTuCuoi = maxID.substring(maxID.length() - 4);
-            int num = Integer.parseInt(bonKiTuCuoi);
-            num++;
-            prefix += String.format("%04d", num);
-        }
-        return prefix;
-    }
-
-    public ArrayList<HoaDon> getAllHoaDon(Date start, Date end) {
-        ArrayList<HoaDon> allHoaDon = hoaDon_DAO.getAllHoaDonTrongKetToan( new java.sql.Date(start.getTime()) , new java.sql.Date(end.getTime()));
-        ArrayList<HoaDon> listHoaDon = new ArrayList<>();
- 
-        return allHoaDon;
-    }
-
-    public double getDoanhThu(ArrayList<HoaDon> list) {
-        double sum = 0;
-        for (HoaDon hoaDon : list) {
-            sum += hoaDon.getTongTien();
-        }
-        return sum;
-    }
-
-    public double getATM(ArrayList<HoaDon> list) {
-        double sum = 0;
-        for (HoaDon hoaDon : list) {
-            if (hoaDon.isAtm()) {
-                sum += hoaDon.getTongTien();
-            }
-        }
-        return sum;
-    }
-
-    public double getTong(ArrayList<KiemTien> list) {
-        double sum = 0;
-        for (KiemTien kiemTien : list) {
-            sum += kiemTien.getTong();
-        }
-        return sum;
-    }
-
-    public KetToan getKetToanCuoi() {
-        Date date = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
-        String format = dateFormat.format(date);
-        String code = "KTOAN" + format;
-        KetToan ketToanCuoi = getOne(getMaMoiNhat(code));
-        if (ketToanCuoi == null) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.HOUR_OF_DAY, 6);
-            calendar.set(Calendar.MINUTE, 0);
-            calendar.set(Calendar.SECOND, 0);
-            date = calendar.getTime();
-            ketToanCuoi = new KetToan(date);
-        }
-        return ketToanCuoi;
-    }
-
-    public void taoPhieuKetToan(BangKiemTien bangKiemTien, Date ngayKetThuc) {
-        Date ngayBatDau = getKetToanCuoi().getNgayKetThuc();
-        ArrayList<HoaDon> listHoaDon = getAllHoaDon(ngayBatDau, ngayKetThuc);
-        String ma = TaoMa(ngayKetThuc);
-
-        KetToan ketToan = new KetToan(ma, ngayBatDau, ngayKetThuc, bangKiemTien, listHoaDon);
-        bangKiemTien_DAO.create(bangKiemTien);
-        create(ketToan);
-
-        for (HoaDon hoaDon : listHoaDon) {
-            if (hoaDon_DAO.updateOrderAcountingVoucher(hoaDon.getMaHD(), ketToan.getMaKetToan()));
-        }
-        Notifications.getInstance().show(Notifications.Type.SUCCESS, "Tạo phiếu kết toán thành công");
+    public double calculateTotalRevenue(String maKetToan) throws Exception {
+        EntityManager em = emf.createEntityManager();
         try {
-            //        Application.showForm(new KetToan_GUI());
-            new Main().getMain().showForm(new KetToan_GUI(new Main().getTk()));
-        } catch (SQLException ex) {
-            Logger.getLogger(KetToan_DAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        generatePDF(this.getOne(ma));
-
-    }
-
-    public void generatePDF(KetToan KetToan) {
-//        tạo file pdf và hiển thị + in file pdf đó
-        AcountingVoucherPrinter printer = new AcountingVoucherPrinter(KetToan);
-        printer.generatePDF();
-        AcountingVoucherPrinter.PrintStatus status = printer.printFile();
-        if (status == AcountingVoucherPrinter.PrintStatus.NOT_FOUND_FILE) {
-            Notifications.getInstance().show(Notifications.Type.ERROR, "Lỗi không thể in hóa đơn: Không tìm thấy file");
-        } else if (status == AcountingVoucherPrinter.PrintStatus.NOT_FOUND_PRINTER) {
-            Notifications.getInstance().show(Notifications.Type.ERROR, "Lỗi không thể in hóa đơn: Không tìm thấy máy in");
+            Double total = em.createQuery(
+                            "SELECT SUM(h.tongTien) FROM HoaDon h WHERE h.ketToan.maKetToan = :maKetToan", Double.class)
+                    .setParameter("maKetToan", maKetToan)
+                    .getSingleResult();
+            return total != null ? total : 0.0;
+        } finally {
+            em.close();
         }
     }
 }

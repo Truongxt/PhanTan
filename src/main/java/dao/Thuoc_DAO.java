@@ -11,7 +11,6 @@ package dao;
 import entity.Thuoc;
 import connect.ConnectDB;
 import entity.DonViTinh;
-import entity.GiamGia;
 import entity.LoaiThuoc;
 import entity.NhaCungCap;
 import entity.XuatXu;
