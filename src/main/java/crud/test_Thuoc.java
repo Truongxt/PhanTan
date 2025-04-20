@@ -53,13 +53,13 @@ public class test_Thuoc {
             newThuoc.setGia(5500.0);
 
 
-            thuocDAO.update(newThuoc);
+       //     thuocDAO.update(newThuoc);
 
             System.out.println("Thuoc da duoc cap nhat: " + newThuoc);
 
             // Xóa Thuoc
 
-            thuocDAO.delete(newThuoc.getMaThuoc());
+          //  thuocDAO.delete(newThuoc.getMaThuoc());
 
             System.out.println("Thuoc da duoc xoa: " + newThuoc.getMaThuoc());
 

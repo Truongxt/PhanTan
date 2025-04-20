@@ -17,13 +17,13 @@ public class RMIService {
         NhanVien_DAO nhanVienDAO = new NhanVien_DAO();
         OTP_DAO otpDAO = new OTP_DAO();
         TaiKhoan_DAO taiKhoanDAO = new TaiKhoan_DAO();
-        Thuoc_DAO thuocDAO = new Thuoc_DAO();
+        Thuoc_DAO thuocDAO = new Thuoc_DAO(em);
         XuatXu_DAO xuatXuDAO = new XuatXu_DAO();
         BangKiemTien_DAO bangKiemTienDAO = new BangKiemTien_DAO();
         DanhSachPhieuKiemTien_DAO danhSachPhieuKiemTienDAO = new DanhSachPhieuKiemTien_DAO();
         DanhSachPhieuKetToan_DAO danhSachPhieuKetToanDAO = new DanhSachPhieuKetToan_DAO();
         ChiTietBangKiemTien_DAO chiTietBangKiemTienDAO = new ChiTietBangKiemTien_DAO();
-        VaiTro_DAO vaiTroDAO = new VaiTro_DAO();
+        VaiTro_DAO vaiTroDAO = new VaiTro_DAO(em);
 
         // Đăng ký các DAO vào RMI registry
         context.bind("rmi://localhost:9090/nhanVienDAO", nhanVienDAO);

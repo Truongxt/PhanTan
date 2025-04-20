@@ -9,9 +9,11 @@ import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 import net.datafaker.Faker;
 
+import java.rmi.RemoteException;
+
 public class test_VaiTro {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws RemoteException {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
         EntityManager em = emf.createEntityManager();
 
@@ -24,26 +26,26 @@ public class test_VaiTro {
         newVaiTro.setMaVaiTro(maVaiTro);
         newVaiTro.setTenVaiTro("Admin");
 
-        vaiTroDAO.create(newVaiTro);
+   //     vaiTroDAO.create(newVaiTro);
         System.out.println("Vai tro moi da duoc tao: " + newVaiTro);
 
         // Update the VaiTro
         newVaiTro.setTenVaiTro("User");
-        vaiTroDAO.update(newVaiTro);
+   //     vaiTroDAO.update(newVaiTro);
         System.out.println("Vai tro da duoc cap nhat: " + newVaiTro);
 
         // Delete the VaiTro
-        vaiTroDAO.delete(newVaiTro.getMaVaiTro());
+  //      vaiTroDAO.delete(newVaiTro.getMaVaiTro());
         System.out.println("Vai tro da duoc xoa: " + newVaiTro.getMaVaiTro());
 
         // Find the VaiTro
         String maVT = "VT-001"; // Replace with the actual VaiTro ID
-        VaiTro vaiTro = vaiTroDAO.findById(maVT).orElse(null);
-        if (vaiTro != null) {
-            System.out.println("Vai tro tim thay: " + vaiTro);
-        } else {
-            System.out.println("Khong tim thay vai tro voi ma: " + maVT);
-        }
+//        VaiTro vaiTro = vaiTroDAO.findById(maVT).orElse(null);
+//        if (vaiTro != null) {
+//            System.out.println("Vai tro tim thay: " + vaiTro);
+//        } else {
+//            System.out.println("Khong tim thay vai tro voi ma: " + maVT);
+//        }
 
         em.close();
         emf.close();

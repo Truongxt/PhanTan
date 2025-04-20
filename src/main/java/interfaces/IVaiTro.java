@@ -1,13 +1,11 @@
 package interfaces;
 
 import entity.VaiTro;
-
 import java.rmi.Remote;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 public interface IVaiTro extends Remote {
-    ArrayList<VaiTro> getAllVaiTro();
-    VaiTro getVaiTro(String maVaiTro);
+    ArrayList<VaiTro> getAllVaiTro() throws RemoteException;
+    VaiTro getVaiTro(String maVaiTro) throws RemoteException;
 }
