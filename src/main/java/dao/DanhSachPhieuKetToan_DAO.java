@@ -30,15 +30,15 @@ public class DanhSachPhieuKetToan_DAO extends UnicastRemoteObject implements IDa
     }
 
     @Override
-    public KetToan getOne(String maKetToan) {
-        return ketToan_DAO.getOne(maKetToan);
+    public KetToan getOne(String maKetToan) throws Exception {
+        return ketToan_DAO.findById(maKetToan).get();
     }
 
     @Override
     public ArrayList<KetToan> getAll() throws Exception {
         ArrayList<KetToan> list = new ArrayList<>();
-        for (KetToan ketToan : ketToan_DAO.getAll()) {
-            ketToan.setMaBangKiemTien(bangKiemTien_DAO.getOne(ketToan.getMaBangKiemTien().getMaBangKiemTien()));
+        for (KetToan ketToan : ketToan_DAO.findAll()) {
+            ketToan.setBangKiemTien(bangKiemTien_DAO.getOne(ketToan.getBangKiemTien().getMaBangKiemTien()));
             list.add(ketToan);
         }
         Collections.sort(list, Collections.reverseOrder());
