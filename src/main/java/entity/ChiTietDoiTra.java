@@ -1,8 +1,14 @@
 package entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class ChiTietDoiTra {
     @EmbeddedId
     private ChiTietDoiTraId id;
@@ -10,12 +16,12 @@ public class ChiTietDoiTra {
     @MapsId("maHoaDonDoiTra")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "maHoaDonDoiTra", nullable = false)
-    private HoaDonDoiTra maHoaDonDoiTra;
+    private DoiTra doiTra;
 
     @MapsId("maThuoc")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "maThuoc", nullable = false)
-    private Thuoc maThuoc;
+    private Thuoc Thuoc;
 
     @Column(name = "soLuong", nullable = false)
     private Integer soLuong;
@@ -31,36 +37,12 @@ public class ChiTietDoiTra {
         this.id = id;
     }
 
-    public HoaDonDoiTra getMaHoaDonDoiTra() {
-        return maHoaDonDoiTra;
+    public DoiTra getMaHoaDonDoiTra() {
+        return doiTra;
     }
 
-    public void setMaHoaDonDoiTra(HoaDonDoiTra maHoaDonDoiTra) {
-        this.maHoaDonDoiTra = maHoaDonDoiTra;
-    }
-
-    public Thuoc getMaThuoc() {
-        return maThuoc;
-    }
-
-    public void setMaThuoc(Thuoc maThuoc) {
-        this.maThuoc = maThuoc;
-    }
-
-    public Integer getSoLuong() {
-        return soLuong;
-    }
-
-    public void setSoLuong(Integer soLuong) {
-        this.soLuong = soLuong;
-    }
-
-    public Double getDonGia() {
-        return donGia;
-    }
-
-    public void setDonGia(Double donGia) {
-        this.donGia = donGia;
+    public void setMaHoaDonDoiTra(DoiTra maHoaDonDoiTra) {
+        this.doiTra = maHoaDonDoiTra;
     }
 
 }

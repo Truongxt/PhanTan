@@ -3,31 +3,142 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package dao;
-import connect.ConnectDB;
+
 import entity.ChiTietDoiTra;
 import entity.DoiTra;
 import entity.Thuoc;
+import interfaces.IChiTietDoiTra;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import jakarta.persistence.TypedQuery;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.Date;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
+import java.util.List;
 
 /**
  *
  * @author HÀ NHƯ
  */
-public class ChiTietDoiTra_DAO implements DAOBase<ChiTietDoiTra>{
+public class ChiTietDoiTra_DAO extends UnicastRemoteObject implements IChiTietDoiTra {
     private EntityManagerFactory emf;
-    public ChiTietDoiTra_DAO() {
+    public ChiTietDoiTra_DAO() throws RemoteException {
+        super();
         emf = Persistence.createEntityManagerFactory("default");
-
     }
+
+    @Override
+    public List<ChiTietDoiTra> getAll() {
+        var em = emf.createEntityManager();
+        try {
+            List<ChiTietDoiTra> resultList = em.createQuery("SELECT c FROM ChiTietDoiTra c", ChiTietDoiTra.class).getResultList();
+            return new ArrayList<>(resultList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public ChiTietDoiTra getOne(String maHDDT, String maThuoc) throws Exception {
+        var em = emf.createEntityManager();
+        try {
+            return em.createQuery(
+                            "SELECT c FROM ChiTietDoiTra c WHERE c.doiTra.maHDDT = :maHDDT AND c.Thuoc.maThuoc = :maThuoc",
+                            ChiTietDoiTra.class)
+                    .setParameter("maHDDT", maHDDT)
+                    .setParameter("maThuoc", maThuoc)
+                    .getSingleResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public boolean create(ChiTietDoiTra chiTietDoiTra) throws Exception {
+        var em = emf.createEntityManager();
+        var tx = em.getTransaction();
+        try {
+            tx.begin();
+            em.persist(chiTietDoiTra);
+            tx.commit();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (tx.isActive()) tx.rollback();
+            return false;
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public Boolean updateProduct(String id, int soLuong) throws Exception {
+        var em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            Thuoc thuoc = em.find(Thuoc.class, id);
+            if (thuoc != null) {
+                int soLuongMoi = thuoc.getSoLuongTon() - soLuong;
+                thuoc.setSoLuongTon(soLuongMoi);
+                em.merge(thuoc);
+            }
+            em.getTransaction().commit();
+            return true;
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+            e.printStackTrace();
+            return false;
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public Boolean updateRefund(ChiTietDoiTra chiTietDoiTra) throws Exception {
+        return false;
+    }
+
+    @Override
+    public List<ChiTietDoiTra> getAllForOrderReturnID(String returnOrderID) throws Exception {
+        var em = emf.createEntityManager();
+        try {
+            String jpql = "SELECT c FROM ChiTietDoiTra c JOIN c.Thuoc  WHERE  c.doiTra.maHDDT = :maHDDT";
+            TypedQuery<ChiTietDoiTra> query = em.createQuery(jpql, ChiTietDoiTra.class);
+            query.setParameter("maHDDT", returnOrderID);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public void createReturnOrderDetail(DoiTra newReturnOrder, ArrayList<ChiTietDoiTra> cart) throws Exception {
+        for (ChiTietDoiTra chiTietDoiTra : cart) {
+            chiTietDoiTra.setDoiTra(newReturnOrder);
+            create(chiTietDoiTra);
+        }
+    }
+
+    @Override
+    public List<ChiTietDoiTra> getReturnedAndExchangedDrugs() throws Exception {
+        var em = emf.createEntityManager();
+        try {
+            String jpql = "SELECT c FROM ChiTietDoiTra c " +
+                    "JOIN FETCH c.Thuoc t " +
+                    "JOIN FETCH c.doiTra d";
+            return em.createQuery(jpql, ChiTietDoiTra.class).getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
 //    public ChiTietDoiTra getOne(String maHDDT, String maThuoc) {
 //        ChiTietDoiTra chiTietDoiTra = null;
 //        try {
