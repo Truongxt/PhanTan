@@ -22,7 +22,7 @@ import java.util.List;
 public class ChiTietHoaDon_DAO extends UnicastRemoteObject implements IChiTietHoaDon {
     private EntityManager em;
 
-    public ChiTietHoaDon_DAO(EntityManager em) throws RemoteException {
+    public ChiTietHoaDon_DAO() throws RemoteException {
         super();
         this.em = Persistence.createEntityManagerFactory("default").createEntityManager();
     }

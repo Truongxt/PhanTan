@@ -15,16 +15,15 @@ import java.util.logging.Logger;
 public class VaiTro_DAO extends UnicastRemoteObject implements IVaiTro {
 
     private static final Logger LOGGER = Logger.getLogger(VaiTro_DAO.class.getName());
-    private final EntityManagerFactory emf;
+    private final EntityManager em;
 
-    public VaiTro_DAO(EntityManager em) throws RemoteException {
+    public VaiTro_DAO() throws RemoteException {
         super();
-        emf = Persistence.createEntityManagerFactory("default");
+        em = Persistence.createEntityManagerFactory("default").createEntityManager();
     }
 
     @Override
     public ArrayList<VaiTro> getAllVaiTro() throws RemoteException {
-        EntityManager em = emf.createEntityManager();
         try {
             List<VaiTro> result = em.createQuery("SELECT v FROM VaiTro v", VaiTro.class)
                     .getResultList();
@@ -42,7 +41,6 @@ public class VaiTro_DAO extends UnicastRemoteObject implements IVaiTro {
         if (maVaiTro == null) {
             return null;
         }
-        EntityManager em = emf.createEntityManager();
         try {
             VaiTro vaiTro = em.find(VaiTro.class, maVaiTro);
             return vaiTro;

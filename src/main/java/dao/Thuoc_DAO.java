@@ -18,11 +18,11 @@ import java.util.logging.Logger;
 public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
 
     private static final Logger LOGGER = Logger.getLogger(Thuoc_DAO.class.getName());
-    private final EntityManagerFactory emf;
+    private final EntityManager em;
 
-    public Thuoc_DAO(EntityManager em) throws RemoteException {
+    public Thuoc_DAO() throws RemoteException {
         super();
-        emf = Persistence.createEntityManagerFactory("default");
+        em = Persistence.createEntityManagerFactory("default").createEntityManager();
     }
 
     @Override
@@ -30,7 +30,6 @@ public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
         if (thuoc == null || thuoc.getMaThuoc() == null) {
             return false;
         }
-        EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
             em.persist(thuoc);
@@ -50,7 +49,6 @@ public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
         if (maThuoc == null) {
             return null;
         }
-        EntityManager em = emf.createEntityManager();
         try {
             return em.find(Thuoc.class, maThuoc);
         } catch (Exception e) {
@@ -66,7 +64,6 @@ public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
         if (tenThuoc == null) {
             return null;
         }
-        EntityManager em = emf.createEntityManager();
         try {
             return em.createQuery("SELECT t FROM Thuoc t WHERE t.tenThuoc = :tenThuoc", Thuoc.class)
                     .setParameter("tenThuoc", tenThuoc)
@@ -83,7 +80,6 @@ public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
 
     @Override
     public ArrayList<Thuoc> getAllThuoc() throws RemoteException {
-        EntityManager em = emf.createEntityManager();
         try {
             List<Thuoc> result = em.createQuery("SELECT t FROM Thuoc t", Thuoc.class)
                     .getResultList();
@@ -101,7 +97,6 @@ public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
         if (maThuoc == null || newThuoc == null) {
             return false;
         }
-        EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
             Thuoc existingThuoc = em.find(Thuoc.class, maThuoc);
@@ -133,7 +128,6 @@ public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
 
     @Override
     public int getSize() throws RemoteException {
-        EntityManager em = emf.createEntityManager();
         try {
             Long count = em.createQuery("SELECT COUNT(t) FROM Thuoc t", Long.class)
                     .getSingleResult();
@@ -151,7 +145,6 @@ public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
         if (ma == null) {
             return new ArrayList<>();
         }
-        EntityManager em = emf.createEntityManager();
         try {
             List<Thuoc> result = em.createQuery("SELECT t FROM Thuoc t WHERE t.maThuoc LIKE :ma", Thuoc.class)
                     .setParameter("ma", "%" + ma + "%")
@@ -170,7 +163,6 @@ public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
         if (maThuoc == null) {
             return false;
         }
-        EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
             Thuoc thuoc = em.find(Thuoc.class, maThuoc);
@@ -194,7 +186,6 @@ public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
         if (ten == null) {
             return new ArrayList<>();
         }
-        EntityManager em = emf.createEntityManager();
         try {
             List<Thuoc> result = em.createQuery("SELECT t FROM Thuoc t WHERE t.tenThuoc LIKE :ten", Thuoc.class)
                     .setParameter("ten", "%" + ten + "%")
@@ -210,7 +201,6 @@ public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
 
     @Override
     public ArrayList<Thuoc> filter(String loaiThuoc, String xuatXu, String ten, String ma) throws RemoteException {
-        EntityManager em = emf.createEntityManager();
         try {
             StringBuilder query = new StringBuilder("SELECT t FROM Thuoc t WHERE 1=1");
             if (ten != null && !ten.isEmpty()) {
@@ -252,7 +242,6 @@ public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
 
     @Override
     public ArrayList<Thuoc> getThuocHetHan() throws RemoteException {
-        EntityManager em = emf.createEntityManager();
         try {
             List<Thuoc> result = em.createQuery("SELECT t FROM Thuoc t WHERE t.hsd <= :currentDate", Thuoc.class)
                     .setParameter("currentDate", LocalDate.now())
@@ -271,7 +260,6 @@ public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
         if (thuoc == null || thuoc.getMaThuoc() == null) {
             return false;
         }
-        EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
             Thuoc existingThuoc = em.find(Thuoc.class, thuoc.getMaThuoc());
@@ -296,7 +284,6 @@ public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
 
     @Override
     public ArrayList<Thuoc> getThuocTonKhoThap() throws RemoteException {
-        EntityManager em = emf.createEntityManager();
         try {
             List<Thuoc> result = em.createQuery("SELECT t FROM Thuoc t WHERE t.soLuongTon < 100", Thuoc.class)
                     .getResultList();
@@ -311,7 +298,6 @@ public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
 
     @Override
     public ArrayList<Thuoc> getThuocHetHan1Thang() throws RemoteException {
-        EntityManager em = emf.createEntityManager();
         try {
             LocalDate thresholdDate = LocalDate.now().plusMonths(1);
             List<Thuoc> result = em.createQuery("SELECT t FROM Thuoc t WHERE t.hsd <= :thresholdDate", Thuoc.class)
@@ -331,7 +317,6 @@ public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
         if (tenLoai == null) {
             return new ArrayList<>();
         }
-        EntityManager em = emf.createEntityManager();
         try {
             List<Thuoc> result = em.createQuery("SELECT t FROM Thuoc t WHERE t.maLoai.tenLoai = :tenLoai", Thuoc.class)
                     .setParameter("tenLoai", tenLoai)
@@ -347,7 +332,6 @@ public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
 
     @Override
     public String generateID() throws RemoteException {
-        EntityManager em = emf.createEntityManager();
         try {
             String prefix = "SP";
             LocalDate time = LocalDate.now();

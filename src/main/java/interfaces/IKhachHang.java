@@ -11,7 +11,7 @@ public interface IKhachHang extends Remote {
 
     List<KhachHang> findByTen(String tenKhachHang) throws Exception;
 
-    List<KhachHang> findBySdt(String sdt) throws Exception;
+    KhachHang findBySdt(String sdt) throws Exception;
 
     boolean create(KhachHang khachHang) throws Exception;
 

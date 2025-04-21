@@ -1,15 +1,24 @@
 package entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
 import java.time.LocalDate;
 
+@Entity
 public class Voucher {
 
+    @Id
 	private String maVoucher;
 	private String tenVoucher;
 	private String moTa;
 	private LocalDate ngayApDung;
 	private LocalDate ngayKetThuc;
-        private double giaGiam;
+    private double giaGiam;
+
+    public Voucher() {
+
+    }
 
     public double getGiaGiam() {
         return giaGiam;

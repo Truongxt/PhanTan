@@ -33,6 +33,9 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.36'
     annotationProcessor 'org.projectlombok:lombok:1.18.36'
 
+    fileTree(dir: 'lib', include: ['*.jar']).each { file ->
+        implementation files(file)
+    }
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")

@@ -45,12 +45,11 @@ public class KhachHang_DAO extends UnicastRemoteObject implements IKhachHang {
     }
 
     @Override
-    public List<KhachHang> findBySdt(String sdt) throws Exception {
+    public KhachHang findBySdt(String sdt) throws Exception {
         EntityManager em = emf.createEntityManager();
         try {
             return em.createQuery("SELECT k FROM KhachHang k WHERE k.sdt = :sdt", KhachHang.class)
-                    .setParameter("sdt", sdt)
-                    .getResultList();
+                    .setParameter("sdt", sdt).getSingleResult();
         } finally {
             em.close();
         }

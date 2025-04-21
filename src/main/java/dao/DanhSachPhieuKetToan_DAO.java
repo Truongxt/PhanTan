@@ -31,7 +31,7 @@ public class DanhSachPhieuKetToan_DAO extends UnicastRemoteObject implements IDa
 
     @Override
     public KetToan getOne(String maKetToan) throws Exception {
-        return ketToan_DAO.findById(maKetToan).get();
+        return ketToan_DAO.findById(maKetToan);
     }
 
     @Override

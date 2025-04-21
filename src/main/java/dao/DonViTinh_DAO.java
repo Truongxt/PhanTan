@@ -21,11 +21,11 @@ public class DonViTinh_DAO extends UnicastRemoteObject implements IDonViTinh {
     }
 
     @Override
-    public Optional<DonViTinh> findById(String maDonViTinh) throws Exception {
+    public DonViTinh findById(String maDonViTinh) throws Exception {
         var em = emf.createEntityManager();
         try {
             DonViTinh dvt = em.find(DonViTinh.class, maDonViTinh);
-            return Optional.ofNullable(dvt);
+            return dvt;
         } finally {
             em.close();
         }
