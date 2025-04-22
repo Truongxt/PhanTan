@@ -637,7 +637,7 @@ public class HoaDon_GUI extends javax.swing.JPanel {
         });
 
         btn_huy.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
-        btn_huy.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/GUI/delete.png"))); // NOI18N
+        btn_huy.setIcon(new javax.swing.ImageIcon("/img/GUI/delete.png")); // NOI18N
         btn_huy.setText("HỦY");
         btn_huy.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -652,7 +652,7 @@ public class HoaDon_GUI extends javax.swing.JPanel {
         });
 
         btn_thanhToan.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
-        btn_thanhToan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/GUI/credit-card.png"))); // NOI18N
+        btn_thanhToan.setIcon(new javax.swing.ImageIcon("/img/GUI/credit-card.png")); // NOI18N
         btn_thanhToan.setText("THANH TOÁN");
         btn_thanhToan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -690,7 +690,7 @@ public class HoaDon_GUI extends javax.swing.JPanel {
         panel_goiYTien.add(btn_op9);
 
         btn_luuTam.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
-        btn_luuTam.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/GUI/floppy-disc.png"))); // NOI18N
+        btn_luuTam.setIcon(new javax.swing.ImageIcon("/img/GUI/floppy-disc.png")); // NOI18N
         btn_luuTam.setText("LƯU TẠM");
         btn_luuTam.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -699,7 +699,7 @@ public class HoaDon_GUI extends javax.swing.JPanel {
         });
 
         btn_xuLyDonTam.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
-        btn_xuLyDonTam.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/GUI/time.png"))); // NOI18N
+        btn_xuLyDonTam.setIcon(new javax.swing.ImageIcon("/img/GUI/time.png")); // NOI18N
         btn_xuLyDonTam.setText("XỬ LÝ ĐƠN TẠM");
         btn_xuLyDonTam.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -877,7 +877,7 @@ public class HoaDon_GUI extends javax.swing.JPanel {
         jScrollPane2.setViewportView(tableSP);
 
         btn_themThuoc.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
-        btn_themThuoc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/nhanvien/plus.png"))); // NOI18N
+        btn_themThuoc.setIcon(new javax.swing.ImageIcon("/img/nhanvien/plus.png")); // NOI18N
         btn_themThuoc.setText("Thêm");
         btn_themThuoc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

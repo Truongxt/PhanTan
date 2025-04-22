@@ -15,6 +15,7 @@ import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.rmi.RemoteException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -22,11 +23,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
+
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 import main.Main;
 import org.apache.poi.poifs.crypt.CryptoFunctions;
@@ -70,12 +68,16 @@ public class LoginForm extends JPanel {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
 
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/GUI/pharmacy (1).png"))); // NOI18N
+        File file = new File("src/main/java/img/GUI/pharmacy (1).png");
+        if (!file.exists()) {
+            throw new IllegalArgumentException("Image file not found: " + file.getAbsolutePath());
+        }
 
+        jLabel2.setIcon(new ImageIcon(file.getAbsolutePath()));
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
         jLabel1.setText("PHARMAHOME");
 
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/GUI/alternative-medicine.png"))); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon("/img/GUI/alternative-medicine.png")); // NOI18N
 
         btn_DangNhap.setBackground(new java.awt.Color(153, 255, 153));
         btn_DangNhap.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
@@ -99,14 +101,14 @@ public class LoginForm extends JPanel {
             }
         });
 
-        txtMatKhau.setText("nhannhan1");
+        txtMatKhau.setText("nhan");
         txtMatKhau.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 txtMatKhauActionPerformed(evt);
             }
         });
 
-        txtTaiKhoan.setText("NV120924005");
+        txtTaiKhoan.setText("NVTRANVietNHan");
         txtTaiKhoan.setToolTipText("");
         txtTaiKhoan.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {

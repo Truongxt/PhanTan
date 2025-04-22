@@ -1,16 +1,22 @@
 package entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Nationalized;
 
 import java.time.LocalDate;
 
 @Entity
+@Table(name = "NhanVien")
+@Getter
+@Setter
+@NoArgsConstructor
 @AllArgsConstructor
 public class NhanVien {
+
     @Id
     @Column(name = "maNhanVien", nullable = false)
     private String maNhanVien;
@@ -19,17 +25,17 @@ public class NhanVien {
     @Column(name = "tenNhanVien", nullable = false)
     private String tenNhanVien;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Nationalized
     @Column(name = "diaChi", nullable = false)
     private String diaChi;
 
-    @Column(name = "sdt", nullable = false)
+    @Column(name = "sdt", nullable = false, length = 15)
     private String sdt;
 
-    @Column(name = "cccd", nullable = false)
+    @Column(name = "cccd", nullable = false, unique = true, length = 12)
     private String cccd;
 
     @Column(name = "trangThai", nullable = false)
@@ -38,75 +44,17 @@ public class NhanVien {
     @Column(name = "ngayVaoLam")
     private LocalDate ngayVaoLam;
 
-    public NhanVien() {
-        // Default constructor
-    }
-
-    public String getMaNhanVien() {
-        return maNhanVien;
-    }
-
-    public void setMaNhanVien(String maNhanVien) {
-        this.maNhanVien = maNhanVien;
-    }
-
-    public String getTenNhanVien() {
-        return tenNhanVien;
-    }
-
-    public void setTenNhanVien(String tenNhanVien) {
-        this.tenNhanVien = tenNhanVien;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getDiaChi() {
-        return diaChi;
-    }
-
-    public void setDiaChi(String diaChi) {
-        this.diaChi = diaChi;
-    }
-
-    public String getSdt() {
-        return sdt;
-    }
-
-    public void setSdt(String sdt) {
-        this.sdt = sdt;
-    }
-
-    public String getCccd() {
-        return cccd;
-    }
-
-    public void setCccd(String cccd) {
-        this.cccd = cccd;
-    }
-
-    public Boolean getTrangThai() {
-        return trangThai;
-    }
-
-    public void setTrangThai(Boolean trangThai) {
-        this.trangThai = trangThai;
-    }
-
-    public LocalDate getNgayVaoLam() {
-        return ngayVaoLam;
-    }
-
-    public void setNgayVaoLam(LocalDate ngayVaoLam) {
-        this.ngayVaoLam = ngayVaoLam;
-    }
-
-    public NhanVien(String maNV) {
-        this.maNhanVien = maNV;
+    @Override
+    public String toString() {
+        return "NhanVien{" +
+                "maNhanVien='" + maNhanVien + '\'' +
+                ", tenNhanVien='" + tenNhanVien + '\'' +
+                ", email='" + email + '\'' +
+                ", diaChi='" + diaChi + '\'' +
+                ", sdt='" + sdt + '\'' +
+                ", cccd='" + cccd + '\'' +
+                ", trangThai=" + trangThai +
+                ", ngayVaoLam=" + ngayVaoLam +
+                '}';
     }
 }

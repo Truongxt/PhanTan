@@ -140,7 +140,7 @@ public class QuenMatKhau_GUI extends JPanel {
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel5.setText("PharmaHome");
 
-        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon_Nhan/pharmacy64.png"))); // NOI18N
+        jLabel6.setIcon(new javax.swing.ImageIcon("/icon_Nhan/pharmacy64.png")); // NOI18N
 
         tf_tenTK.setText("NV120924006");
         tf_tenTK.addActionListener(new java.awt.event.ActionListener() {
@@ -369,17 +369,14 @@ public class QuenMatKhau_GUI extends JPanel {
 
     public boolean kiemTraMatKhau(String tenTaiKhoan) {
         try {
-        
-        String xacNhan = tf_XacNhan.getText();
-        String otp = otp_dao.getMaXacNhan(tenTaiKhoan);
-        if (otp.equals(xacNhan)) {
-
-            return true;
-        }
-        System.out.println(xacNhan + "  " + otp);
-            Notifications.getInstance().show(Notifications.Type.WARNING,  "Nhập sai mã xác nhân!!!");
+            String xacNhan = tf_XacNhan.getText();
+            String otp = otp_dao.getMaXacNhan(tenTaiKhoan);
+            if (otp != null && otp.equals(xacNhan)) {
+                return true;
+            }
+            Notifications.getInstance().show(Notifications.Type.WARNING, "Nhập sai mã xác nhận!!!");
         } catch (Exception e) {
-            Notifications.getInstance().show(Notifications.Type.WARNING,  "Bạn chưa nhập sai mã xác nhân!!!");
+            Notifications.getInstance().show(Notifications.Type.WARNING, "Bạn chưa nhập mã xác nhận!!!");
         }
         return false;
     }
