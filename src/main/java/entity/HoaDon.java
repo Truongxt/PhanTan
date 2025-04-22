@@ -30,11 +30,11 @@ public class HoaDon {
     private Voucher voucher;
 
     @ManyToOne
-    @JoinColumn(name = "khach_hang_id", nullable = false)
+    @JoinColumn(name = "khach_hang_id", nullable = true)
     private KhachHang khachHang;
 
     @ManyToOne
-    @JoinColumn(name = "nhan_vien_id", nullable = false)
+    @JoinColumn(name = "nhan_vien_id", nullable = true)
     private NhanVien nhanVien;
 
     @ManyToOne
@@ -44,13 +44,13 @@ public class HoaDon {
     @OneToMany(mappedBy = "hoaDon", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChiTietHoaDon> listCTHD = new ArrayList<>();
 
-    @Column(name = "atm", nullable = false)
+    @Column(name = "atm", nullable = false, columnDefinition = "boolean default false")
     private boolean atm;
 
-    @Column(name = "tien_da_dua", nullable = false)
+    @Column(name = "tien_da_dua", nullable = true)
     private double tienDaDua;
 
-    @Column(name = "trang_thai", nullable = false)
+    @Column(name = "trang_thai", nullable = true)
     private boolean trangThai;
 
     public HoaDon() {

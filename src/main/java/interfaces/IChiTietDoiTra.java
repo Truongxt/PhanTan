@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IChiTietDoiTra extends Remote {
-    List<ChiTietDoiTra> getAll();
+    List<ChiTietDoiTra> getAll() throws Exception;
 
     ChiTietDoiTra getOne(String maHDDT, String maThuoc) throws Exception;
 

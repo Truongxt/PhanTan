@@ -38,7 +38,7 @@ public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
     }
 
     @Override
-    public Boolean create(HoaDon hoaDon) {
+    public Boolean create(HoaDon hoaDon)   {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();

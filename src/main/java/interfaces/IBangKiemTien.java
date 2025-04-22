@@ -21,9 +21,9 @@ public interface IBangKiemTien extends Remote {
     boolean update(BangKiemTien bangKiemTien) throws Exception;
 
     boolean delete(String id) throws Exception;
-    String getMaMoiNhat(String ma);
-    String taoMa(Date date);
-    void createBangKiemTien(ArrayList<KiemTien> listKiemTien, ArrayList<NhanVien> listNhanVien, Date ngayBatDau);
-    ArrayList<BangKiemTien> filter();
+    String getMaMoiNhat(String ma) throws Exception;
+    String taoMa(Date date) throws Exception;
+    void createBangKiemTien(ArrayList<KiemTien> listKiemTien, ArrayList<NhanVien> listNhanVien, Date ngayBatDau) throws Exception;
+    ArrayList<BangKiemTien> filter() throws Exception;
 
 }

@@ -1,9 +1,11 @@
 package interfaces;
 
 import entity.DoiTra;
+
+import java.rmi.Remote;
 import java.util.ArrayList;
 
-public interface IDoiTra {
+public interface IDoiTra extends Remote {
     DoiTra getOne(String id) throws Exception;
     ArrayList<DoiTra> getAll() throws Exception;
     boolean create(DoiTra doiTra) throws Exception;
