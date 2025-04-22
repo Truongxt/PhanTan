@@ -22,7 +22,7 @@ public class DanhSachPhieuKiemTien_DAO extends UnicastRemoteObject implements ID
 
     private BangKiemTien_DAO bangKiemTien_DAO;
 
-    protected DanhSachPhieuKiemTien_DAO() throws RemoteException {
+    public DanhSachPhieuKiemTien_DAO() throws RemoteException {
         bangKiemTien_DAO = new BangKiemTien_DAO();
     }
 

@@ -34,52 +34,12 @@ public class HoaDon {
     @JoinColumn(name = "maKetToan", nullable = false)
     private KetToan ketToan;
 
-    // Getters and Setters
-    public String getMaHD() {
-        return maHD;
-    }
+    private boolean atm;
+    private double tienDaDua;
+    private boolean trangThai;
 
-    public void setMaHD(String maHD) {
+    // Constructor for maHD
+    public HoaDon(String maHD) {
         this.maHD = maHD;
-    }
-
-    public LocalDate getNgayLap() {
-        return ngayLap;
-    }
-
-    public void setNgayLap(LocalDate ngayLap) {
-        this.ngayLap = ngayLap;
-    }
-
-    public double getTongTien() {
-        return tongTien;
-    }
-
-    public void setTongTien(double tongTien) {
-        this.tongTien = tongTien;
-    }
-
-    public KhachHang getKhachHang() {
-        return khachHang;
-    }
-
-    public void setKhachHang(KhachHang khachHang) {
-        this.khachHang = khachHang;
-    }
-
-    public NhanVien getNhanVien() {
-        return nhanVien;
-    }
-
-    public void setNhanVien(NhanVien nhanVien) {
-        this.nhanVien = nhanVien;
-    }
-
-    public KetToan getKetToan() {
-        return ketToan;
-    }
-
-    public void setKetToan(KetToan ketToan) {
-        this.ketToan = ketToan;
     }
 }
