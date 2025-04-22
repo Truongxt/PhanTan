@@ -67,11 +67,10 @@ public class LoginForm extends JPanel {
         txtTaiKhoan = new gui.QuenMatKhau.textfield.TextField();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-
         File file = new File("src/main/java/img/GUI/pharmacy (1).png");
         if (!file.exists()) {
             throw new IllegalArgumentException("Image file not found: " + file.getAbsolutePath());
-        }
+        }        jLabel2.setIcon(new javax.swing.ImageIcon("/img/GUI/pharmacy (1).png")); // NOI18N
 
         jLabel2.setIcon(new ImageIcon(file.getAbsolutePath()));
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N

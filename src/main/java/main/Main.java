@@ -213,7 +213,7 @@ public class Main extends JFrame {
 
         setSize(new Dimension(1350, 738));
         setTitle("Pharmahome");
-        setContentPane(loginForm);
+//        setContentPane(loginForm);
         // Thêm listener cho sự kiện đăng nhập
         loginForm.addLoginListener(new LoginForm.LoginListener() {
             @Override
