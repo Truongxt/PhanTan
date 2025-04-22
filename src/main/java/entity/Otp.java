@@ -12,10 +12,11 @@ public class Otp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false) // Ensure the column name matches the database
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "tentaiKhoan", nullable = false)
+    @JoinColumn(name = "tentaiKhoan", referencedColumnName = "maNhanVien", nullable = false) // Update to match the actual column name
     private NhanVien tentaiKhoan;
 
     @Nationalized

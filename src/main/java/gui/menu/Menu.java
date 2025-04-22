@@ -173,16 +173,16 @@ public class Menu extends JPanel {
     }
 
     public void initMenuItem() {
-        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/img/business.png")), "Bán hàng"));
+        addMenu(new ModelMenu(new ImageIcon("/img/business.png"), "Bán hàng"));
 
-        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/img/drugs.png")), "Thuốc"));
-        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/img/checklist.png")), "Hóa đơn", "Tạo hóa đơn đổi trả", "Lịch sử hóa đơn", "Lịch sử đổi trả"));
-        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/img/analysis.png")), "Thống kê", "Thuốc", "Khách hàng", "Doanh thu"));
-        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/img/computer.png")), "Báo cáo", "Phiếu kiểm tiền", "Kết toán", "Danh sách phiếu kiểm tiền", "Danh sách kết toán"));
-        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/img/end.png")), "Khách hàng"));
-        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/img/employee.png")), "Nhân viên"));
-        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/img/transportation.png")), "Nhà cung cấp"));
-        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/img/log-out.png")), "Đăng xuất"));
+        addMenu(new ModelMenu(new ImageIcon("/img/drugs.png"), "Thuốc"));
+        addMenu(new ModelMenu(new ImageIcon("/img/checklist.png"), "Hóa đơn", "Tạo hóa đơn đổi trả", "Lịch sử hóa đơn", "Lịch sử đổi trả"));
+        addMenu(new ModelMenu(new ImageIcon("/img/analysis.png"), "Thống kê", "Thuốc", "Khách hàng", "Doanh thu"));
+        addMenu(new ModelMenu(new ImageIcon("/img/computer.png"), "Báo cáo", "Phiếu kiểm tiền", "Kết toán", "Danh sách phiếu kiểm tiền", "Danh sách kết toán"));
+        addMenu(new ModelMenu(new ImageIcon("/img/end.png"), "Khách hàng"));
+        addMenu(new ModelMenu(new ImageIcon("/img/employee.png"), "Nhân viên"));
+        addMenu(new ModelMenu(new ImageIcon("/img/transportation.png"), "Nhà cung cấp"));
+        addMenu(new ModelMenu(new ImageIcon("/img/log-out.png"), "Đăng xuất"));
 
     }
 

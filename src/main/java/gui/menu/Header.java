@@ -100,14 +100,14 @@ public class Header extends JPanel {
         setBackground(new Color(255, 255, 255));
         setForeground(new Color(127, 127, 127));
 
-        cdmMenu.setIcon(new ImageIcon(getClass().getResource("/img/menu.png"))); // NOI18N
+        cdmMenu.setIcon(new ImageIcon("/img/menu.png")); // NOI18N
         cdmMenu.addActionListener(new ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cdmMenuActionPerformed(evt);
             }
         });
 
-        pic.setIcon(new ImageIcon(getClass().getResource("/img/profile.png"))); // NOI18N
+        pic.setIcon(new ImageIcon("/img/profile.png")); // NOI18N
 
         lbUserName.setFont(new Font("Segoe UI", 1, 12)); // NOI18N
         lbUserName.setForeground(new Color(127, 127, 127));
@@ -118,7 +118,7 @@ public class Header extends JPanel {
 
         jSeparator1.setOrientation(SwingConstants.VERTICAL);
 
-        cmd.setIcon(new ImageIcon(getClass().getResource("/img/bell.png"))); // NOI18N
+        cmd.setIcon(new ImageIcon("/img/bell.png")); // NOI18N
         cmd.addActionListener(new ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {

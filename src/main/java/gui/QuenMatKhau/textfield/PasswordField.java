@@ -75,8 +75,8 @@ public class PasswordField extends JPasswordField {
         });
 
         // Tải ảnh cho biểu tượng hiển thị/ẩn mật khẩu
-        eye = new ImageIcon("textfield/eye.png").getImage();
-        eye_hide = new ImageIcon("textfield/eye_hide.png").getImage();
+        eye = new ImageIcon("gui/QuenMatKhau/textfield/eye.png").getImage();
+        eye_hide = new ImageIcon("gui/QuenMatKhau/textfield/eye_hide.png").getImage();
     }
 
     public boolean isShowAndHide() {

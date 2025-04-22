@@ -36,7 +36,7 @@ public class Profile extends javax.swing.JPanel {
         jLabel1.setAlignmentY(1.0F);
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/pharmacy.png"))); // NOI18N
+        jLabel2.setIcon(new javax.swing.ImageIcon("/img/pharmacy.png")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

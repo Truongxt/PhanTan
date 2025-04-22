@@ -9,12 +9,10 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
 @Entity
-@Table(name = "hoa_don")
+@Table(name = "hoa_don") // Ensure this matches the actual table name in the database
 @Getter
 @Setter
-
 public class HoaDon {
 
     @Id
@@ -55,29 +53,10 @@ public class HoaDon {
     @Column(name = "trang_thai", nullable = false)
     private boolean trangThai;
 
-    // Constructors, getters, and setters
-
     public HoaDon() {
     }
 
     public HoaDon(String maHD) {
         this.maHD = maHD;
     }
-
-    public HoaDon(String maHD, LocalDate ngayLap, double tongTien, Voucher voucher, KhachHang khachHang, NhanVien nhanVien, KetToan ketToan, List<ChiTietHoaDon> listCTHD, boolean atm, double tienDaDua, boolean trangThai) {
-        this.maHD = maHD;
-        this.ngayLap = ngayLap;
-        this.tongTien = tongTien;
-        this.voucher = voucher;
-        this.khachHang = khachHang;
-        this.nhanVien = nhanVien;
-        this.ketToan = ketToan;
-        this.listCTHD = listCTHD;
-        this.atm = atm;
-        this.tienDaDua = tienDaDua;
-        this.trangThai = trangThai;
-    }
-
-    // Getters and setters for all fields
-    // ...
 }

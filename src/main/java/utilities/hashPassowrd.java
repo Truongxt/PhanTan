@@ -27,5 +27,14 @@ public class hashPassowrd {
         e.printStackTrace();
         return null;
     }
+
+
 }
+
+    public static void main(String[] args) {
+        String p="nhan";
+        hashPassowrd h=new hashPassowrd();
+        String hashedPassword = h.hashPassword(p);
+        System.out.println(hashedPassword);
+    }
 }
