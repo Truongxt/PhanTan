@@ -209,31 +209,31 @@ public class Main extends JFrame {
     public Main() throws SQLException, RemoteException {
         initComponents();
         em = Persistence.createEntityManagerFactory("default").createEntityManager();
-//        loginForm = new LoginForm();
+        loginForm = new LoginForm();
 
         setSize(new Dimension(1350, 738));
         setTitle("Pharmahome");
 //        setContentPane(loginForm);
         // Thêm listener cho sự kiện đăng nhập
-//        loginForm.addLoginListener(new LoginForm.LoginListener() {
-//            @Override
-//            public void onLoginSuccess(TaiKhoan tk) throws Exception {
-//                // Đăng nhập thành công, hiển thị menu và main
-//                Main.this.tk = tk;
-//                nhanVien = tk.getNhanVien();
-//                init();
-//                setContentPane(bg);
-//                SwingUtilities.updateComponentTreeUI(Main.this);
-//                revalidate();
-//                repaint();
-//            }
-//
-//            @Override
-//            public void onLoginFailure() {
-//                // Xử lý khi đăng nhập thất bại (nếu cần)
-//                Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, "Đăng nhập thất bại");
-//            }
-//        });
+        loginForm.addLoginListener(new LoginForm.LoginListener() {
+            @Override
+            public void onLoginSuccess(TaiKhoan tk) throws Exception {
+                // Đăng nhập thành công, hiển thị menu và main
+                Main.this.tk = tk;
+                nhanVien = tk.getNhanVien();
+                init();
+                setContentPane(bg);
+                SwingUtilities.updateComponentTreeUI(Main.this);
+                revalidate();
+                repaint();
+            }
+
+            @Override
+            public void onLoginFailure() {
+                // Xử lý khi đăng nhập thất bại (nếu cần)
+                Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, "Đăng nhập thất bại");
+            }
+        });
     }
 
     public void init() throws Exception {
