@@ -70,12 +70,12 @@ public class LoginForm extends JPanel {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
 
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/GUI/pharmacy (1).png"))); // NOI18N
+        jLabel2.setIcon(new javax.swing.ImageIcon("/img/GUI/pharmacy (1).png")); // NOI18N
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
         jLabel1.setText("PHARMAHOME");
 
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/GUI/alternative-medicine.png"))); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon("/img/GUI/alternative-medicine.png")); // NOI18N
 
         btn_DangNhap.setBackground(new java.awt.Color(153, 255, 153));
         btn_DangNhap.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
