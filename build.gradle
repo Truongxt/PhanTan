@@ -13,8 +13,8 @@ ext {
     junitVersion = '5.11.0'
 }
 
-sourceCompatibility = '23'
-targetCompatibility = '23'
+sourceCompatibility = '22'
+targetCompatibility = '22'
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
@@ -25,7 +25,8 @@ dependencies {
     implementation('org.glassfish.jaxb:jaxb-runtime:4.0.5')
     // https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc
     implementation 'com.microsoft.sqlserver:mssql-jdbc:12.9.0.jre11-preview'
-
+   // implementation 'org.hibernate.orm:hibernate-core:6.2.6.Final'
+   // implementation 'com.microsoft.sqlserver:mssql-jdbc:12.8.1.jre11'
 
     // https://mvnrepository.com/artifact/net.datafaker/datafaker
     implementation 'net.datafaker:datafaker:2.4.2'
@@ -33,6 +34,9 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.36'
     annotationProcessor 'org.projectlombok:lombok:1.18.36'
 
+    fileTree(dir: 'lib', include: ['*.jar']).each { file ->
+        implementation files(file)
+    }
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")

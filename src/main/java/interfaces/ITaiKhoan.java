@@ -1,15 +1,15 @@
 package interfaces;
 
 import entity.TaiKhoan;
-
 import java.rmi.Remote;
-import java.util.List;
-import java.util.Optional;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 public interface ITaiKhoan extends Remote {
-    Optional<TaiKhoan> findById(String maTaiKhoan) throws Exception;
-    List<TaiKhoan> findByTenTaiKhoan(String tenTaiKhoan) throws Exception;
-    boolean create(TaiKhoan taiKhoan) throws Exception;
-    boolean update(TaiKhoan taiKhoan) throws Exception;
-    boolean delete(String maTaiKhoan) throws Exception;
+    boolean create(TaiKhoan tk) throws RemoteException;
+    ArrayList<TaiKhoan> getAllTaiKhoan() throws RemoteException;
+    TaiKhoan getTaiKhoan(String ten) throws RemoteException;
+    boolean updateTaiKhoan(TaiKhoan tk) throws RemoteException;
+    boolean deleteTaiKhoan(String ten) throws RemoteException;
+    boolean doiMatKHau(String ten, String mk) throws RemoteException;
 }

@@ -3,9 +3,13 @@ package entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class NhaCungCap {
     @Id
     @Column(name = "maNCC", nullable = false)
@@ -68,7 +72,7 @@ public class NhaCungCap {
         this.sdt = sdt;
     }
 
-    public Boolean getTrangThai(boolean bool) {
+    public Boolean getTrangThai() {
         return trangThai;
     }
 

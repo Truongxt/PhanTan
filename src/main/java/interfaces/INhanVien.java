@@ -1,25 +1,21 @@
 package interfaces;
 
 import entity.NhanVien;
-
 import java.rmi.Remote;
-import java.util.List;
-import java.util.Optional;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 public interface INhanVien extends Remote {
-    Optional<NhanVien> findById(String maNhanVien) throws Exception;
-
-    List<NhanVien> findByMa(String maNhanVien) throws Exception;
-
-    List<NhanVien> findByTen(String tenNhanVien) throws Exception;
-
-    List<NhanVien> findByTrangThai(boolean trangThai) throws Exception;
-
-    List<NhanVien> findBySdt(String sdt) throws Exception;
-
-    boolean create(NhanVien nhanVien) throws Exception;
-
-    boolean update(NhanVien nhanVien) throws Exception;
-
-    boolean delete(String maNhanVien) throws Exception;
+    Boolean create(NhanVien nv) throws RemoteException;
+    ArrayList<NhanVien> getAllNhanVien() throws RemoteException;
+    NhanVien getNhanVien(String maNhanVien) throws RemoteException;
+    boolean suaNhanVien(String maNhanVien, NhanVien newNV) throws RemoteException;
+    int getSize() throws RemoteException;
+    NhanVien getLastNhanVien() throws RemoteException;
+    ArrayList<NhanVien> timKiemTheoMa(String maNhanVien) throws RemoteException;
+    NhanVien timKiemTheoMa1(String maNhanVien) throws RemoteException;
+    ArrayList<NhanVien> timKiemTheoTen(String ten) throws RemoteException;
+    ArrayList<NhanVien> timKiemTheoTrangThai(boolean tt) throws RemoteException;
+    ArrayList<NhanVien> timTheoSDT(String soDT) throws RemoteException;
+    String generateID() throws RemoteException;
 }

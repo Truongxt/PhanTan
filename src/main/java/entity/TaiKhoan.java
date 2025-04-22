@@ -1,32 +1,51 @@
 package entity;
 
 import jakarta.persistence.*;
+import java.io.Serializable;
 
 @Entity
-public class TaiKhoan {
+@Table(name = "TaiKhoan")
+public class TaiKhoan implements Serializable {
+
     @Id
-    @Column(name = "tenTaiKhoan", nullable = false)
-    private String tenTaiKhoan;
+    @Column(name = "ten", nullable = false, unique = true)
+    private String ten;
 
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "trangThai", nullable = false)
+    private boolean trangThai;
 
+    @ManyToOne
+    @JoinColumn(name = "vaiTro_id", nullable = false)
+    private VaiTro vaiTro;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "maVaiTro", nullable = false)
-    private VaiTro maVaiTro;
+    @ManyToOne
+    @JoinColumn(name = "nhanVien_id", nullable = false)
+    private NhanVien nhanVien;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "maNhanVien", nullable = false)
-    private NhanVien maNhanVien;
-
-    public String getTenTaiKhoan() {
-        return tenTaiKhoan;
+    public TaiKhoan() {
     }
 
-    public void setTenTaiKhoan(String tenTaiKhoan) {
-        this.tenTaiKhoan = tenTaiKhoan;
+    public TaiKhoan(String ten) {
+        this.ten = ten;
+    }
+
+    public TaiKhoan(String ten, String password, boolean trangThai, VaiTro vaiTro, NhanVien nhanVien) {
+        this.ten = ten;
+        this.password = password;
+        this.trangThai = trangThai;
+        this.vaiTro = vaiTro;
+        this.nhanVien = nhanVien;
+    }
+
+    public String getTen() {
+        return ten;
+    }
+
+    public void setTen(String ten) {
+        this.ten = ten;
     }
 
     public String getPassword() {
@@ -37,22 +56,38 @@ public class TaiKhoan {
         this.password = password;
     }
 
-
-
-    public VaiTro getMaVaiTro() {
-        return maVaiTro;
+    public boolean isTrangThai() {
+        return trangThai;
     }
 
-    public void setMaVaiTro(VaiTro maVaiTro) {
-        this.maVaiTro = maVaiTro;
+    public void setTrangThai(boolean trangThai) {
+        this.trangThai = trangThai;
     }
 
-    public NhanVien getMaNhanVien() {
-        return maNhanVien;
+    public VaiTro getVaiTro() {
+        return vaiTro;
     }
 
-    public void setMaNhanVien(NhanVien maNhanVien) {
-        this.maNhanVien = maNhanVien;
+    public void setVaiTro(VaiTro vaiTro) {
+        this.vaiTro = vaiTro;
     }
 
+    public NhanVien getNhanVien() {
+        return nhanVien;
+    }
+
+    public void setNhanVien(NhanVien nhanVien) {
+        this.nhanVien = nhanVien;
+    }
+
+    @Override
+    public String toString() {
+        return "TaiKhoan{" +
+                "ten='" + ten + '\'' +
+                ", password='" + password + '\'' +
+                ", trangThai=" + trangThai +
+                ", vaiTro=" + vaiTro +
+                ", nhanVien=" + nhanVien +
+                '}';
+    }
 }

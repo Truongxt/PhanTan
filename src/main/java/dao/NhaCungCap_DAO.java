@@ -1,208 +1,149 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package dao;
 
-import com.itextpdf.text.log.Logger;
-import connect.ConnectDB;
 import entity.NhaCungCap;
-import java.lang.System.Logger.Level;
-import java.sql.*;
+import interfaces.INhaCungCap;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+import jakarta.persistence.TypedQuery;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-/**
- *
- * @author Xuân Trường
- */
+public class NhaCungCap_DAO extends UnicastRemoteObject implements INhaCungCap {
 
-public class NhaCungCap_DAO {
+    private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
 
-    public static Boolean create(NhaCungCap ncc) {
-        int n = 0;
+    public NhaCungCap_DAO() throws Exception {
+        super();
+    }
+
+    @Override
+    public boolean create(NhaCungCap ncc) {
+        EntityManager em = emf.createEntityManager();
         try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("insert NhaCungCap values (?,?,?,?,?,?) ");
-            ps.setString(1, ncc.getMaNCC());
-            ps.setString(2, ncc.getTenNCC());
-            ps.setString(3, ncc.getDiaChi());
-            ps.setString(4, ncc.getEmail());
-            ps.setString(5, ncc.getSdt());
-            ps.setBoolean(6, ncc.isTrangThai());
-            n = ps.executeUpdate();
+            em.getTransaction().begin();
+            em.persist(ncc);
+            em.getTransaction().commit();
+            return true;
         } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
             e.printStackTrace();
+        } finally {
+            em.close();
         }
-        return n > 0;
+        return false;
     }
 
-
-    public static ArrayList<NhaCungCap> getAllNhaCungCap() {
-        ArrayList<NhaCungCap> list = new ArrayList<>();
-
+    @Override
+    public NhaCungCap getById(String maNCC) {
+        EntityManager em = emf.createEntityManager();
         try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("Select * from NhaCungCap");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String maNCC = rs.getString("maNCC");
-                String tenNCC = rs.getString("tenNCC");
-                String diaChi = rs.getString("diaChi");
-                String email = rs.getString("email");
-                String sdt = rs.getString("sdt");
-                boolean trangThai = rs.getBoolean("trangThai");
-                NhaCungCap ncc = new NhaCungCap(maNCC, tenNCC, diaChi, email, sdt, trangThai);
-                list.add(ncc);
-            }
-        } catch (SQLException ex) {
-            java.util.logging.Logger.getLogger(NhanVien_DAO.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            }
-        return list;
-    }
-    public static NhaCungCap getNhaCungCap(String ma) {
-        NhaCungCap nhaCungCap = null;
-        try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("SELECT * FROM NhaCungCap WHERE maNCC = ?");
-            ps.setString(1, ma);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                String maNCC = rs.getString("maNCC");
-                String tenNCC = rs.getString("tenNCC");
-                String diaChi = rs.getString("diaChi");
-                String email = rs.getString("email");
-                String sdt = rs.getString("sdt");
-                boolean trangThai = rs.getBoolean("trangThai");
-                return new NhaCungCap(maNCC, tenNCC, diaChi, email, sdt, trangThai);
-            }
-        } catch (SQLException ex) {
-            java.util.logging.Logger.getLogger(NhanVien_DAO.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-
+            return em.find(NhaCungCap.class, maNCC);
+        } catch (Exception e) {
+            Logger.getLogger(NhaCungCap_DAO.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            em.close();
         }
         return null;
     }
 
-    public static boolean suaNhaCungCap(String maNCC, NhaCungCap newNCC) throws SQLException {
-        int n = 0;
+    @Override
+    public ArrayList<NhaCungCap> getAll() {
+        EntityManager em = emf.createEntityManager();
+        List<NhaCungCap> result = new ArrayList<>();
         try {
-            PreparedStatement st = ConnectDB.conn.prepareStatement("UPDATE NhaCungCap set"
-                    + "      [tenNCC] = ?,"
-                    + "      [diaChi] = ?,"
-                    + "      [email] = ?,"
-                    + "      [sdt] = ?,"
-                    + "      [trangThai] = ?"
-                    + " WHERE maNCC = ?");
-            st.setString(1, newNCC.getTenNCC());
-            st.setString(2, newNCC.getDiaChi());
-            st.setString(3, newNCC.getEmail());
-            st.setString(4, newNCC.getSdt());
-            st.setBoolean(5, newNCC.isTrangThai());
-            st.setString(6, maNCC);
-            n = st.executeUpdate();
-        } catch (SQLException ex) {
-            java.util.logging.Logger.getLogger(NhanVien_DAO.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-
+            TypedQuery<NhaCungCap> query = em.createQuery("SELECT n FROM NhaCungCap n", NhaCungCap.class);
+            result = query.getResultList();
+        } catch (Exception e) {
+            Logger.getLogger(NhaCungCap_DAO.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            em.close();
         }
-        return n > 0;
+        return (ArrayList<NhaCungCap>) result;
     }
 
-    public static int getSize() {
-        int n = 0;
+    @Override
+    public boolean update(String maNCC, NhaCungCap newNCC) {
+        EntityManager em = emf.createEntityManager();
         try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("Select * from NhaCungCap");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                n++;
+            em.getTransaction().begin();
+            NhaCungCap existingNCC = em.find(NhaCungCap.class, maNCC);
+            if (existingNCC != null) {
+                existingNCC.setTenNCC(newNCC.getTenNCC());
+                existingNCC.setDiaChi(newNCC.getDiaChi());
+                existingNCC.setEmail(newNCC.getEmail());
+                existingNCC.setSdt(newNCC.getSdt());
+                em.merge(existingNCC);
+                em.getTransaction().commit();
+                return true;
             }
-        } catch (SQLException ex) {
-            java.util.logging.Logger.getLogger(NhanVien_DAO.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            Logger.getLogger(NhaCungCap_DAO.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            em.close();
         }
-        return n;
+        return false;
     }
 
-    public NhaCungCap getLastNhaCungCap() {
+    @Override
+    public boolean delete(String maNCC) {
+        EntityManager em = emf.createEntityManager();
         try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("select top 1 * from NhaCungCap order by maNCC DESC");
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                String maNCC = rs.getString("maNCC");
-                String tenNCC = rs.getString("tenNCC");
-                String diaChi = rs.getString("diaChi");
-                String email = rs.getString("email");
-                String sdt = rs.getString("sdt");
-                boolean trangThai = rs.getBoolean("trangThai");
-
-                return new NhaCungCap(maNCC, tenNCC, diaChi, email, sdt, trangThai);
+            em.getTransaction().begin();
+            NhaCungCap ncc = em.find(NhaCungCap.class, maNCC);
+            if (ncc != null) {
+                em.remove(ncc);
+                em.getTransaction().commit();
+                return true;
             }
-        } catch (SQLException ex) {
-            java.util.logging.Logger.getLogger(NhanVien_DAO.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            Logger.getLogger(NhaCungCap_DAO.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            em.close();
         }
-
-        return null;
+        return false;
     }
 
-    public ArrayList<NhaCungCap> timKiemTheoMa(String maNCC) {
-        ArrayList<NhaCungCap> listNCC = new ArrayList<>();
+    @Override
+    public List<NhaCungCap> searchByName(String name) {
+        EntityManager em = emf.createEntityManager();
+        List<NhaCungCap> result = new ArrayList<>();
         try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("select * from NhaCungCap where maNCC like ?");
-            ps.setString(1, "%" + maNCC + "%");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String ma = rs.getString("maNCC");
-                String tenNCC = rs.getString("tenNCC");
-                String diaChi = rs.getString("diaChi");
-                String email = rs.getString("email");
-                String sdt = rs.getString("sdt");
-                boolean trangThai = rs.getBoolean("trangThai");
-
-                NhaCungCap ncc = new NhaCungCap(ma, tenNCC, diaChi, email, sdt, trangThai);
-                listNCC.add(ncc);
-            }
-        } catch (SQLException ex) {
-            java.util.logging.Logger.getLogger(NhanVien_DAO.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            TypedQuery<NhaCungCap> query = em.createQuery("SELECT n FROM NhaCungCap n WHERE n.tenNCC LIKE :name", NhaCungCap.class);
+            query.setParameter("name", "%" + name + "%");
+            result = query.getResultList();
+        } catch (Exception e) {
+            Logger.getLogger(NhaCungCap_DAO.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            em.close();
         }
-        return listNCC;
+        return result;
     }
 
-    public ArrayList<NhaCungCap> timKiemTheoTen(String tenNCC) {
-        ArrayList<NhaCungCap> listNCC = new ArrayList<>();
+    @Override
+    public List<NhaCungCap> searchByPhoneNumber(String phoneNumber) {
+        EntityManager em = emf.createEntityManager();
+        List<NhaCungCap> result = new ArrayList<>();
         try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("select * from NhaCungCap where tenNCC like ?");
-            ps.setString(1, "%" + tenNCC + "%");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String maNCC = rs.getString("maNCC");
-                String ten = rs.getString("tenNCC");
-                String diaChi = rs.getString("diaChi");
-                String email = rs.getString("email");
-                String sdt = rs.getString("sdt");
-                boolean trangThai = rs.getBoolean("trangThai");
-
-                NhaCungCap ncc = new NhaCungCap(maNCC, ten, diaChi, email, sdt, trangThai);
-                listNCC.add(ncc);
-            }
-        } catch (SQLException ex) {
-            java.util.logging.Logger.getLogger(NhanVien_DAO.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            TypedQuery<NhaCungCap> query = em.createQuery("SELECT n FROM NhaCungCap n WHERE n.sdt LIKE :phoneNumber", NhaCungCap.class);
+            query.setParameter("phoneNumber", "%" + phoneNumber + "%");
+            result = query.getResultList();
+        } catch (Exception e) {
+            Logger.getLogger(NhaCungCap_DAO.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            em.close();
         }
-        return listNCC;
+        return result;
     }
-
-    public NhaCungCap timTheoSDT(String soDT) {
-        try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("select * from NhaCungCap where sdt like ?");
-            ps.setString(1, "%" + soDT + "%");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String maNCC = rs.getString("maNCC");
-                String tenNCC = rs.getString("tenNCC");
-                String diaChi = rs.getString("diaChi");
-                String email = rs.getString("email");
-                String sdt = rs.getString("sdt");
-                boolean trangThai = rs.getBoolean("trangThai");
-                NhaCungCap ncc = new NhaCungCap(maNCC, tenNCC, diaChi, email, sdt, trangThai);
-                return ncc;
-            }
-        } catch (SQLException ex) {
-            java.util.logging.Logger.getLogger(NhanVien_DAO.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        return null;
-}
 }

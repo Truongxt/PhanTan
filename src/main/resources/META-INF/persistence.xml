@@ -3,45 +3,49 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
              version="3.0">
-    <persistence-unit name="default">
-        <class>entity.BangKiemTien </class>
+    <persistence-unit name="default" transaction-type="RESOURCE_LOCAL">
+        <class>entity.BangKiemTien</class>
         <class>entity.ChiTietBangKiemTien</class>
         <class>entity.ChiTietBangKiemTienId</class>
         <class>entity.ChiTietHoaDon</class>
         <class>entity.ChiTietHoaDonId</class>
-       <class>entity.TaiKhoan</class>
+        <class>entity.TaiKhoan</class>
         <class>entity.HoaDon</class>
         <class>entity.KhachHang</class>
         <class>entity.NhaCungCap</class>
         <class>entity.NhanVien</class>
-       <class>entity.LoaiThuoc</class>
-        <class>entity.TaiKhoan</class>
+        <class>entity.LoaiThuoc</class>
         <class>entity.DonViTinh</class>
         <class>entity.XuatXu</class>
         <class>entity.VaiTro</class>
-        <class>entity.BangKiemTien</class>
         <class>entity.Sysdiagram</class>
         <class>entity.Thuoc</class>
         <class>entity.Otp</class>
-        <class>entity.HoaDonDoiTra</class>
+        <class>entity.DoiTra</class>
         <class>entity.ChiTietDoiTra</class>
         <class>entity.KetToan</class>
         <class>entity.KiemTien</class>
         <class>entity.KiemTienId</class>
+        <class>entity.Voucher</class>
         <properties>
+            <!-- Database connection properties -->
             <property name="jakarta.persistence.jdbc.url"
-                      value="jdbc:sqlserver://localhost:1433;databaseName=QLNT;trustServerCertificate=
-true" />
+                      value="jdbc:sqlserver://localhost:1433;databaseName=QLNT;encrypt=false;trustServerCertificate=true" />
             <property name="jakarta.persistence.jdbc.user" value="sa" />
-            <property name="jakarta.persistence.jdbc.password"
-                      value="sapassword" />
-            <property name="jakarta.persistence.jdbc.driver"
-                      value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
-            <property name="jakarta.persistence.jdbc.dialect"
-                      value="org.hibernate.dialect.SQLServer2012Dialect" />
+            <property name="jakarta.persistence.jdbc.password" value="sapassword" />
+            <property name="jakarta.persistence.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
+
+            <!-- Hibernate properties -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.SQLServerDialect" />
             <property name="hibernate.show_sql" value="true" />
             <property name="hibernate.format_sql" value="true" />
             <property name="hibernate.hbm2ddl.auto" value="update" />
+
+            <!-- Connection pooling (HikariCP) -->
+            <property name="hibernate.hikari.maximumPoolSize" value="10" />
+            <property name="hibernate.hikari.minimumIdle" value="2" />
+            <property name="hibernate.hikari.idleTimeout" value="30000" />
+            <property name="hibernate.hikari.connectionTimeout" value="20000" />
         </properties>
     </persistence-unit>
 </persistence>

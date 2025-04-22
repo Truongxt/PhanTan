@@ -1,21 +1,19 @@
 package interfaces;
 
 import entity.KhachHang;
+import java.util.ArrayList;
 
-import java.rmi.Remote;
-import java.util.List;
-import java.util.Optional;
-
-public interface IKhachHang extends Remote {
-    Optional<KhachHang> findById(String maKhachHang) throws Exception;
-
-    List<KhachHang> findByTen(String tenKhachHang) throws Exception;
-
-    List<KhachHang> findBySdt(String sdt) throws Exception;
-
-    boolean create(KhachHang khachHang) throws Exception;
-
-    boolean update(KhachHang khachHang) throws Exception;
-
-    boolean delete(String maKhachHang) throws Exception;
+public interface IKhachHang {
+    boolean create(KhachHang kh);
+    ArrayList<KhachHang> getAllKhachHang();
+    ArrayList<KhachHang> timKiemTheoMa(String maKhachHang);
+    KhachHang getKhachHangSDT(String soDienThoai);
+    KhachHang getKhachHang(String maKH);
+    String generateID();
+    boolean taoMoi(KhachHang kh);
+    boolean capNhat(String ma, KhachHang newKh);
+    ArrayList<KhachHang> getAllTKKhachHang();
+    ArrayList<KhachHang> getAllTKKhachHangMonth(int month, int year);
+    ArrayList<KhachHang> getAllTKKhachHangYear(int year);
+    ArrayList<KhachHang> getTKKhachHangDoanhThu(String dau);
 }

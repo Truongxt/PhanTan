@@ -1,55 +1,54 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package dao;
 
-import connect.ConnectDB;
-import entity.NhanVien;
 import entity.VaiTro;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
+import interfaces.IVaiTro;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author Xuân Trường
- */
-public class VaiTro_DAO {
-     public ArrayList<VaiTro> getAllVaiTro() {
-        ArrayList<VaiTro> list = new ArrayList<>();
-        try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("Select * from VaiTro");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String maVT = rs.getString("maVaiTro");
-                String tenVT = rs.getString("tenVaiTro");
-                VaiTro vt = new VaiTro(maVT,tenVT);
-                list.add(vt);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(NhanVien_DAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return list;
+public class VaiTro_DAO extends UnicastRemoteObject implements IVaiTro {
+
+    private static final Logger LOGGER = Logger.getLogger(VaiTro_DAO.class.getName());
+    private final EntityManager em;
+
+    public VaiTro_DAO() throws RemoteException {
+        super();
+        em = Persistence.createEntityManagerFactory("default").createEntityManager();
     }
-     public VaiTro getVaiTro (String maVaiTro){
-         try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("Select * from VaiTro where maVaiTro = ?");
-            ps.setString(1, maVaiTro);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String maVT = rs.getString("maVaiTro");
-                String tenVT = rs.getString("tenVaiTro");
-                return new VaiTro(maVT,tenVT);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(NhanVien_DAO.class.getName()).log(Level.SEVERE, null, ex);
+
+    @Override
+    public ArrayList<VaiTro> getAllVaiTro() throws RemoteException {
+        try {
+            List<VaiTro> result = em.createQuery("SELECT v FROM VaiTro v", VaiTro.class)
+                    .getResultList();
+            return new ArrayList<>(result);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi lấy danh sách vai trò: " + e.getMessage(), e);
+            return new ArrayList<>();
+        } finally {
+            em.close();
         }
-         return null;
+    }
+
+    @Override
+    public VaiTro getVaiTro(String maVaiTro) throws RemoteException {
+        if (maVaiTro == null) {
+            return null;
+        }
+        try {
+            VaiTro vaiTro = em.find(VaiTro.class, maVaiTro);
+            return vaiTro;
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi lấy vai trò với maVaiTro = " + maVaiTro + ": " + e.getMessage(), e);
+            return null;
+        } finally {
+            em.close();
+        }
     }
 }

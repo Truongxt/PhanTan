@@ -25,10 +25,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-/**
- *
- * @author lemin
- */
+
 public class BangKiemTien_DAO extends UnicastRemoteObject implements IBangKiemTien {
 
     private KiemTien_DAO kiemTien_DAO;
@@ -72,7 +69,7 @@ public class BangKiemTien_DAO extends UnicastRemoteObject implements IBangKiemTi
             tx.begin();
             em.persist(bangKiemTien);
             for(KiemTien kt : bangKiemTien.getListKiemTien()){
-               em.persist(kt);
+                em.persist(kt);
             }
             for (ChiTietBangKiemTien ct : bangKiemTien.getListChiTietBangKiemTien()) {
                 em.persist(ct);
@@ -344,4 +341,4 @@ public class BangKiemTien_DAO extends UnicastRemoteObject implements IBangKiemTi
 //        }
 //
 //        return list;
-    }
+}

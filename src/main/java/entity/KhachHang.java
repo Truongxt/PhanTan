@@ -3,11 +3,16 @@ package entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 
+import java.sql.Date;
 import java.time.LocalDate;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class KhachHang {
     @Id
     @Column(name = "maKhachHang", nullable = false)
@@ -26,6 +31,8 @@ public class KhachHang {
 
     @Column(name = "NgayLapTaiKhoan")
     private LocalDate ngayLapTaiKhoan;
+
+
 
     public String getMaKhachHang() {
         return maKhachHang;

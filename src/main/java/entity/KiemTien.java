@@ -23,12 +23,21 @@ public class KiemTien {
     private Integer soLuong;
 
     @Column(name = "giaTri", nullable = false)
-    private Double giaTri;
+    private double giaTri;
 
     @Transient
     private Double tong;
 
-    public Double getTong() {
-        return this.giaTri * this.soLuong;
+    @OneToOne(cascade = CascadeType.ALL)
+    private KetToan ketToan;
+
+    public KiemTien(int soLuong, double giaTri) {
+        setSoLuong(soLuong);
+        setGiaTri(giaTri);
+        setTong();
+    }
+
+    public void setTong() {
+        this.tong = this.giaTri * this.soLuong;
     }
 }

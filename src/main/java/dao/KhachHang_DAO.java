@@ -5,63 +5,27 @@ import interfaces.IKhachHang;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import jakarta.persistence.TypedQuery;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class KhachHang_DAO extends UnicastRemoteObject implements IKhachHang {
 
     private final EntityManagerFactory emf;
 
     public KhachHang_DAO() throws RemoteException {
-        super();
         emf = Persistence.createEntityManagerFactory("default");
     }
 
     @Override
-    public Optional<KhachHang> findById(String maKhachHang) throws Exception {
-        EntityManager em = emf.createEntityManager();
-        try {
-            KhachHang khachHang = em.find(KhachHang.class, maKhachHang);
-            return Optional.ofNullable(khachHang);
-        } finally {
-            em.close();
-        }
-    }
-
-    @Override
-    public List<KhachHang> findByTen(String tenKhachHang) throws Exception {
-        EntityManager em = emf.createEntityManager();
-        try {
-            return em.createQuery("SELECT k FROM KhachHang k WHERE k.tenKhachHang LIKE :ten", KhachHang.class)
-                    .setParameter("ten", "%" + tenKhachHang + "%")
-                    .getResultList();
-        } finally {
-            em.close();
-        }
-    }
-
-    @Override
-    public List<KhachHang> findBySdt(String sdt) throws Exception {
-        EntityManager em = emf.createEntityManager();
-        try {
-            return em.createQuery("SELECT k FROM KhachHang k WHERE k.sdt = :sdt", KhachHang.class)
-                    .setParameter("sdt", sdt)
-                    .getResultList();
-        } finally {
-            em.close();
-        }
-    }
-
-    @Override
-    public boolean create(KhachHang khachHang) throws Exception {
+    public boolean create(KhachHang kh) {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
-            em.persist(khachHang);
+            em.persist(kh);
             em.getTransaction().commit();
             return true;
         } catch (Exception e) {
@@ -74,17 +38,83 @@ public class KhachHang_DAO extends UnicastRemoteObject implements IKhachHang {
     }
 
     @Override
-    public boolean update(KhachHang khachHang) throws Exception {
+    public ArrayList<KhachHang> getAllKhachHang() {
+        EntityManager em = emf.createEntityManager();
+        try {
+            List<KhachHang> result = em.createQuery("SELECT k FROM KhachHang k", KhachHang.class).getResultList();
+            return new ArrayList<>(result);
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public ArrayList<KhachHang> timKiemTheoMa(String maKhachHang) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            List<KhachHang> result = em.createQuery(
+                            "SELECT k FROM KhachHang k WHERE k.maKhachHang = :ma", KhachHang.class)
+                    .setParameter("ma", maKhachHang)
+                    .getResultList();
+            return new ArrayList<>(result);
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public KhachHang getKhachHangSDT(String soDienThoai) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            return em.createQuery(
+                            "SELECT k FROM KhachHang k WHERE k.sdt = :sdt", KhachHang.class)
+                    .setParameter("sdt", soDienThoai)
+                    .getSingleResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public KhachHang getKhachHang(String maKH) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            return em.find(KhachHang.class, maKH);
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public String generateID() {
+        EntityManager em = emf.createEntityManager();
+        try {
+            Long count = em.createQuery("SELECT COUNT(k) FROM KhachHang k", Long.class).getSingleResult();
+            return "KH" + (count + 1);
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public boolean taoMoi(KhachHang kh) {
+        return create(kh);
+    }
+
+    @Override
+    public boolean capNhat(String ma, KhachHang newKh) {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
-            KhachHang existingKhachHang = em.find(KhachHang.class, khachHang.getMaKhachHang());
-            if (existingKhachHang != null) {
-                existingKhachHang.setTenKhachHang(khachHang.getTenKhachHang());
-                existingKhachHang.setSdt(khachHang.getSdt());
-                existingKhachHang.setDiaChi(khachHang.getDiaChi());
-                existingKhachHang.setNgayLapTaiKhoan(khachHang.getNgayLapTaiKhoan());
-                em.merge(existingKhachHang);
+            KhachHang existingKh = em.find(KhachHang.class, ma);
+            if (existingKh != null) {
+                existingKh.setTenKhachHang(newKh.getTenKhachHang());
+                existingKh.setSdt(newKh.getSdt());
+                existingKh.setDiaChi(newKh.getDiaChi());
+                em.merge(existingKh);
                 em.getTransaction().commit();
                 return true;
             }
@@ -99,56 +129,62 @@ public class KhachHang_DAO extends UnicastRemoteObject implements IKhachHang {
     }
 
     @Override
-    public boolean delete(String maKhachHang) throws Exception {
+    public ArrayList<KhachHang> getAllTKKhachHang() {
         EntityManager em = emf.createEntityManager();
         try {
-            em.getTransaction().begin();
-            KhachHang khachHang = em.find(KhachHang.class, maKhachHang);
-            if (khachHang != null) {
-                em.remove(khachHang);
-                em.getTransaction().commit();
-                return true;
-            }
-            return false;
+            TypedQuery<KhachHang> query = em.createQuery("SELECT k FROM KhachHang k", KhachHang.class);
+            return new ArrayList<>(query.getResultList());
         } catch (Exception e) {
-            em.getTransaction().rollback();
             e.printStackTrace();
-            return false;
+            return new ArrayList<>();
+        } finally {
+            em.close();
+        }
+    }
+    @Override
+    public ArrayList<KhachHang> getAllTKKhachHangMonth(int month, int year) {
+        var em = emf.createEntityManager();
+        try {
+            String jpql = "SELECT k FROM KhachHang k WHERE MONTH(k.ngayLapTaiKhoan) = :month AND YEAR(k.ngayLapTaiKhoan) = :year";
+            TypedQuery<KhachHang> query = em.createQuery(jpql, KhachHang.class);
+            query.setParameter("month", month);
+            query.setParameter("year", year);
+            return new ArrayList<>(query.getResultList());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
         } finally {
             em.close();
         }
     }
 
-    public List<KhachHang> getAll() throws Exception {
-        EntityManager em = emf.createEntityManager();
+    @Override
+    public ArrayList<KhachHang> getAllTKKhachHangYear(int year) {
+        var em = emf.createEntityManager();
         try {
-            return em.createQuery("SELECT k FROM KhachHang k", KhachHang.class).getResultList();
+            String jpql = "SELECT k FROM KhachHang k WHERE YEAR(k.ngayLapTaiKhoan) = :year";
+            TypedQuery<KhachHang> query = em.createQuery(jpql, KhachHang.class);
+            query.setParameter("year", year);
+            return new ArrayList<>(query.getResultList());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
         } finally {
             em.close();
         }
     }
 
-    public List<KhachHang> getByMonthAndYear(int month, int year) throws Exception {
-        EntityManager em = emf.createEntityManager();
+    @Override
+    public ArrayList<KhachHang> getTKKhachHangDoanhThu(String dau) {
+        var em = emf.createEntityManager();
         try {
-            return em.createQuery(
-                            "SELECT k FROM KhachHang k WHERE MONTH(k.ngayLapTaiKhoan) = :month AND YEAR(k.ngayLapTaiKhoan) = :year",
-                            KhachHang.class)
-                    .setParameter("month", month)
-                    .setParameter("year", year)
-                    .getResultList();
-        } finally {
-            em.close();
-        }
-    }
-
-    public List<KhachHang> getByYear(int year) throws Exception {
-        EntityManager em = emf.createEntityManager();
-        try {
-            return em.createQuery(
-                            "SELECT k FROM KhachHang k WHERE YEAR(k.ngayLapTaiKhoan) = :year", KhachHang.class)
-                    .setParameter("year", year)
-                    .getResultList();
+            String jpql = "SELECT k FROM KhachHang k WHERE k.diaChi LIKE :dau";
+            TypedQuery<KhachHang> query = em.createQuery(jpql, KhachHang.class);
+            query.setParameter("dau", dau + "%");
+            return new ArrayList<>(query.getResultList());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
         } finally {
             em.close();
         }

@@ -1,310 +1,194 @@
-
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package dao;
 
 import entity.NhanVien;
-import java.sql.PreparedStatement;
-import connect.ConnectDB;
-import java.sql.SQLException;
+import interfaces.INhanVien;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.NoResultException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.sql.*;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.format.DateTimeFormatter;
 
-/**
- *
- * @author Xuân Trường
- */
-public class NhanVien_DAO {
+public class NhanVien_DAO extends UnicastRemoteObject implements INhanVien {
 
+    private final EntityManagerFactory em;
+
+    public NhanVien_DAO() throws RemoteException {
+        super();
+        em = Persistence.createEntityManagerFactory("default");
+    }
+
+    @Override
     public Boolean create(NhanVien nv) {
-        int n = 0;
+        var entityManager = em.createEntityManager();
         try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("insert NhanVien values (?,?,?,?,?,?,?,?) ");
-            ps.setString(1, nv.getMaNhanVien());
-            ps.setString(2, nv.getTenNhanVien());
-            ps.setString(3, nv.getEmail());
-            ps.setString(4, nv.getDiaChi());
-            ps.setString(5, nv.getSdt());
-            ps.setString(6, nv.getCccd());
-            ps.setBoolean(7, nv.isTrangThai());
-            ps.setDate(8, java.sql.Date.valueOf(nv.getNgayVaolam()));
-            n = ps.executeUpdate();
+            entityManager.getTransaction().begin();
+            entityManager.persist(nv);
+            entityManager.getTransaction().commit();
+            return true;
         } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return n > 0;
-    }
-
-    public ArrayList<NhanVien> getAllNhanVien() {
-        ArrayList<NhanVien> list = new ArrayList<>();
-
-        try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("Select * from NhanVien");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String maNV = rs.getString("maNhanVien");
-                String tenNhanVien = rs.getString("tenNhanVien");
-                String email = rs.getString("email");
-                String diaChi = rs.getString("diaChi");
-                String sdt = rs.getString("sdt");
-                String cccd = rs.getString("cccd");
-                boolean trangThai = rs.getBoolean("trangThai");
-                Date ngayVaoLam = rs.getDate("ngayVaoLam");
-                LocalDate nvl = LocalDate.of(ngayVaoLam.getYear() + 1900, ngayVaoLam.getMonth() + 1, ngayVaoLam.getDate());
-                NhanVien nv = new NhanVien(maNV, tenNhanVien, email, sdt, diaChi, cccd, trangThai, nvl);
-                list.add(nv);
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(NhanVien_DAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(NhanVien_DAO.class.getName()).log(Level.SEVERE, "Error creating NhanVien", e);
+            return false;
+        } finally {
+            entityManager.close();
         }
-        return list;
     }
 
+    @Override
+    public ArrayList<NhanVien> getAllNhanVien() {
+        try {
+            TypedQuery<NhanVien> query = em.createEntityManager().createQuery("SELECT nv FROM NhanVien nv", NhanVien.class);
+            return new ArrayList<>(query.getResultList());
+        } catch (Exception ex) {
+            Logger.getLogger(NhanVien_DAO.class.getName()).log(Level.SEVERE, "Error retrieving all NhanVien", ex);
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
     public NhanVien getNhanVien(String maNhanVien) {
         try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("Select * from NhanVien");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String maNV = rs.getString("maNhanVien");
-                if (maNV.equalsIgnoreCase(maNhanVien)) {
-                    String tenNhanVien = rs.getString("tenNhanVien");
-                    String email = rs.getString("email");
-                    String diaChi = rs.getString("diaChi");
-                    String sdt = rs.getString("sdt");
-                    String cccd = rs.getString("cccd");
-                    boolean trangThai = rs.getBoolean("trangThai");
-                    Date ngayVaoLam = rs.getDate("ngayVaoLam");
-                    LocalDate nvl = LocalDate.of(ngayVaoLam.getYear(), ngayVaoLam.getMonth() + 1, ngayVaoLam.getDate());
-                    NhanVien nv = new NhanVien(maNV, tenNhanVien, email, sdt, diaChi, cccd, trangThai, nvl);
-                    return nv;
-                }
-
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(NhanVien_DAO.class.getName()).log(Level.SEVERE, null, ex);
+            TypedQuery<NhanVien> query = em.createEntityManager().createQuery("SELECT nv FROM NhanVien nv WHERE nv.maNhanVien = :maNhanVien", NhanVien.class);
+            query.setParameter("maNhanVien", maNhanVien);
+            return query.getSingleResult();
+        } catch (NoResultException ex) {
+            return null; // Return null if no result is found
+        } catch (Exception ex) {
+            Logger.getLogger(NhanVien_DAO.class.getName()).log(Level.SEVERE, "Error retrieving NhanVien by ID", ex);
         }
         return null;
     }
 
-    public boolean suaNhanVien(String maNhanvien, NhanVien newNV) throws SQLException {
-        int n = 0;
+    @Override
+    public boolean suaNhanVien(String maNhanVien, NhanVien newNV) {
+        var entityManager = em.createEntityManager();
         try {
-            PreparedStatement st = ConnectDB.conn.prepareStatement("UPDATE NhanVien set"
-                    + "      [tenNhanVien] = ?,"
-                    + "      [email] = ?,"
-                    + "      [sdt] = ?,"
-                    + "      [diaChi] = ?,"
-                    + "      [cccd] = ?,"
-                    + "      [trangThai] = ?,"
-                    + "      [ngayVaoLam] = ?"
-                    + " WHERE maNhanVien = ?");
-            st.setString(1, newNV.getTenNhanVien());
-            st.setString(2, newNV.getEmail());
-            st.setString(3, newNV.getSdt());
-            st.setString(4, newNV.getDiaChi());
-            st.setString(5, newNV.getCccd());
-            st.setBoolean(6, newNV.isTrangThai());
-            st.setDate(7, new Date(newNV.getNgayVaolam().getYear() - 1900, newNV.getNgayVaolam().getMonthValue() - 1, newNV.getNgayVaolam().getDayOfMonth()));
-            st.setString(8, maNhanvien);
-            n = st.executeUpdate();
-
-        } catch (SQLException ex) {
-            Logger.getLogger(NhanVien_DAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return n > 0;
-    }
-
-    public int getSize() {
-        int n = 0;
-        try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("Select * from NhanVien");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                n++;
+            NhanVien nv = entityManager.find(NhanVien.class, maNhanVien);
+            if (nv != null) {
+                entityManager.getTransaction().begin();
+                nv.setTenNhanVien(newNV.getTenNhanVien());
+                nv.setEmail(newNV.getEmail());
+                nv.setSdt(newNV.getSdt());
+                nv.setDiaChi(newNV.getDiaChi());
+                nv.setCccd(newNV.getCccd());
+                nv.setTrangThai(newNV.getTrangThai());
+                nv.setNgayVaoLam(newNV.getNgayVaoLam());
+                entityManager.getTransaction().commit();
+                return true;
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(NhanVien_DAO.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
+            Logger.getLogger(NhanVien_DAO.class.getName()).log(Level.SEVERE, "Error updating NhanVien", ex);
+        } finally {
+            entityManager.close();
         }
-        return n;
+        return false;
     }
 
-    //layNhanVienCuoi
+    @Override
+    public int getSize() {
+        try {
+            TypedQuery<Long> query = em.createEntityManager().createQuery("SELECT COUNT(nv) FROM NhanVien nv", Long.class);
+            return query.getSingleResult().intValue();
+        } catch (Exception ex) {
+            Logger.getLogger(NhanVien_DAO.class.getName()).log(Level.SEVERE, "Error getting size of NhanVien", ex);
+        }
+        return 0;
+    }
+
+    @Override
     public NhanVien getLastNhanVien() {
         try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("select top 1 * from [dbo].[NhanVien] order by maNhanVien DESC");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String maNV = rs.getString("maNhanVien");
-                String tenNhanVien = rs.getString("tenNhanVien");
-                String email = rs.getString("email");
-                String diaChi = rs.getString("diaChi");
-                String sdt = rs.getString("sdt");
-                String cccd = rs.getString("cccd");
-                boolean trangThai = rs.getBoolean("trangThai");
-                Date ngayVaoLam = rs.getDate("ngayVaoLam");
-                LocalDate nvl = LocalDate.of(ngayVaoLam.getYear(), ngayVaoLam.getMonth() + 1, ngayVaoLam.getDate());
-                NhanVien nv = new NhanVien(maNV, tenNhanVien, email, sdt, diaChi, cccd, trangThai, nvl);
-                return nv;
-
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(NhanVien_DAO.class.getName()).log(Level.SEVERE, null, ex);
+            TypedQuery<NhanVien> query = em.createEntityManager().createQuery("SELECT nv FROM NhanVien nv ORDER BY nv.maNhanVien DESC", NhanVien.class);
+            query.setMaxResults(1);
+            return query.getSingleResult();
+        } catch (NoResultException ex) {
+            return null;
+        } catch (Exception ex) {
+            Logger.getLogger(NhanVien_DAO.class.getName()).log(Level.SEVERE, "Error retrieving last NhanVien", ex);
         }
         return null;
     }
 
+    @Override
     public ArrayList<NhanVien> timKiemTheoMa(String maNhanVien) {
-        ArrayList<NhanVien> listNV = new ArrayList<>();
         try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("select * from NhanVien where maNhanVien like ?");
-            ps.setString(1, "%" + maNhanVien + "%");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String maNV = rs.getString("maNhanVien");
-                String tenNhanVien = rs.getString("tenNhanVien");
-                String email = rs.getString("email");
-                String diaChi = rs.getString("diaChi");
-                String sdt = rs.getString("sdt");
-                String cccd = rs.getString("cccd");
-                boolean trangThai = rs.getBoolean("trangThai");
-                Date ngayVaoLam = rs.getDate("ngayVaoLam");
-                LocalDate nvl = LocalDate.of(ngayVaoLam.getYear(), ngayVaoLam.getMonth() + 1, ngayVaoLam.getDate());
-                NhanVien nv = new NhanVien(maNV, tenNhanVien, email, sdt, diaChi, cccd, trangThai, nvl);
-                listNV.add(nv);
-
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(NhanVien_DAO.class.getName()).log(Level.SEVERE, null, ex);
+            TypedQuery<NhanVien> query = em.createEntityManager().createQuery("SELECT nv FROM NhanVien nv WHERE nv.maNhanVien LIKE :maNhanVien", NhanVien.class);
+            query.setParameter("maNhanVien", "%" + maNhanVien + "%");
+            return new ArrayList<>(query.getResultList());
+        } catch (Exception ex) {
+            Logger.getLogger(NhanVien_DAO.class.getName()).log(Level.SEVERE, "Error searching NhanVien by ID", ex);
         }
-        return listNV;
+        return new ArrayList<>();
     }
 
+    @Override
     public NhanVien timKiemTheoMa1(String maNhanVien) {
-        try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("select * from NhanVien where maNhanVien like ?");
-            ps.setString(1, "%" + maNhanVien + "%");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String maNV = rs.getString("maNhanVien");
-                String tenNhanVien = rs.getString("tenNhanVien");
-                String email = rs.getString("email");
-                String diaChi = rs.getString("diaChi");
-                String sdt = rs.getString("sdt");
-                String cccd = rs.getString("cccd");
-                boolean trangThai = rs.getBoolean("trangThai");
-                Date ngayVaoLam = rs.getDate("ngayVaoLam");
-                LocalDate nvl = LocalDate.of(ngayVaoLam.getYear(), ngayVaoLam.getMonth() + 1, ngayVaoLam.getDate());
-                NhanVien nv = new NhanVien(maNV, tenNhanVien, email, sdt, diaChi, cccd, trangThai, nvl);
-                return nv;
-
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(NhanVien_DAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
+        return getNhanVien(maNhanVien); // Reuse getNhanVien method
     }
 
+    @Override
     public ArrayList<NhanVien> timKiemTheoTen(String ten) {
-        ArrayList<NhanVien> listNV = new ArrayList<>();
         try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("select * from NhanVien where tenNhanVien like ?");
-            ps.setString(1, "%" + ten + "%");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String maNV = rs.getString("maNhanVien");
-                String tenNhanVien = rs.getString("tenNhanVien");
-                String email = rs.getString("email");
-                String diaChi = rs.getString("diaChi");
-                String sdt = rs.getString("sdt");
-                String cccd = rs.getString("cccd");
-                boolean trangThai = rs.getBoolean("trangThai");
-                Date ngayVaoLam = rs.getDate("ngayVaoLam");
-                LocalDate nvl = LocalDate.of(ngayVaoLam.getYear(), ngayVaoLam.getMonth() + 1, ngayVaoLam.getDate());
-                NhanVien nv = new NhanVien(maNV, tenNhanVien, email, sdt, diaChi, cccd, trangThai, nvl);
-                listNV.add(nv);
-
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(NhanVien_DAO.class.getName()).log(Level.SEVERE, null, ex);
+            TypedQuery<NhanVien> query = em.createEntityManager().createQuery("SELECT nv FROM NhanVien nv WHERE nv.tenNhanVien LIKE :ten", NhanVien.class);
+            query.setParameter("ten", "%" + ten + "%");
+            return new ArrayList<>(query.getResultList());
+        } catch (Exception ex) {
+            Logger.getLogger(NhanVien_DAO.class.getName()).log(Level.SEVERE, "Error searching NhanVien by name", ex);
         }
-        return listNV;
+        return new ArrayList<>();
     }
 
+    @Override
     public ArrayList<NhanVien> timKiemTheoTrangThai(boolean tt) {
-        ArrayList<NhanVien> listNV = new ArrayList<>();
         try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("select * from NhanVien where trangThai = ?");
-            ps.setBoolean(1, tt);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String maNV = rs.getString("maNhanVien");
-                String tenNhanVien = rs.getString("tenNhanVien");
-                String email = rs.getString("email");
-                String diaChi = rs.getString("diaChi");
-                String sdt = rs.getString("sdt");
-                String cccd = rs.getString("cccd");
-                boolean trangThai = rs.getBoolean("trangThai");
-                Date ngayVaoLam = rs.getDate("ngayVaoLam");
-                LocalDate nvl = LocalDate.of(ngayVaoLam.getYear(), ngayVaoLam.getMonth() + 1, ngayVaoLam.getDate());
-                NhanVien nv = new NhanVien(maNV, tenNhanVien, email, sdt, diaChi, cccd, trangThai, nvl);
-                listNV.add(nv);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(NhanVien_DAO.class.getName()).log(Level.SEVERE, null, ex);
+            TypedQuery<NhanVien> query = em.createEntityManager().createQuery("SELECT nv FROM NhanVien nv WHERE nv.trangThai = :tt", NhanVien.class);
+            query.setParameter("tt", tt);
+            return new ArrayList<>(query.getResultList());
+        } catch (Exception ex) {
+            Logger.getLogger(NhanVien_DAO.class.getName()).log(Level.SEVERE, "Error searching NhanVien by status", ex);
         }
-        return listNV;
+        return new ArrayList<>();
     }
 
+    @Override
     public ArrayList<NhanVien> timTheoSDT(String soDT) {
-        ArrayList<NhanVien> listNV = new ArrayList<>();
         try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("select * from NhanVien where sdt like ?");
-            ps.setString(1, "%" + soDT + "%");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String maNV = rs.getString("maNhanVien");
-                String tenNhanVien = rs.getString("tenNhanVien");
-                String email = rs.getString("email");
-                String diaChi = rs.getString("diaChi");
-                String sdt = rs.getString("sdt");
-                String cccd = rs.getString("cccd");
-                boolean trangThai = rs.getBoolean("trangThai");
-                Date ngayVaoLam = rs.getDate("ngayVaoLam");
-                LocalDate nvl = LocalDate.of(ngayVaoLam.getYear(), ngayVaoLam.getMonth() + 1, ngayVaoLam.getDate());
-                NhanVien nv = new NhanVien(maNV, tenNhanVien, email, sdt, diaChi, cccd, trangThai, nvl);
-                listNV.add(nv);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(NhanVien_DAO.class.getName()).log(Level.SEVERE, null, ex);
+            TypedQuery<NhanVien> query = em.createEntityManager().createQuery("SELECT nv FROM NhanVien nv WHERE nv.sdt LIKE :soDT", NhanVien.class);
+            query.setParameter("soDT", "%" + soDT + "%");
+            return new ArrayList<>(query.getResultList());
+        } catch (Exception ex) {
+            Logger.getLogger(NhanVien_DAO.class.getName()).log(Level.SEVERE, "Error searching NhanVien by phone number", ex);
         }
-        return listNV;
+        return new ArrayList<>();
     }
 
+    @Override
     public String generateID() {
         String result = "NV";
         LocalDate time = LocalDate.now();
         DateTimeFormatter dateFormater = DateTimeFormatter.ofPattern("ddMMyy");
         result += dateFormater.format(time);
-        String query = """
-                       select top 1 * from [NhanVien]
-                       where maNhanVien like ?
-                       order by maNhanVien desc
-                       """;
 
         try {
-            PreparedStatement st = ConnectDB.conn.prepareStatement(query);
-            st.setString(1, result + "%");
-            ResultSet rs = st.executeQuery();
-            if (rs.next()) {
-                String lastID = rs.getString("maNhanVien");
+            TypedQuery<String> query = em.createEntityManager().createQuery("SELECT nv.maNhanVien FROM NhanVien nv WHERE nv.maNhanVien LIKE :prefix ORDER BY nv.maNhanVien DESC", String.class);
+            query.setParameter("prefix", result + "%");
+            query.setMaxResults(1);
+
+            List<String> resultList = query.getResultList();
+            if (!resultList.isEmpty()) {
+                String lastID = resultList.get(0);
                 String sNumber = lastID.substring(lastID.length() - 2);
                 int num = Integer.parseInt(sNumber) + 1;
                 result += String.format("%03d", num);
@@ -312,7 +196,7 @@ public class NhanVien_DAO {
                 result += String.format("%03d", 0);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.getLogger(NhanVien_DAO.class.getName()).log(Level.SEVERE, "Error generating NhanVien ID", e);
         }
 
         return result;

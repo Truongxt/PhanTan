@@ -1,123 +1,138 @@
 package dao;
 
 import entity.LoaiThuoc;
-import java.sql.PreparedStatement;
-import connect.ConnectDB;
-import java.sql.SQLException;
+import interfaces.ILoaiThuoc;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+import jakarta.persistence.TypedQuery;
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.sql.*;
+import java.util.List;
 
-/**
- *
- * @author Xuân Trường
- */
-public class LoaiThuoc_DAO {
+public class LoaiThuoc_DAO extends UnicastRemoteObject implements ILoaiThuoc {
 
+    private final EntityManagerFactory emf;
+
+    public LoaiThuoc_DAO() throws RemoteException {
+        super();
+        emf = Persistence.createEntityManagerFactory("default");
+    }
+
+    @Override
     public Boolean create(LoaiThuoc loaiThuoc) {
-        int n = 0;
+        EntityManager em = emf.createEntityManager();
         try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("INSERT INTO LoaiThuoc VALUES (?,?)");
-            ps.setString(1, loaiThuoc.getMaLoai());
-            ps.setString(2, loaiThuoc.getTenLoai());
-            n = ps.executeUpdate();
+            em.getTransaction().begin();
+            em.persist(loaiThuoc);
+            em.getTransaction().commit();
+            return true;
         } catch (Exception e) {
+            em.getTransaction().rollback();
             e.printStackTrace();
+            return false;
+        } finally {
+            em.close();
         }
-        return n > 0;
     }
 
+    @Override
     public ArrayList<LoaiThuoc> getAllLoaiThuoc() {
-        ArrayList<LoaiThuoc> list = new ArrayList<>();
+        EntityManager em = emf.createEntityManager();
         try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("SELECT * FROM LoaiThuoc");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String maLoai = rs.getString("maLoai");
-                String tenLoai = rs.getString("tenLoai");
-                LoaiThuoc loaiThuoc = new LoaiThuoc(maLoai, tenLoai);
-                list.add(loaiThuoc);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(LoaiThuoc_DAO.class.getName()).log(Level.SEVERE, null, ex);
+            TypedQuery<LoaiThuoc> query = em.createQuery("SELECT l FROM LoaiThuoc l", LoaiThuoc.class);
+            List<LoaiThuoc> list = query.getResultList();
+            return new ArrayList<>(list);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ArrayList<>();
+        } finally {
+            em.close();
         }
-        return list;
     }
 
+    @Override
     public LoaiThuoc getLoaiThuoc(String maLoai) {
+        EntityManager em = emf.createEntityManager();
         try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("SELECT * FROM LoaiThuoc WHERE maLoai = ?");
-            ps.setString(1, maLoai);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                String tenLoai = rs.getString("tenLoai");
-                return new LoaiThuoc(maLoai, tenLoai);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(LoaiThuoc_DAO.class.getName()).log(Level.SEVERE, null, ex);
+            return em.find(LoaiThuoc.class, maLoai);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        } finally {
+            em.close();
         }
-        return null;
     }
 
+    @Override
     public boolean updateLoaiThuoc(String maLoai, LoaiThuoc newLoaiThuoc) {
-        int n = 0;
+        EntityManager em = emf.createEntityManager();
         try {
-            PreparedStatement st = ConnectDB.conn.prepareStatement("UPDATE LoaiThuoc SET tenLoai = ? WHERE maLoai = ?");
-            st.setString(1, newLoaiThuoc.getTenLoai());
-            st.setString(2, maLoai);
-            n = st.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(LoaiThuoc_DAO.class.getName()).log(Level.SEVERE, null, ex);
+            em.getTransaction().begin();
+            LoaiThuoc loaiThuoc = em.find(LoaiThuoc.class, maLoai);
+            if (loaiThuoc != null) {
+                loaiThuoc.setTenLoai(newLoaiThuoc.getTenLoai());
+                em.merge(loaiThuoc);
+                em.getTransaction().commit();
+                return true;
+            }
+            return false;
+        } catch (Exception ex) {
+            em.getTransaction().rollback();
+            ex.printStackTrace();
+            return false;
+        } finally {
+            em.close();
         }
-        return n > 0;
     }
 
+    @Override
     public int getSize() {
-        int n = 0;
+        EntityManager em = emf.createEntityManager();
         try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("SELECT COUNT(*) FROM LoaiThuoc");
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                n = rs.getInt(1);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(LoaiThuoc_DAO.class.getName()).log(Level.SEVERE, null, ex);
+            Long count = em.createQuery("SELECT COUNT(l) FROM LoaiThuoc l", Long.class).getSingleResult();
+            return count.intValue();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return 0;
+        } finally {
+            em.close();
         }
-        return n;
     }
 
+    @Override
     public ArrayList<LoaiThuoc> searchByMaLoai(String maLoai) {
-        ArrayList<LoaiThuoc> list = new ArrayList<>();
+        EntityManager em = emf.createEntityManager();
         try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("SELECT * FROM LoaiThuoc WHERE maLoai LIKE ?");
-            ps.setString(1, "%" + maLoai + "%");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String ma = rs.getString("maLoai");
-                String tenLoai = rs.getString("tenLoai");
-                list.add(new LoaiThuoc(ma, tenLoai));
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(LoaiThuoc_DAO.class.getName()).log(Level.SEVERE, null, ex);
+            TypedQuery<LoaiThuoc> query = em.createQuery(
+                    "SELECT l FROM LoaiThuoc l WHERE l.maLoai LIKE :maLoai", LoaiThuoc.class);
+            query.setParameter("maLoai", "%" + maLoai + "%");
+            List<LoaiThuoc> list = query.getResultList();
+            return new ArrayList<>(list);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ArrayList<>();
+        } finally {
+            em.close();
         }
-        return list;
     }
 
+    @Override
     public ArrayList<LoaiThuoc> searchByTenLoai(String tenLoai) {
-        ArrayList<LoaiThuoc> list = new ArrayList<>();
+        EntityManager em = emf.createEntityManager();
         try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("SELECT * FROM LoaiThuoc WHERE tenLoai LIKE ?");
-            ps.setString(1, "%" + tenLoai + "%");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String maLoai = rs.getString("maLoai");
-                String ten = rs.getString("tenLoai");
-                list.add(new LoaiThuoc(maLoai, ten));
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(LoaiThuoc_DAO.class.getName()).log(Level.SEVERE, null, ex);
+            TypedQuery<LoaiThuoc> query = em.createQuery(
+                    "SELECT l FROM LoaiThuoc l WHERE l.tenLoai LIKE :tenLoai", LoaiThuoc.class);
+            query.setParameter("tenLoai", "%" + tenLoai + "%");
+            List<LoaiThuoc> list = query.getResultList();
+            return new ArrayList<>(list);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ArrayList<>();
+        } finally {
+            em.close();
         }
-        return list;
     }
 }

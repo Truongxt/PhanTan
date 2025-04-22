@@ -1,19 +1,16 @@
 package interfaces;
 
 import entity.LoaiThuoc;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
 
-import java.util.List;
-import java.util.Optional;
-
-public interface ILoaiThuoc {
-
-    Optional<LoaiThuoc> findById(String maLoaiThuoc) throws Exception;
-
-    List<LoaiThuoc> findAll() throws Exception;
-
-    boolean create(LoaiThuoc loaiThuoc) throws Exception;
-
-    boolean update(LoaiThuoc loaiThuoc) throws Exception;
-
-    boolean delete(String maLoaiThuoc) throws Exception;
+public interface ILoaiThuoc extends Remote {
+    Boolean create(LoaiThuoc loaiThuoc) throws RemoteException;
+    ArrayList<LoaiThuoc> getAllLoaiThuoc() throws RemoteException;
+    LoaiThuoc getLoaiThuoc(String maLoai) throws RemoteException;
+    boolean updateLoaiThuoc(String maLoai, LoaiThuoc newLoaiThuoc) throws RemoteException;
+    int getSize() throws RemoteException;
+    ArrayList<LoaiThuoc> searchByMaLoai(String maLoai) throws RemoteException;
+    ArrayList<LoaiThuoc> searchByTenLoai(String tenLoai) throws RemoteException;
 }

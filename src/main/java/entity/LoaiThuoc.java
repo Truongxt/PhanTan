@@ -7,6 +7,7 @@ import org.hibernate.annotations.Nationalized;
 
 @Entity
 public class LoaiThuoc {
+
     @Id
     @Column(name = "maLoai", nullable = false)
     private String maLoai;
@@ -14,6 +15,16 @@ public class LoaiThuoc {
     @Nationalized
     @Column(name = "tenLoai", nullable = false)
     private String tenLoai;
+
+
+    public LoaiThuoc() {
+    }
+
+
+    public LoaiThuoc(String maLoai, String tenLoai) {
+        this.maLoai = maLoai;
+        this.tenLoai = tenLoai;
+    }
 
     public String getMaLoai() {
         return maLoai;
@@ -30,5 +41,4 @@ public class LoaiThuoc {
     public void setTenLoai(String tenLoai) {
         this.tenLoai = tenLoai;
     }
-
 }

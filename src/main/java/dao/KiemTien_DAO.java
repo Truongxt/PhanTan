@@ -102,17 +102,12 @@ public class KiemTien_DAO extends UnicastRemoteObject implements IKiemTien {
         }
     }
 
-//    public double getTongTien(String maBangKiemTien) throws Exception {
-//        EntityManager em = emf.createEntityManager();
-//        try {
-//            Double total = em.createQuery(
-//                            "SELECT SUM(k.giaTri * k.soLuong) FROM KiemTien k WHERE k.maBangKiemTien.maBangKiemTien = :maBangKiemTien",
-//                            Double.class)
-//                    .setParameter("maBangKiemTien", maBangKiemTien)
-//                    .getSingleResult();
-//            return total != null ? total : 0.0;
-//        } finally {
-//            em.close();
-//        }
-//    }
+    public double getTongTien(ArrayList<KiemTien> list) {
+        double sum = 0;
+        for (KiemTien kiemTien : list) {
+            sum += kiemTien.getTong();
+        }
+        return sum;
+    }
+
 }

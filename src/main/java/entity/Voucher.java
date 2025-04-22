@@ -1,22 +1,32 @@
 package entity;
 
+import jakarta.persistence.*;
 import java.time.LocalDate;
 
+@Entity
+@Table(name = "Voucher")
 public class Voucher {
 
-	private String maVoucher;
-	private String tenVoucher;
-	private String moTa;
-	private LocalDate ngayApDung;
-	private LocalDate ngayKetThuc;
-        private double giaGiam;
+    @Id
+    @Column(name = "ma_voucher", nullable = false, length = 50)
+    private String maVoucher;
 
-    public double getGiaGiam() {
-        return giaGiam;
-    }
+    @Column(name = "ten_voucher", nullable = false, length = 100)
+    private String tenVoucher;
 
-    public void setGiaGiam(double giaGiam) {
-        this.giaGiam = giaGiam;
+    @Column(name = "mo_ta", length = 255)
+    private String moTa;
+
+    @Column(name = "ngay_ap_dung", nullable = false)
+    private LocalDate ngayApDung;
+
+    @Column(name = "ngay_ket_thuc", nullable = false)
+    private LocalDate ngayKetThuc;
+
+    @Column(name = "gia_giam", nullable = false)
+    private double giaGiam;
+
+    public Voucher() {
     }
 
     public Voucher(String maVoucher, String tenVoucher, String moTa, LocalDate ngayApDung, LocalDate ngayKetThuc, double giaGiam) {
@@ -27,8 +37,6 @@ public class Voucher {
         this.ngayKetThuc = ngayKetThuc;
         this.giaGiam = giaGiam;
     }
-
-    
 
     public Voucher(String maVoucher) {
         this.maVoucher = maVoucher;
@@ -74,4 +82,11 @@ public class Voucher {
         this.ngayKetThuc = ngayKetThuc;
     }
 
+    public double getGiaGiam() {
+        return giaGiam;
+    }
+
+    public void setGiaGiam(double giaGiam) {
+        this.giaGiam = giaGiam;
+    }
 }

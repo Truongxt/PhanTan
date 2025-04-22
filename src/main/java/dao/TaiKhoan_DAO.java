@@ -1,116 +1,152 @@
 package dao;
 
 import entity.TaiKhoan;
-import entity.NhanVien;
-import entity.VaiTro;
-import connect.ConnectDB;
-import java.sql.*;
+import interfaces.ITaiKhoan;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class TaiKhoan_DAO {
+public class TaiKhoan_DAO extends UnicastRemoteObject implements ITaiKhoan {
 
-    public boolean create(TaiKhoan tk) {
-        int n = 0;
-        try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("INSERT INTO TaiKhoan (tenTaiKhoan, password, trangThai, vaiTro, nhanVien) VALUES (?, ?, ?, ?, ?)");
-            ps.setString(1, tk.getTen());
-            ps.setString(2, tk.getPassword());
-            ps.setBoolean(3, tk.isTrangThai());
-            ps.setString(4, tk.getVaiTro().getMaVaiTro());
-            ps.setString(5, tk.getNhanVien().getMaNhanVien());
-            n = ps.executeUpdate();
-        } catch (SQLException e) {
-            Logger.getLogger(TaiKhoan_DAO.class.getName()).log(Level.SEVERE, null, e);
-        }
-        return n > 0;
+    private static final Logger LOGGER = Logger.getLogger(TaiKhoan_DAO.class.getName());
+    private final EntityManagerFactory emf;
+
+    public TaiKhoan_DAO() throws RemoteException {
+        super();
+        emf = Persistence.createEntityManagerFactory("default");
     }
 
-    public ArrayList<TaiKhoan> getAllTaiKhoan() {
-        ArrayList<TaiKhoan> list = new ArrayList<>();
+    @Override
+    public boolean create(TaiKhoan tk) throws RemoteException {
+        if (tk == null || tk.getTen() == null) {
+            return false;
+        }
+        EntityManager em = emf.createEntityManager();
         try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("SELECT * FROM TaiKhoan");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String ten = rs.getString("tenTaiKhoan");
-                String password = rs.getString("password");
-                boolean trangThai = rs.getBoolean("trangThai");
-                String mavaitro = rs.getString("maVaiTro");
-                String manhanvien = rs.getString("maNhanVien");
-                // Chuyển đổi vaiTro và nhanVien nếu cần thiết
-                VaiTro vaiTro = new VaiTro(mavaitro);
-                NhanVien nhanVien = new NhanVien(manhanvien);
-                TaiKhoan tk = new TaiKhoan(ten, password, trangThai, vaiTro, nhanVien);
-                list.add(tk);
+            em.getTransaction().begin();
+            em.persist(tk);
+            em.getTransaction().commit();
+            return true;
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+            LOGGER.log(Level.SEVERE, "Lỗi khi tạo tài khoản: " + e.getMessage(), e);
+            return false;
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public ArrayList<TaiKhoan> getAllTaiKhoan() throws RemoteException {
+        EntityManager em = emf.createEntityManager();
+        try {
+            List<TaiKhoan> result = em.createQuery("SELECT t FROM TaiKhoan t", TaiKhoan.class)
+                    .getResultList();
+            return new ArrayList<>(result);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi lấy danh sách tài khoản: " + e.getMessage(), e);
+            return new ArrayList<>();
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public TaiKhoan getTaiKhoan(String ten) throws RemoteException {
+        if (ten == null) {
+            return null;
+        }
+        EntityManager em = emf.createEntityManager();
+        try {
+            TaiKhoan taiKhoan = em.find(TaiKhoan.class, ten);
+            return taiKhoan;
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi lấy tài khoản với tenTaiKhoan = " + ten + ": " + e.getMessage(), e);
+            return null;
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public boolean updateTaiKhoan(TaiKhoan tk) throws RemoteException {
+        if (tk == null || tk.getTen() == null) {
+            return false;
+        }
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            TaiKhoan existingTaiKhoan = em.find(TaiKhoan.class, tk.getTen());
+            if (existingTaiKhoan != null) {
+                existingTaiKhoan.setPassword(tk.getPassword());
+                existingTaiKhoan.setVaiTro(tk.getVaiTro());
+                existingTaiKhoan.setNhanVien(tk.getNhanVien());
+                em.merge(existingTaiKhoan);
+                em.getTransaction().commit();
+                return true;
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(TaiKhoan_DAO.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+            LOGGER.log(Level.SEVERE, "Lỗi khi cập nhật tài khoản: " + e.getMessage(), e);
+            return false;
+        } finally {
+            em.close();
         }
-        return list;
     }
 
-    public TaiKhoan getTaiKhoan(String ten) {
+    @Override
+    public boolean deleteTaiKhoan(String ten) throws RemoteException {
+        if (ten == null) {
+            return false;
+        }
+        EntityManager em = emf.createEntityManager();
         try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("SELECT * FROM TaiKhoan WHERE tenTaiKhoan = ?");
-            ps.setString(1, ten);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                String password = rs.getString("password");
-                boolean trangThai = rs.getBoolean("trangThai");
-                String mavaitro = rs.getString("maVaiTro");
-                String manhanvien = rs.getString("maNhanVien");
-                // Chuyển đổi vaiTro và nhanVien nếu cần thiết
-                VaiTro vaiTro = new VaiTro(mavaitro);
-                NhanVien nhanVien = new NhanVien(manhanvien);
-                return new TaiKhoan(ten, password, trangThai, vaiTro, nhanVien);
+            em.getTransaction().begin();
+            TaiKhoan taiKhoan = em.find(TaiKhoan.class, ten);
+            if (taiKhoan != null) {
+                em.remove(taiKhoan);
+                em.getTransaction().commit();
+                return true;
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(TaiKhoan_DAO.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+            LOGGER.log(Level.SEVERE, "Lỗi khi xóa tài khoản với tenTaiKhoan = " + ten + ": " + e.getMessage(), e);
+            return false;
+        } finally {
+            em.close();
         }
-        return null;
     }
 
-    public boolean updateTaiKhoan(TaiKhoan tk) {
-        int n = 0;
+    @Override
+    public boolean doiMatKHau(String ten, String mk) throws RemoteException {
+        if (ten == null || mk == null) {
+            return false;
+        }
+        EntityManager em = emf.createEntityManager();
         try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("UPDATE TaiKhoan SET password = ?, trangThai = ?, vaiTro = ?, nhanVien = ? WHERE ten = ?");
-            ps.setString(1, tk.getPassword());
-            ps.setBoolean(2, tk.isTrangThai());
-            ps.setString(3, tk.getVaiTro().toString());
-            ps.setString(4, tk.getNhanVien().toString());
-            ps.setString(5, tk.getTen());
-            n = ps.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(TaiKhoan_DAO.class.getName()).log(Level.SEVERE, null, ex);
+            em.getTransaction().begin();
+            TaiKhoan taiKhoan = em.find(TaiKhoan.class, ten);
+            if (taiKhoan != null) {
+                taiKhoan.setPassword(mk);
+                em.merge(taiKhoan);
+                em.getTransaction().commit();
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+            LOGGER.log(Level.SEVERE, "Lỗi khi đổi mật khẩu cho tenTaiKhoan = " + ten + ": " + e.getMessage(), e);
+            return false;
+        } finally {
+            em.close();
         }
-        return n > 0;
     }
-
-    public boolean deleteTaiKhoan(String ten) {
-        int n = 0;
-        try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("DELETE FROM TaiKhoan WHERE ten = ?");
-            ps.setString(1, ten);
-            n = ps.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(TaiKhoan_DAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return n > 0;
-    }
-
-    public boolean doiMatKHau(String ten, String mk) {
-        int n = 0;
-        try {
-            PreparedStatement ps = ConnectDB.conn.prepareStatement("UPDATE TaiKhoan SET password = ? WHERE tenTaiKhoan = ?");
-            ps.setString(1, mk);
-            ps.setString(2, ten);
-
-            n = ps.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(TaiKhoan_DAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return n > 0;
-    }
-
 }
