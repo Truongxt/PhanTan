@@ -7,8 +7,6 @@ import java.util.Objects;
 
 @Entity
 @Data
-@Getter
-@Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,10 +25,10 @@ public class ChiTietHoaDon {
     private Thuoc thuoc;
 
     @Column(name = "soLuong", nullable = false)
-    private Integer soLuong;
+    private int soLuong;
 
     @Column(name = "donGia", nullable = false)
-    private Double donGia;
+    private double donGia;
 
     public ChiTietHoaDon(Thuoc thuoc) {
         this.thuoc = thuoc;

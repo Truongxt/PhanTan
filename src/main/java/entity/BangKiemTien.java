@@ -13,7 +13,7 @@ import java.util.Objects;
 @Entity
 @AllArgsConstructor
 @ToString
-public class BangKiemTien implements Serializable, Comparable<BangKiemTien>  {
+public class BangKiemTien implements Serializable, Comparable<BangKiemTien> {
     @Id
     @Column(name = "maBangKiemTien", nullable = false)
     private String maBangKiemTien;
@@ -26,35 +26,30 @@ public class BangKiemTien implements Serializable, Comparable<BangKiemTien>  {
 
     @Column(name = "chenhLech", nullable = false)
     private double chenhLech;
+
     @Column(name = "tongTien", nullable = false)
     private double tongTien;
 
-    @OneToMany(mappedBy = "maBangKiemTien",fetch = FetchType.LAZY)
-    private List<KiemTien> listKiemTien;
+    @OneToMany(mappedBy = "maBangKiemTien", fetch = FetchType.LAZY)
+    private List<KiemTien> listKiemTien = new ArrayList<>();
 
     @OneToMany(mappedBy = "bangKiemTien", fetch = FetchType.LAZY)
-    private ArrayList<ChiTietBangKiemTien> listChiTietBangKiemTien;
+    private List<ChiTietBangKiemTien> listChiTietBangKiemTien = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL)
     private KetToan ketToan;
 
-
-//    Set get ketToan
-    public void setKetToan(KetToan ketToan) {
-        this.ketToan = ketToan;
-    }
-    public KetToan getKetToan() {
-        return ketToan;
-    }
-
     public BangKiemTien() {
+        this.listKiemTien = new ArrayList<>();
+        this.listChiTietBangKiemTien = new ArrayList<>();
     }
 
     public BangKiemTien(String maBangKiemTien) {
+        this();
         this.maBangKiemTien = maBangKiemTien;
     }
 
-    public BangKiemTien(String maBangKiemTien, ArrayList<KiemTien> listKiemTien, ArrayList<ChiTietBangKiemTien> listChiTietBangKiemTien, Date ngayBatDau, Date ngayKetThuc) {
+    public BangKiemTien(String maBangKiemTien, List<KiemTien> listKiemTien, List<ChiTietBangKiemTien> listChiTietBangKiemTien, Date ngayBatDau, Date ngayKetThuc) {
         this.maBangKiemTien = maBangKiemTien;
         this.listKiemTien = listKiemTien;
         this.ngayBatDau = ngayBatDau;
@@ -68,39 +63,39 @@ public class BangKiemTien implements Serializable, Comparable<BangKiemTien>  {
         return maBangKiemTien;
     }
 
+    public void setMaBangKiemTien(String maBangKiemTien) {
+        this.maBangKiemTien = maBangKiemTien;
+    }
+
     public List<KiemTien> getListKiemTien() {
         return listKiemTien;
+    }
+
+    public void setListKiemTien(List<KiemTien> listKiemTien) {
+        this.listKiemTien = listKiemTien;
     }
 
     public Date getNgayBatDau() {
         return ngayBatDau;
     }
 
-    public Date getNgayKetThuc() {
-        return ngayKetThuc;
-    }
-
-    public ArrayList<ChiTietBangKiemTien> getListChiTietBangKiemTien() {
-        return listChiTietBangKiemTien;
-    }
-
-    public void setMaBangKiemTien(String maBangKiemTien) {
-        this.maBangKiemTien = maBangKiemTien;
-    }
-
-    public void setListKiemTien(ArrayList<KiemTien> listKiemTien) {
-        this.listKiemTien = listKiemTien;
-    }
-
     public void setNgayBatDau(Date ngayBatDau) {
         this.ngayBatDau = ngayBatDau;
+    }
+
+    public Date getNgayKetThuc() {
+        return ngayKetThuc;
     }
 
     public void setNgayKetThuc(Date ngayKetThuc) {
         this.ngayKetThuc = ngayKetThuc;
     }
 
-    public void setListChiTietBangKiemTien(ArrayList<ChiTietBangKiemTien> listChiTietBangKiemTien) {
+    public List<ChiTietBangKiemTien> getListChiTietBangKiemTien() {
+        return listChiTietBangKiemTien;
+    }
+
+    public void setListChiTietBangKiemTien(List<ChiTietBangKiemTien> listChiTietBangKiemTien) {
         this.listChiTietBangKiemTien = listChiTietBangKiemTien;
     }
 
@@ -124,32 +119,29 @@ public class BangKiemTien implements Serializable, Comparable<BangKiemTien>  {
         this.tongTien = sum;
     }
 
+    public KetToan getKetToan() {
+        return ketToan;
+    }
+
+    public void setKetToan(KetToan ketToan) {
+        this.ketToan = ketToan;
+    }
+
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 83 * hash + Objects.hashCode(this.maBangKiemTien);
-        return hash;
+        return Objects.hash(maBangKiemTien);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final BangKiemTien other = (BangKiemTien) obj;
-        return Objects.equals(this.maBangKiemTien, other.maBangKiemTien);
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        BangKiemTien other = (BangKiemTien) obj;
+        return Objects.equals(maBangKiemTien, other.maBangKiemTien);
     }
 
     @Override
     public int compareTo(BangKiemTien o) {
         return this.ngayBatDau.compareTo(o.ngayBatDau);
     }
-
-
 }
