@@ -3,10 +3,7 @@ package dao;
 import entity.NhanVien;
 import entity.Otp;
 import interfaces.IOTP;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.Persistence;
+import jakarta.persistence.*;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -16,6 +13,8 @@ import java.time.LocalDateTime;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class OTP_DAO extends UnicastRemoteObject implements IOTP {
 
@@ -50,47 +49,60 @@ public class OTP_DAO extends UnicastRemoteObject implements IOTP {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
-            NhanVien nhanVien = em.createQuery("SELECT n FROM NhanVien n WHERE n.email = :tenTaiKhoan", NhanVien.class)
-                    .setParameter("tenTaiKhoan", tenTaiKhoan)
-                    .getSingleResult();
-            if (nhanVien == null) {
-                System.err.println("NhanVien not found for tenTaiKhoan: " + tenTaiKhoan);
+
+            // Chuẩn hóa tenTaiKhoan
+            tenTaiKhoan = tenTaiKhoan.trim();
+            Logger.getLogger(getClass().getName()).info("Looking for NhanVien with maNhanVien: '" + tenTaiKhoan + "'");
+
+            // Tìm NhanVien theo maNhanVien
+            TypedQuery<NhanVien> query = em.createQuery(
+                            "SELECT n FROM NhanVien n WHERE n.maNhanVien = :tenTaiKhoan", NhanVien.class)
+                    .setParameter("tenTaiKhoan", tenTaiKhoan);
+
+            NhanVien nhanVien;
+            try {
+                nhanVien = query.getSingleResult();
+            } catch (NoResultException e) {
+                Logger.getLogger(getClass().getName()).log(Level.WARNING,
+                        "No NhanVien found for maNhanVien: " + tenTaiKhoan);
                 return false;
             }
 
+            // Tìm OTP hiện có
             Otp existingOtp = null;
             try {
-                existingOtp = em.createQuery("SELECT o FROM Otp o WHERE o.tentaiKhoan.email = :tenTaiKhoan", Otp.class)
+                existingOtp = em.createQuery(
+                                "SELECT o FROM Otp o WHERE o.tentaiKhoan.maNhanVien = :tenTaiKhoan", Otp.class)
                         .setParameter("tenTaiKhoan", tenTaiKhoan)
                         .getSingleResult();
             } catch (NoResultException ignored) {
             }
 
+            // Cập nhật hoặc tạo mới OTP
             if (existingOtp != null) {
                 existingOtp.setMaXacNhan(otp);
-              existingOtp.setCreatedAt(LocalDateTime.now());
-
+                existingOtp.setCreatedAt(LocalDateTime.now());
                 em.merge(existingOtp);
             } else {
                 Otp otpEntity = new Otp();
                 otpEntity.setTentaiKhoan(nhanVien);
                 otpEntity.setMaXacNhan(otp);
-
                 otpEntity.setCreatedAt(LocalDateTime.now());
-
                 em.persist(otpEntity);
             }
+
             em.getTransaction().commit();
+            Logger.getLogger(getClass().getName()).info("Successfully saved OTP for maNhanVien: " + tenTaiKhoan);
             return true;
         } catch (Exception e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE,
+                    "Error saving OTP to database: " + e.getMessage(), e);
             em.getTransaction().rollback();
-            System.err.println("Error saving OTP to database: " + e.getMessage());
             return false;
         } finally {
             em.close();
         }
     }
-
     @Override
     public boolean deleteOtpFromDatabase(String email) throws RemoteException {
         EntityManager em = emf.createEntityManager();
@@ -120,7 +132,7 @@ public class OTP_DAO extends UnicastRemoteObject implements IOTP {
     public String getMaXacNhan(String ten) throws RemoteException {
         EntityManager em = emf.createEntityManager();
         try {
-            Otp otp = em.createQuery("SELECT o FROM Otp o WHERE o.tentaiKhoan.email = :ten", Otp.class)
+            Otp otp = em.createQuery("SELECT o FROM Otp o WHERE o.tentaiKhoan.maNhanVien = :ten", Otp.class)
                     .setParameter("ten", ten)
                     .getSingleResult();
             return otp.getMaXacNhan();
