@@ -255,7 +255,7 @@ public class Main extends JFrame {
                     }
                 } else if (menuIndex == 1) {
                     try {
-                        if (tk.getVaiTro().getMaVaiTro().equalsIgnoreCase("NVQL1203")) {
+                        if (tk.getVaiTro().getMaVaiTro().equalsIgnoreCase("NVQL0824")) {
                             main.showForm(new Thuoc_GUI());
                         } else {
                             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, "Bạn không có quyền truy cập vào mục này!");
@@ -307,7 +307,7 @@ public class Main extends JFrame {
 
                 } else if (menuIndex == 6) {
                     try {
-                        if (tk.getVaiTro().getMaVaiTro().equalsIgnoreCase("NVQL1203")) {
+                        if (tk.getVaiTro().getMaVaiTro().equalsIgnoreCase("NVQL0824")) {
                             main.showForm(new NhanVien_GUI());
                         } else {
                             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, "Bạn không có quyền truy cập vào mục này!");
@@ -317,7 +317,7 @@ public class Main extends JFrame {
                         Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } else if (menuIndex == 7) {
-                    if (tk.getVaiTro().getMaVaiTro().equalsIgnoreCase("NVQL1203")) {
+                    if (tk.getVaiTro().getMaVaiTro().equalsIgnoreCase("NVQL0824")) {
                         main.showForm(new NhaCungCap_GUI());
                     } else {
                         Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, "Bạn không có quyền truy cập vào mục này!");

@@ -424,7 +424,7 @@ public class DoiTra_GUI extends javax.swing.JPanel {
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    private void init() throws RemoteException {
+    private void init() throws Exception {
         hoaDon = hd_DAO.getHoaDon(txt_MaHD.getText());
         //set txt ma hoa don
         txtMaHD.setText(hoaDon.getMaHD());

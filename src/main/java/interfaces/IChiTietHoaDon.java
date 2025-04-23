@@ -6,6 +6,7 @@ import entity.ThuocvaDoanhThu;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 
 public interface IChiTietHoaDon extends Remote {
@@ -33,4 +34,5 @@ public interface IChiTietHoaDon extends Remote {
     ThuocVaLuotBan getTop1ThuocCoLuotBanCaoNhatTrongThang(int thang, int nam) throws RemoteException;
 
     ThuocvaDoanhThu getTop1ThuocCoDoanhThuCaoNhatTrongThang(int thang, int nam) throws RemoteException;
+    ArrayList<ThuocVaLuotBan> getThuocTheoThang(int month, int year) throws RemoteException;
 }

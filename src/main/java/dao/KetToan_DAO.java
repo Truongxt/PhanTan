@@ -116,7 +116,7 @@ public class KetToan_DAO extends UnicastRemoteObject implements IKetToan {
         }
     }
     @Override
-    public ArrayList<HoaDon> getAllHoaDon(Date start, Date end) throws RemoteException {
+    public ArrayList<HoaDon> getAllHoaDon(Date start, Date end) throws Exception {
         ArrayList<HoaDon> allHoaDon = new HoaDon_DAO().getAllHoaDonTrongKetToan( new java.sql.Date(start.getTime()) , new java.sql.Date(end.getTime()));
         ArrayList<HoaDon> listHoaDon = new ArrayList<>();
 

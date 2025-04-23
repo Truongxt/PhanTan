@@ -29,6 +29,6 @@ public interface IKetToan extends Remote {
     double calculateTotalRevenue(String maKetToan) throws Exception;
      KetToan getKetToanCuoi() throws Exception;
     public List<KetToan> getDSKetToanTheoNgay(LocalDate ngay) throws Exception;
-    ArrayList<HoaDon> getAllHoaDon(Date start, Date end) throws RemoteException;
+    ArrayList<HoaDon> getAllHoaDon(Date start, Date end) throws Exception;
     void taoPhieuKetToan(BangKiemTien bangKiemTien, Date ngayKetThuc) throws RemoteException;
 }

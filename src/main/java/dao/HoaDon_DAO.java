@@ -5,14 +5,13 @@ import interfaces.IHoaDon;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import jakarta.persistence.PersistenceException;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
 import java.rmi.RemoteException;
-import java.rmi.server.RMIClientSocketFactory;
-import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -21,24 +20,16 @@ import java.util.List;
 
 public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
 
-    private final EntityManagerFactory emf;
+    private EntityManagerFactory emf;
 
     public HoaDon_DAO() throws RemoteException {
-        emf = Persistence.createEntityManagerFactory("default"); //  "default" persistence unit
-    }
-
-    protected HoaDon_DAO(int port) throws RemoteException {
-        super(port);
+        super();
         emf = Persistence.createEntityManagerFactory("default");
     }
 
-    protected HoaDon_DAO(int port, RMIClientSocketFactory csf, RMIServerSocketFactory ssf) throws RemoteException {
-        super(port, csf, ssf);
-        emf = Persistence.createEntityManagerFactory("default");
-    }
 
     @Override
-    public Boolean create(HoaDon hoaDon)   {
+    public Boolean create(HoaDon hoaDon) throws Exception {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
@@ -57,7 +48,7 @@ public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
     }
 
     @Override
-    public ArrayList<HoaDon> getAllHoaDon() {
+    public ArrayList<HoaDon> getAllHoaDon() throws Exception {
         EntityManager em = emf.createEntityManager();
         try {
             CriteriaQuery<HoaDon> query = em.getCriteriaBuilder().createQuery(HoaDon.class);
@@ -70,7 +61,7 @@ public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
     }
 
     @Override
-    public HoaDon getHoaDon(String maHD) {
+    public HoaDon getHoaDon(String maHD) throws Exception {
         EntityManager em = emf.createEntityManager();
         try {
             return em.find(HoaDon.class, maHD);
@@ -80,7 +71,7 @@ public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
     }
 
     @Override
-    public boolean suaHoaDon(String maHD, HoaDon newHoaDon) {
+    public boolean suaHoaDon(String maHD, HoaDon newHoaDon) throws Exception {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
@@ -88,7 +79,7 @@ public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
             if (hoaDon != null) {
                 hoaDon.setNgayLap(newHoaDon.getNgayLap());
                 hoaDon.setTongTien(newHoaDon.getTongTien());
-               // hoaDon.setVoucher(newHoaDon.getVoucher());
+                // hoaDon.setVoucher(newHoaDon.getVoucher());
                 hoaDon.setKhachHang(newHoaDon.getKhachHang());
                 hoaDon.setNhanVien(newHoaDon.getNhanVien());
                 hoaDon.setKetToan(newHoaDon.getKetToan());
@@ -112,7 +103,7 @@ public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
     }
 
     @Override
-    public boolean deleteHoaDon(String maHD) {
+    public boolean deleteHoaDon(String maHD) throws Exception {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
@@ -135,7 +126,7 @@ public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
     }
 
     @Override
-    public int getSize() {
+    public int getSize() throws Exception {
         EntityManager em = emf.createEntityManager();
         try {
             CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -149,7 +140,7 @@ public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
     }
 
     @Override
-    public ArrayList<ChiTietHoaDon> getChiTietHoaDon(String maHD) {
+    public ArrayList<ChiTietHoaDon> getChiTietHoaDon(String maHD) throws Exception {
         EntityManager em = emf.createEntityManager();
         try {
             List<ChiTietHoaDon> resultList = em.createQuery(
@@ -163,7 +154,7 @@ public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
     }
 
     @Override
-    public ArrayList<ThangVaDoanhThu> getDoanhThuTheoThang(int nam) {
+    public ArrayList<ThangVaDoanhThu> getDoanhThuTheoThang(int nam) throws Exception {
         EntityManager em = emf.createEntityManager();
         try {
             List<Object[]> results = em.createQuery(
@@ -181,7 +172,7 @@ public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
     }
 
     @Override
-    public ArrayList<ThangVaDoanhThu> getDoanhThuTheoNgay(int thang, int nam) {
+    public ArrayList<ThangVaDoanhThu> getDoanhThuTheoNgay(int thang, int nam) throws Exception {
         EntityManager em = emf.createEntityManager();
         try {
             List<Object[]> results = em.createQuery(
@@ -200,7 +191,7 @@ public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
     }
 
     @Override
-    public int getSizeOfMonth(int month, int year) {
+    public int getSizeOfMonth(int month, int year) throws Exception {
         EntityManager em = emf.createEntityManager();
         try {
             CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -216,7 +207,7 @@ public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
     }
 
     @Override
-    public int getSizeHoaDonTheoNgay(int day, int month, int year) {
+    public int getSizeHoaDonTheoNgay(int day, int month, int year) throws Exception {
         EntityManager em = emf.createEntityManager();
         try {
             CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -233,7 +224,7 @@ public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
     }
 
     @Override
-    public ArrayList<HoaDon> getTatCaHoaDonTrongKetToan(String maKetToan) {
+    public ArrayList<HoaDon> getTatCaHoaDonTrongKetToan(String maKetToan) throws Exception {
         EntityManager em = emf.createEntityManager();
         try {
             List<HoaDon> resultList = em.createQuery(
@@ -247,7 +238,7 @@ public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
     }
 
     @Override
-    public ArrayList<HoaDon> filter(String maHD, String sdt, double doanhThu, LocalDate ngayBatDau, LocalDate ngayKetThuc) {
+    public ArrayList<HoaDon> filter(String maHD, String sdt, double doanhThu, LocalDate ngayBatDau, LocalDate ngayKetThuc) throws Exception {
         EntityManager em = emf.createEntityManager();
         try {
             CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -280,7 +271,7 @@ public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
     }
 
     @Override
-    public ArrayList<HoaDon> getAllOrderInAcountingVoucher(String maKetToan) {
+    public ArrayList<HoaDon> getAllOrderInAcountingVoucher(String maKetToan) throws Exception {
         EntityManager em = emf.createEntityManager();
         try {
             List<HoaDon> resultList = em.createQuery(
@@ -294,7 +285,7 @@ public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
     }
 
     @Override
-    public List<HoaDon> getHoaDonSuggestions(String keyword) {
+    public List<HoaDon> getHoaDonSuggestions(String keyword) throws Exception {
         EntityManager em = emf.createEntityManager();
         try {
             CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -335,33 +326,19 @@ public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
     }
 
     @Override
-    public HoaDon createNewOrder(NhanVien nv) throws RemoteException {
-        EntityManager em = emf.createEntityManager();
-        try{
-            em.getTransaction().begin();
-            HoaDon order = new HoaDon(generateID(nv));
+    public HoaDon createNewOrder(NhanVien nv) throws Exception {
+            String maHD = generateID(nv);
+            HoaDon order = new HoaDon(maHD);
             order.setTrangThai(false);
-            LocalDate now = LocalDate.now();
-            order.setNgayLap(now);
-            em.persist(order);
-            em.getTransaction().commit();
+            order.setNgayLap(LocalDate.now());
+            order.setTongTien(0.0);
+            order.setTienDaDua(0.0);
             return order;
-        }
-        catch(Exception e){
-            e.printStackTrace();
-            if(em.getTransaction().isActive()){
-                em.getTransaction().rollback();
-            }
-            return null;
-        }
-        finally{
-            em.close();
-        }
 
     }
 
     @Override
-    public ArrayList<HoaDon> getAllHoaDonTam() {
+    public ArrayList<HoaDon> getAllHoaDonTam() throws Exception {
         EntityManager em = emf.createEntityManager();
         try {
             CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -376,7 +353,7 @@ public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
     }
 
     @Override
-    public boolean updateOrderAcountingVoucher(String orderID, String acountingVoucherID) {
+    public boolean updateOrderAcountingVoucher(String orderID, String acountingVoucherID) throws Exception {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
@@ -401,7 +378,7 @@ public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
     }
 
     @Override
-    public int getSoLuongKhachHangThang(int month, int year) {
+    public int getSoLuongKhachHangThang(int month, int year) throws Exception {
         EntityManager em = emf.createEntityManager();
         try {
             CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -417,7 +394,7 @@ public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
     }
 
     @Override
-    public double getDoanhThuCuaNam(int year) {
+    public double getDoanhThuCuaNam(int year) throws Exception {
         EntityManager em = emf.createEntityManager();
         try {
             CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -432,7 +409,7 @@ public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
     }
 
     @Override
-    public int getSoLuongKhachHangNgay(int day, int month, int year) {
+    public int getSoLuongKhachHangNgay(int day, int month, int year) throws Exception {
         EntityManager em = emf.createEntityManager();
         try {
             CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -450,7 +427,7 @@ public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
     }
 
     @Override
-    public int getSizeOfYear(int year) {
+    public int getSizeOfYear(int year) throws Exception {
         EntityManager em = emf.createEntityManager();
         try {
             CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -465,7 +442,7 @@ public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
     }
 
     @Override
-    public int getSoLuongKhachHangNam(int year) {
+    public int getSoLuongKhachHangNam(int year) throws Exception {
         EntityManager em = emf.createEntityManager();
         try {
             CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -480,13 +457,13 @@ public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
     }
 
     @Override
-    public int getSoHoaDonTheoKhachHang(String maKH) {
+    public int getSoHoaDonTheoKhachHang(String maKH) throws Exception {
         EntityManager em = emf.createEntityManager();
         try {
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<Long> query = cb.createQuery(Long.class);
             Root<HoaDon> root = query.from(HoaDon.class);
-            query.select(cb.count(root)).where(cb.equal(root.get("khachHang").get("maKH"), maKH));
+            query.select(cb.count(root)).where(cb.equal(root.get("khachHang").get("maKhachHang"), maKH));
             return em.createQuery(query).getSingleResult().intValue();
         } finally {
             em.close();
@@ -494,13 +471,13 @@ public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
     }
 
     @Override
-    public double getDoanhThuTheoKhachHang(String maKH) {
+    public double getDoanhThuTheoKhachHang(String maKH) throws Exception {
         EntityManager em = emf.createEntityManager();
         try {
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<Double> query = cb.createQuery(Double.class);
             Root<HoaDon> root = query.from(HoaDon.class);
-            query.select(cb.sum(root.get("tongTien"))).where(cb.equal(root.get("khachHang").get("maKH"), maKH));
+            query.select(cb.sum(root.get("tongTien"))).where(cb.equal(root.get("khachHang").get("maKhachHang"), maKH));
             Double result = em.createQuery(query).getSingleResult();
             return (result != null) ? result : 0.0;
         } finally {
@@ -509,7 +486,7 @@ public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
     }
 
     @Override
-    public ArrayList<HoaDon> getAllHoaDonTrongKetToan(Date ngayBatDau, Date ngayKetThuc) {
+    public ArrayList<HoaDon> getAllHoaDonTrongKetToan(Date ngayBatDau, Date ngayKetThuc) throws Exception {
         EntityManager em = emf.createEntityManager();
         try {
             CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -530,4 +507,5 @@ public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
             em.close();
         }
     }
+
 }

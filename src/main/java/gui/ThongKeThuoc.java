@@ -21,6 +21,8 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -72,7 +74,7 @@ public class ThongKeThuoc extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new JPanel();
+        jPanel1 = new javax.swing.JPanel();
         tf_Search = new javax.swing.JTextField();
         btn_Search = new javax.swing.JButton();
         cb_LoaiThuoc = new javax.swing.JComboBox<>();
@@ -81,10 +83,11 @@ public class ThongKeThuoc extends JPanel {
         jButton2 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jMonthChooser1 = new com.toedter.calendar.JMonthChooser();
-        jPanel4 = new JPanel();
+        jButton1 = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tableThuoc = new javax.swing.JTable();
-        jPanel2 = new JPanel();
+        jPanel2 = new javax.swing.JPanel();
         card1 = new card.Card();
         card2 = new card.Card();
 
@@ -97,7 +100,7 @@ public class ThongKeThuoc extends JPanel {
             }
         });
 
-        btn_Search.setIcon(new javax.swing.ImageIcon(getClass().getResource("src/main/java/img/nhanvien/circle.png")));
+        btn_Search.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/nhanvien/circle.png"))); // NOI18N
         btn_Search.setText("Tìm Kiếm");
         btn_Search.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -166,52 +169,70 @@ public class ThongKeThuoc extends JPanel {
             }
         });
 
+        jMonthChooser1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMonthChooser1MouseClicked(evt);
+            }
+        });
+
+        jButton1.setText("Cập nhật");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(btn_ThuocHetHan, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButton4)
-                .addGap(18, 18, 18)
-                .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel1Layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(jMonthChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
-                    .addGap(18, 18, 18)
-                    .addComponent(tf_Search, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addComponent(btn_Search))
-                .addGroup(jPanel1Layout.createSequentialGroup()
-                    .addGap(6, 6, 6)
-                    .addComponent(cb_LoaiThuoc, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(18, 18, 18)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(17, 17, 17)
+                        .addComponent(jMonthChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tf_Search, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btn_Search))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(cb_LoaiThuoc, 0, 154, Short.MAX_VALUE)
+                            .addComponent(btn_ThuocHetHan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(28, 28, 28)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jButton4)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btn_Search, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(tf_Search, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jMonthChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jMonthChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(29, 29, 29)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cb_LoaiThuoc, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton2)
+                    .addComponent(jButton4)
                     .addComponent(btn_ThuocHetHan, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
-        tableThuoc.setModel(new DefaultTableModel(
+        tableThuoc.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -231,15 +252,15 @@ public class ThongKeThuoc extends JPanel {
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addComponent(jScrollPane2)
-                .addGap(0, 0, 0))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1074, Short.MAX_VALUE)
+                .addGap(8, 8, 8))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE)
-                .addGap(8, 8, 8))
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 449, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Thông tin", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 14))); // NOI18N
@@ -253,16 +274,16 @@ public class ThongKeThuoc extends JPanel {
                 .addComponent(card1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(31, 31, 31)
                 .addComponent(card2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(61, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGap(0, 18, Short.MAX_VALUE)
+                .addGap(0, 0, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(card2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(card1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -272,21 +293,19 @@ public class ThongKeThuoc extends JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -355,68 +374,178 @@ public class ThongKeThuoc extends JPanel {
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        int month = jMonthChooser1.getMonth() + 1; // Get selected month
+        int year = 2024; // Get current year
+        String selectedLoaiThuoc = (String) cb_LoaiThuoc.getSelectedItem(); // Get selected drug type
+
+        try {
+            // Fetch top-selling drug and revenue for the selected month and drug type
+            ThuocVaLuotBan topSellingDrug = cthd.getTop1ThuocCoLuotBanCaoNhatTrongThang(month, year);
+            ThuocvaDoanhThu topRevenueDrug = cthd.getTop1ThuocCoDoanhThuCaoNhatTrongThang(month, year);
+
+            if (topSellingDrug != null && topRevenueDrug != null) {
+                // Update cards with filtered data
+                card1.setDataNormal(new ModelCard(
+                        "Lượt bán cao nhất " + topSellingDrug.getThuoc().getTenThuoc() + " trong tháng " + month,
+                        topSellingDrug.getLuotBan(),
+                        5,
+                        null
+                ));
+                card2.setData(new ModelCard(
+                        "Doanh thu cao nhất " + topRevenueDrug.getThuoc().getTenThuoc() + " trong tháng " + month,
+                        topRevenueDrug.getDoanhThu(),
+                        10,
+                        null
+                ));
+            } else {
+                // Handle case where no data is available
+                Notifications.getInstance().show(Notifications.Type.WARNING, "Tháng " + month + " và loại thuốc \"" + selectedLoaiThuoc + "\" chưa có dữ liệu");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Notifications.getInstance().show(Notifications.Type.ERROR, "Lỗi khi cập nhật dữ liệu cho tháng " + month + " và loại thuốc \"" + selectedLoaiThuoc + "\"");
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jMonthChooser1MouseClicked(java.awt.event.MouseEvent evt) {                                            
+        int month = jMonthChooser1.getMonth() + 1; // Get selected month
+        int year = java.time.Year.now().getValue(); // Get current year
+        String selectedLoaiThuoc = (String) cb_LoaiThuoc.getSelectedItem(); // Get selected drug type
+
+        try {
+            // Fetch top-selling drug and revenue for the selected month and drug type
+            ThuocVaLuotBan topSellingDrug = cthd.getTop1ThuocCoLuotBanCaoNhatTrongThang(month, year);
+            ThuocvaDoanhThu topRevenueDrug = cthd.getTop1ThuocCoDoanhThuCaoNhatTrongThang(month, year);
+
+            if (topSellingDrug != null && topRevenueDrug != null) {
+                // Update cards with filtered data
+                card1.setDataNormal(new ModelCard(
+                        "Lượt bán cao nhất " + topSellingDrug.getThuoc().getTenThuoc() + " trong tháng " + month,
+                        topSellingDrug.getLuotBan(),
+                        5,
+                        null
+                ));
+                card2.setData(new ModelCard(
+                        "Doanh thu cao nhất " + topRevenueDrug.getThuoc().getTenThuoc() + " trong tháng " + month,
+                        topRevenueDrug.getDoanhThu(),
+                        10,
+                        null
+                ));
+            } else {
+                // Handle case where no data is available
+                Notifications.getInstance().show(Notifications.Type.WARNING, "Tháng " + month + " và loại thuốc \"" + selectedLoaiThuoc + "\" chưa có dữ liệu");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Notifications.getInstance().show(Notifications.Type.ERROR, "Lỗi khi cập nhật dữ liệu cho tháng " + month + " và loại thuốc \"" + selectedLoaiThuoc + "\"");
+        }
+    }                                                                                      
+
     private void setupSearch() {
+    tf_Search.setText("Tìm kiếm thuốc"); // Default placeholder text
 
-        tf_Search.setText("Tìm kiếm thuốc"); // Text mặc định khi không có gì trong trường
-
-        tf_Search.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                // Xóa nội dung khi focus vào trường (nếu nội dung là mặc định)
-                if (tf_Search.getText().equals("Tìm kiếm thuốc")) {
-                    tf_Search.setText(""); // Xóa nội dung mặc định khi focus
-                } else {
-                    tf_Search.selectAll();
-                }
+    tf_Search.addFocusListener(new FocusListener() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            if (tf_Search.getText().equals("Tìm kiếm thuốc")) {
+                tf_Search.setText(""); // Clear placeholder text on focus
+            } else {
+                tf_Search.selectAll();
             }
+        }
 
-            @Override
-            public void focusLost(FocusEvent e) {
-                // Khôi phục nội dung mặc định nếu trường trống khi mất focus
-                if (tf_Search.getText().trim().isEmpty()) {
-                    tf_Search.setText("Tìm kiếm thuốc"); // Khôi phục text mặc định nếu người dùng không nhập gì
-                }
+        @Override
+        public void focusLost(FocusEvent e) {
+            if (tf_Search.getText().trim().isEmpty()) {
+                tf_Search.setText("Tìm kiếm thuốc"); // Restore placeholder text if empty
             }
-        });
+        }
+    });
+
+    // Add a DocumentListener for real-time search
+    tf_Search.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+        @Override
+        public void insertUpdate(javax.swing.event.DocumentEvent e) {
+            try {
+                performRealTimeSearch();
+            } catch (RemoteException ex) {
+                Logger.getLogger(ThongKeThuoc.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        @Override
+        public void removeUpdate(javax.swing.event.DocumentEvent e) {
+            try {
+                performRealTimeSearch();
+            } catch (RemoteException ex) {
+                Logger.getLogger(ThongKeThuoc.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        @Override
+        public void changedUpdate(javax.swing.event.DocumentEvent e) {
+            try {
+                performRealTimeSearch();
+            } catch (RemoteException ex) {
+                Logger.getLogger(ThongKeThuoc.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    });
+}
+private void performRealTimeSearch() throws RemoteException {
+    String query = tf_Search.getText().trim();
+
+    // Bỏ qua placeholder hoặc chuỗi rỗng
+    if (query.equals("Tìm kiếm thuốc") || query.isEmpty()) {
+        resetTable();
+        loadDataTable();
+        return;
     }
 
-    public void search() throws RemoteException {
-        // Lấy từ khóa tìm kiếm và kiểm tra
-
-        String query = tf_Search.getText().trim();
-
-        // Kiểm tra nếu là text placeholder hoặc rỗng
-        if (query.equals("Tìm kiếm thuốc") || query.isEmpty()) {
-            Notifications.getInstance().show(Notifications.Type.WARNING, "Vui lòng nhập từ khóa tìm kiếm");
-            return;
-        }
-
-        Thuoc thuoc = null;
-        boolean found = false;
-
-        // Tìm theo mã
-        thuoc = thuoc_dao.getThuocTheoMa(query);
-        if (thuoc != null) {
-            list_Thuoc.add(thuoc);
-            found = true;
-        }
-
-        // Nếu không tìm thấy theo mã, tìm theo tên
-        if (!found) {
-            thuoc = thuoc_dao.getThuocTheoTen(query);
-            if (thuoc != null) {
-                list_Thuoc.add(thuoc);
-                found = true;
-            }
-        }
-
-        // Cập nhật bảng nếu tìm thấy, hiển thị thông báo nếu không tìm thấy
-        if (found) {
-            updateTable(list_Thuoc);
-        } else {
-            Notifications.getInstance().show(Notifications.Type.WARNING, "Không tìm thấy thuốc!!!");
-        }
+    // Chỉ tìm kiếm nếu chuỗi dài hơn 2 ký tự để tối ưu hiệu suất
+    if (query.length() < 2) {
+        return;
     }
+
+    // Làm mới danh sách và tìm kiếm
+    resetTable();
+    list_Thuoc = thuoc_dao.searchThuoc(query); // Gọi phương thức tìm kiếm chung
+
+    // Cập nhật bảng
+    if (list_Thuoc != null && !list_Thuoc.isEmpty()) {
+        updateTable(list_Thuoc);
+    } else {
+        resetTable(); // Hiển thị bảng rỗng nếu không tìm thấy
+    }
+}
+
+   public void search() throws RemoteException {
+    String query = tf_Search.getText().trim();
+
+    // Kiểm tra nếu là text placeholder hoặc rỗng
+    if (query.equals("Tìm kiếm thuốc") || query.isEmpty()) {
+        Notifications.getInstance().show(Notifications.Type.WARNING, "Vui lòng nhập từ khóa tìm kiếm");
+        resetTable();
+        loadDataTable();
+        return;
+    }
+
+    // Làm mới danh sách thuốc
+    resetTable();
+
+    // Tìm kiếm thuốc theo mã hoặc tên
+    list_Thuoc = thuoc_dao.searchThuoc(query); // Giả sử có phương thức searchThuoc trong Thuoc_DAO
+
+    // Cập nhật bảng và hiển thị thông báo
+    if (list_Thuoc != null && !list_Thuoc.isEmpty()) {
+        updateTable(list_Thuoc);
+        Notifications.getInstance().show(Notifications.Type.SUCCESS, "Đã tìm thấy " + list_Thuoc.size() + " kết quả");
+    } else {
+        Notifications.getInstance().show(Notifications.Type.WARNING, "Không tìm thấy thuốc với từ khóa: " + query);
+        resetTable();
+    }
+}
 
     public void initCard() {
         card1.setColorGradient(new java.awt.Color(211, 28, 215));
@@ -580,13 +709,14 @@ public class ThongKeThuoc extends JPanel {
     private card.Card card1;
     private card.Card card2;
     private javax.swing.JComboBox<String> cb_LoaiThuoc;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private com.toedter.calendar.JMonthChooser jMonthChooser1;
-    private JPanel jPanel1;
-    private JPanel jPanel2;
-    private JPanel jPanel4;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable tableThuoc;
     private javax.swing.JTextField tf_Search;

@@ -52,7 +52,7 @@ public class ThongKeKhachHang extends javax.swing.JPanel {
     private TableRowSorter<DefaultTableModel> sorter;
     private int countCustomer;
 
-    public ThongKeKhachHang() throws RemoteException {
+    public ThongKeKhachHang() throws Exception {
         initComponents();
         init();
         getDSKH();
@@ -98,7 +98,11 @@ public class ThongKeKhachHang extends javax.swing.JPanel {
         btnLoc.setText("Lọc");
         btnLoc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLocActionPerformed(evt);
+                try {
+                    btnLocActionPerformed(evt);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -114,7 +118,11 @@ public class ThongKeKhachHang extends javax.swing.JPanel {
         btn_theoThang.setText("Theo tháng");
         btn_theoThang.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_theoThangActionPerformed(evt);
+                try {
+                    btn_theoThangActionPerformed(evt);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -122,14 +130,22 @@ public class ThongKeKhachHang extends javax.swing.JPanel {
         btn_TheoNam.setText("Theo năm");
         btn_TheoNam.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_TheoNamActionPerformed(evt);
+                try {
+                    btn_TheoNamActionPerformed(evt);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
         cb_SapXep.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "<200 000 ", "200 000 - 500 000", "500 000 - 1 000 000", ">1 000 000" }));
         cb_SapXep.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cb_SapXepActionPerformed(evt);
+                try {
+                    cb_SapXepActionPerformed(evt);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -243,18 +259,18 @@ public class ThongKeKhachHang extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void cb_SapXepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_SapXepActionPerformed
+    private void cb_SapXepActionPerformed(java.awt.event.ActionEvent evt) throws Exception {//GEN-FIRST:event_cb_SapXepActionPerformed
         String selectedRange = cb_SapXep.getSelectedItem().toString();
 
         filterByRevenueRange(selectedRange);
 
     }//GEN-LAST:event_cb_SapXepActionPerformed
 
-    private void btn_theoThangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_theoThangActionPerformed
+    private void btn_theoThangActionPerformed(java.awt.event.ActionEvent evt) throws Exception {//GEN-FIRST:event_btn_theoThangActionPerformed
         updateTKMonth();
     }//GEN-LAST:event_btn_theoThangActionPerformed
 
-    private void btnLocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLocActionPerformed
+    private void btnLocActionPerformed(java.awt.event.ActionEvent evt) throws Exception {//GEN-FIRST:event_btnLocActionPerformed
         if (btn_TheoNam.isSelected()) {
             updateTKMonth();
         } else {
@@ -262,7 +278,7 @@ public class ThongKeKhachHang extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnLocActionPerformed
 
-    private void btn_TheoNamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_TheoNamActionPerformed
+    private void btn_TheoNamActionPerformed(java.awt.event.ActionEvent evt) throws Exception {//GEN-FIRST:event_btn_TheoNamActionPerformed
         updateTKYear();// TODO add your handling code here:
     }//GEN-LAST:event_btn_TheoNamActionPerformed
 
@@ -325,7 +341,7 @@ public class ThongKeKhachHang extends javax.swing.JPanel {
         });
     }
 
-    public void getDSKH() {
+    public void getDSKH() throws Exception {
         arr = kh_dao.getAllTKKhachHang();
         DecimalFormat df = new DecimalFormat("#,##0.##");
         int i = 0;
@@ -356,7 +372,7 @@ public class ThongKeKhachHang extends javax.swing.JPanel {
         card1.setDataNormal(new ModelCard("Tổng số khách hàng", i, (int) (i * 100.0 / countCustomer), null));
     }
 
-    public void updateTKMonth() {
+    public void updateTKMonth() throws Exception {
         int i = 0;
         double count = 0;
         String ten = null;
@@ -390,7 +406,7 @@ public class ThongKeKhachHang extends javax.swing.JPanel {
 
     }
 
-    public void updateTKYear() {
+    public void updateTKYear() throws Exception {
         int i = 0;
 
         int month = month_Choose.getMonth() + 1;
@@ -506,43 +522,50 @@ public class ThongKeKhachHang extends javax.swing.JPanel {
         }
     }
 
-    private void filterByRevenueRange(String range) {
+    private void filterByRevenueRange(String range) throws Exception {
         arr.clear();
         model.setRowCount(0);
 
-        String dau;
+        String dau = "";
 
-        switch (range) {
-            case "<200 000":
-                dau = "HAVING "
-                        + "  SUM(h.tongTien) <= 200000 ";
-                arr = kh_dao.getTKKhachHangDoanhThu(dau);
-                updateDSKH(arr);
-                break;
-            case "200 000 - 500 000":
-                dau = "HAVING "
-                        + "  SUM(h.tongTien) > 200000 and  SUM(h.tongTien)<=500000 ";
-                arr = kh_dao.getTKKhachHangDoanhThu(dau);
-                updateDSKH(arr);
-                break;
-            case "500 000 - 1 000 000":
-                dau = "HAVING  SUM(h.tongTien) > 500000 and  SUM(h.tongTien)<=1000000 ";
-                arr = kh_dao.getTKKhachHangDoanhThu(dau);
-                updateDSKH(arr);
-                break;
-            case ">1 000 000":
-                dau = "HAVING "
-                        + "  SUM(h.tongTien) > 1000000 ";
-                arr = kh_dao.getTKKhachHangDoanhThu(dau);
-                updateDSKH(arr);
+        try {
+            range = range.trim();
+            switch (range) {
+                case "<200 000":
+                    dau = "HAVING COALESCE(SUM(h.tongTien), 0) <= 200000";
+                    break;
+                case "200 000 - 500 000":
+                    dau = "HAVING SUM(h.tongTien) > 200000 AND SUM(h.tongTien) <= 500000";
+                    break;
+                case "500 000 - 1 000 000":
+                    dau = "HAVING SUM(h.tongTien) > 500000 AND SUM(h.tongTien) <= 1000000";
+                    break;
+                case ">1 000 000":
+                    dau = "HAVING SUM(h.tongTien) > 1000000";
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid range: " + range);
+            }
 
-                break;
+            // Debugging: Log the query condition
+            System.out.println("Query condition: " + dau);
+
+            // Fetch data from DAO
+            arr = kh_dao.getTKKhachHangDoanhThu(dau);
+
+            // Debugging: Log the results
+            System.out.println("Results: " + arr);
+
+            // Update the table with the results
+            updateDSKH(arr);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception("Error filtering by revenue range: " + e.getMessage());
         }
-
     }
-
     // Cập nhật lại bảng chỉ hiển thị các dòng hợp lệ
-    public void updateDSKH(ArrayList<KhachHang> arr) {
+    public void updateDSKH(ArrayList<KhachHang> arr) throws Exception {
 
         DecimalFormat df = new DecimalFormat("#,##0.##");
         int i = 0;

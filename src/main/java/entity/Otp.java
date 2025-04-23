@@ -5,8 +5,9 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Nationalized;
 
 import java.time.Instant;
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
+
 
 @Entity
 @Table(name = "OTP")
@@ -27,7 +28,9 @@ public class Otp {
 
     @ColumnDefault("getdate()")
     @Column(name = "created_at", nullable = false)
+
     private LocalDateTime createdAt;
+
 
     public Long getId() {
         return id;
@@ -53,11 +56,13 @@ public class Otp {
         this.maXacNhan = maXacNhan;
     }
 
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {
+
         this.createdAt = createdAt;
     }
 }

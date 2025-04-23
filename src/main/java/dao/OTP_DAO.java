@@ -10,7 +10,9 @@ import jakarta.persistence.Persistence;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+
 import java.time.LocalDateTime;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -66,13 +68,16 @@ public class OTP_DAO extends UnicastRemoteObject implements IOTP {
 
             if (existingOtp != null) {
                 existingOtp.setMaXacNhan(otp);
-                existingOtp.setCreatedAt(LocalDateTime.now());
+              existingOtp.setCreatedAt(LocalDateTime.now());
+
                 em.merge(existingOtp);
             } else {
                 Otp otpEntity = new Otp();
                 otpEntity.setTentaiKhoan(nhanVien);
                 otpEntity.setMaXacNhan(otp);
+
                 otpEntity.setCreatedAt(LocalDateTime.now());
+
                 em.persist(otpEntity);
             }
             em.getTransaction().commit();
