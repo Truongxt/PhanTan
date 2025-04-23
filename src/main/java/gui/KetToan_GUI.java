@@ -57,7 +57,7 @@ public class KetToan_GUI extends javax.swing.JPanel {
     double tienLayRa = 0;
     double chenhLech = 0;
 
-    public KetToan_GUI(TaiKhoan tk) throws RemoteException {
+    public KetToan_GUI(TaiKhoan tk) throws Exception {
         initComponents();
         initTableModel();
         initForm();
@@ -123,7 +123,7 @@ public class KetToan_GUI extends javax.swing.JPanel {
         tbl_demTien.getColumnModel().getColumn(0).setCellRenderer(rightAlign);
     }
 
-    public void initForm() throws RemoteException {
+    public void initForm() throws Exception {
         //Lấy thời gian kết thúc phiếu kết toán trước đó (Thời gian bắt đầu lần kết toán này)
         Date batDau = ketToan_DAO.getKetToanCuoi().getNgayKetThuc();
         //Hiển thị thời gian bắt đầu -> kết thúc kết toán

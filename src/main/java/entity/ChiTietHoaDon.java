@@ -7,8 +7,6 @@ import java.util.Objects;
 
 @Entity
 @Data
-@Getter
-@Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,15 +20,15 @@ public class ChiTietHoaDon {
     private HoaDon hoaDon;
 
     @MapsId("maThuoc")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "maThuoc", nullable = false)
     private Thuoc thuoc;
 
     @Column(name = "soLuong", nullable = false)
-    private Integer soLuong;
+    private int soLuong;
 
     @Column(name = "donGia", nullable = false)
-    private Double donGia;
+    private double donGia;
 
     public ChiTietHoaDon(Thuoc thuoc) {
         this.thuoc = thuoc;
@@ -72,6 +70,14 @@ public class ChiTietHoaDon {
         return hoaDon;
     }
 
+    public ChiTietHoaDon(ChiTietHoaDonId id, int soLuong, double donGia, Thuoc thuoc, HoaDon hoaDon) {
+        this.id = id;
+        this.soLuong = soLuong;
+        this.donGia = donGia;
+        this.thuoc = thuoc;
+        this.hoaDon = hoaDon;
+    }
+
     public ChiTietHoaDon(int soLuong, double donGia, Thuoc thuoc, HoaDon hoaDon) {
         this.soLuong = soLuong;
         this.donGia = donGia;
@@ -80,28 +86,14 @@ public class ChiTietHoaDon {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 7;
-        return hash;
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        ChiTietHoaDon that = (ChiTietHoaDon) o;
+        return Objects.equals(id, that.id);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final ChiTietHoaDon other = (ChiTietHoaDon) obj;
-        if (!Objects.equals(this.thuoc, other.thuoc)) {
-            return false;
-        }
-        return Objects.equals(this.hoaDon, other.hoaDon);
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
-
-
 }

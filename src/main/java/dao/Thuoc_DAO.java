@@ -18,15 +18,16 @@ import java.util.logging.Logger;
 public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
 
     private static final Logger LOGGER = Logger.getLogger(Thuoc_DAO.class.getName());
-    private final EntityManager em;
+    private final EntityManagerFactory emf;
 
     public Thuoc_DAO() throws RemoteException {
         super();
-        em = Persistence.createEntityManagerFactory("default").createEntityManager();
+        emf = Persistence.createEntityManagerFactory("default");
     }
 
     @Override
     public boolean create(Thuoc thuoc) throws RemoteException {
+        EntityManager em = emf.createEntityManager();
         if (thuoc == null || thuoc.getMaThuoc() == null) {
             return false;
         }
@@ -46,6 +47,7 @@ public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
 
     @Override
     public Thuoc getThuocTheoMa(String maThuoc) throws RemoteException {
+        EntityManager em = emf.createEntityManager();
         if (maThuoc == null) {
             return null;
         }
@@ -61,6 +63,7 @@ public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
 
     @Override
     public Thuoc getThuocTheoTen(String tenThuoc) throws RemoteException {
+        EntityManager em = emf.createEntityManager();
         if (tenThuoc == null) {
             return null;
         }
@@ -80,20 +83,23 @@ public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
 
     @Override
     public ArrayList<Thuoc> getAllThuoc() throws RemoteException {
+        EntityManager em = emf.createEntityManager();
         try {
             List<Thuoc> result = em.createQuery("SELECT t FROM Thuoc t", Thuoc.class)
                     .getResultList();
             return new ArrayList<>(result);
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Lỗi khi lấy danh sách thuốc: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Lỗi khi lấy tất cả thuốc: " + e.getMessage(), e);
             return new ArrayList<>();
-        } finally {
+        }
+        finally {
             em.close();
         }
     }
 
     @Override
     public boolean suaThuoc(String maThuoc, Thuoc newThuoc) throws RemoteException {
+        EntityManager em = emf.createEntityManager();
         if (maThuoc == null || newThuoc == null) {
             return false;
         }
@@ -128,6 +134,7 @@ public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
 
     @Override
     public int getSize() throws RemoteException {
+        EntityManager em = emf.createEntityManager();
         try {
             Long count = em.createQuery("SELECT COUNT(t) FROM Thuoc t", Long.class)
                     .getSingleResult();
@@ -142,6 +149,7 @@ public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
 
     @Override
     public ArrayList<Thuoc> timKiemTheoMa(String ma) throws RemoteException {
+        EntityManager em = emf.createEntityManager();
         if (ma == null) {
             return new ArrayList<>();
         }
@@ -160,6 +168,7 @@ public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
 
     @Override
     public boolean Xoa(String maThuoc) throws RemoteException {
+        EntityManager em = emf.createEntityManager();
         if (maThuoc == null) {
             return false;
         }
@@ -183,6 +192,7 @@ public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
 
     @Override
     public ArrayList<Thuoc> timKiemTheoTen(String ten) throws RemoteException {
+        EntityManager em = emf.createEntityManager();
         if (ten == null) {
             return new ArrayList<>();
         }
@@ -201,6 +211,7 @@ public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
 
     @Override
     public ArrayList<Thuoc> filter(String loaiThuoc, String xuatXu, String ten, String ma) throws RemoteException {
+        EntityManager em = emf.createEntityManager();
         try {
             StringBuilder query = new StringBuilder("SELECT t FROM Thuoc t WHERE 1=1");
             if (ten != null && !ten.isEmpty()) {
@@ -242,6 +253,7 @@ public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
 
     @Override
     public ArrayList<Thuoc> getThuocHetHan() throws RemoteException {
+        EntityManager em = emf.createEntityManager();
         try {
             List<Thuoc> result = em.createQuery("SELECT t FROM Thuoc t WHERE t.hsd <= :currentDate", Thuoc.class)
                     .setParameter("currentDate", LocalDate.now())
@@ -257,6 +269,7 @@ public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
 
     @Override
     public boolean capNhatSoLuong(Thuoc thuoc, int soLuong) throws RemoteException {
+        EntityManager em = emf.createEntityManager();
         if (thuoc == null || thuoc.getMaThuoc() == null) {
             return false;
         }
@@ -284,6 +297,7 @@ public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
 
     @Override
     public ArrayList<Thuoc> getThuocTonKhoThap() throws RemoteException {
+        EntityManager em = emf.createEntityManager();
         try {
             List<Thuoc> result = em.createQuery("SELECT t FROM Thuoc t WHERE t.soLuongTon < 100", Thuoc.class)
                     .getResultList();
@@ -298,6 +312,7 @@ public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
 
     @Override
     public ArrayList<Thuoc> getThuocHetHan1Thang() throws RemoteException {
+        EntityManager em = emf.createEntityManager();
         try {
             LocalDate thresholdDate = LocalDate.now().plusMonths(1);
             List<Thuoc> result = em.createQuery("SELECT t FROM Thuoc t WHERE t.hsd <= :thresholdDate", Thuoc.class)
@@ -314,6 +329,7 @@ public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
 
     @Override
     public ArrayList<Thuoc> getThuocTheoLoai(String tenLoai) throws RemoteException {
+        EntityManager em = emf.createEntityManager();
         if (tenLoai == null) {
             return new ArrayList<>();
         }
@@ -332,6 +348,7 @@ public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
 
     @Override
     public String generateID() throws RemoteException {
+        EntityManager em = emf.createEntityManager();
         try {
             String prefix = "SP";
             LocalDate time = LocalDate.now();
