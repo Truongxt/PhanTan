@@ -30,7 +30,7 @@ public class NhaCungCap {
     private String sdt;
 
     @Column(name = "trangThai", nullable = false)
-    private Boolean trangThai = false;
+    private boolean trangThai = false;
 
     public String getMaNCC() {
         return maNCC;

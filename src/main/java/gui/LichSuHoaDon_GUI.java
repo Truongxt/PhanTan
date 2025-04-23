@@ -46,7 +46,7 @@ public class LichSuHoaDon_GUI extends javax.swing.JPanel {
     private DefaultTableModel modelCTHD;
     private ArrayList<HoaDon> current;
 
-    public LichSuHoaDon_GUI() throws RemoteException {
+    public LichSuHoaDon_GUI() throws Exception {
         initComponents();
         listHD = new ArrayList<>();
         listCTHD = new ArrayList<>();
@@ -58,7 +58,7 @@ public class LichSuHoaDon_GUI extends javax.swing.JPanel {
         initHoaDon();
     }
 
-    public void initHoaDon() throws RemoteException {
+    public void initHoaDon() throws Exception {
         listHD = new HoaDon_DAO().getAllHoaDon();
         for (HoaDon hd : listHD) {
             Object[] row = initObjectHD(hd);
@@ -164,7 +164,7 @@ public class LichSuHoaDon_GUI extends javax.swing.JPanel {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
                     btn_timKiemActionPerformed(evt);
-                } catch (RemoteException e) {
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -176,7 +176,7 @@ public class LichSuHoaDon_GUI extends javax.swing.JPanel {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
                     btn_loadActionPerformed(evt);
-                } catch (RemoteException e) {
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -188,7 +188,7 @@ public class LichSuHoaDon_GUI extends javax.swing.JPanel {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
                     xuatExcelActionPerformed(evt);
-                } catch (RemoteException e) {
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -218,6 +218,8 @@ public class LichSuHoaDon_GUI extends javax.swing.JPanel {
                 try {
                     table_DanhSachHoaDonMouseClicked(evt);
                 } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -377,12 +379,12 @@ public class LichSuHoaDon_GUI extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_txt_TongTienActionPerformed
 
-    private void btn_loadActionPerformed(java.awt.event.ActionEvent evt) throws RemoteException {//GEN-FIRST:event_btn_loadActionPerformed
+    private void btn_loadActionPerformed(java.awt.event.ActionEvent evt) throws Exception {//GEN-FIRST:event_btn_loadActionPerformed
         modelHD.setRowCount(0);
         initHoaDon();
     }//GEN-LAST:event_btn_loadActionPerformed
 
-    private void btn_timKiemActionPerformed(java.awt.event.ActionEvent evt) throws RemoteException {//GEN-FIRST:event_btn_timKiemActionPerformed
+    private void btn_timKiemActionPerformed(java.awt.event.ActionEvent evt) throws Exception {//GEN-FIRST:event_btn_timKiemActionPerformed
         modelHD.setNumRows(0);
         String maHoaDon = txt_maHoaDon.getText();
         String sdt = txt_timSDT.getText();
@@ -414,7 +416,7 @@ public class LichSuHoaDon_GUI extends javax.swing.JPanel {
 
     }//GEN-LAST:event_btn_timKiemActionPerformed
 
-    private void table_DanhSachHoaDonMouseClicked(java.awt.event.MouseEvent evt) throws RemoteException {//GEN-FIRST:event_table_DanhSachHoaDonMouseClicked
+    private void table_DanhSachHoaDonMouseClicked(java.awt.event.MouseEvent evt) throws Exception {//GEN-FIRST:event_table_DanhSachHoaDonMouseClicked
         modelCTHD.setRowCount(0);
         int index = table_DanhSachHoaDon.getSelectedRow();
         listCTHD = new HoaDon_DAO().getChiTietHoaDon(table_DanhSachHoaDon.getValueAt(index, 0) + "");
@@ -496,7 +498,7 @@ public class LichSuHoaDon_GUI extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_txt_timSDTActionPerformed
 
-    private void xuatExcelActionPerformed(java.awt.event.ActionEvent evt) throws RemoteException {//GEN-FIRST:event_xuatExcelActionPerformed
+    private void xuatExcelActionPerformed(java.awt.event.ActionEvent evt) throws Exception {//GEN-FIRST:event_xuatExcelActionPerformed
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Chọn đường dẫn và tên file");
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);

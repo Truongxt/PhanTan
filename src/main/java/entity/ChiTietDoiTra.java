@@ -28,10 +28,10 @@ public class ChiTietDoiTra {
     private Thuoc thuoc;
 
     @Column(name = "soLuong", nullable = false)
-    private Integer soLuong;
+    private int soLuong;
 
     @Column(name = "donGia", nullable = false)
-    private Double donGia;
+    private double donGia;
 
     public ChiTietDoiTra(DoiTra doiTra, Thuoc thuoc, int soLuong, double gia) {
         this.doiTra = doiTra;

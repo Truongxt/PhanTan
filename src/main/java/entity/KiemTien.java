@@ -20,13 +20,13 @@ public class KiemTien {
     private BangKiemTien maBangKiemTien;
 
     @Column(name = "soLuong", nullable = false)
-    private Integer soLuong;
+    private int soLuong;
 
     @Column(name = "giaTri", nullable = false)
     private double giaTri;
 
     @Transient
-    private Double tong;
+    private double tong;
 
     @OneToOne(cascade = CascadeType.ALL)
     private KetToan ketToan;

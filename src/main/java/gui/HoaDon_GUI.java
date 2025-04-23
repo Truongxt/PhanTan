@@ -16,13 +16,8 @@ import dao.NhanVien_DAO;
 import dao.Thuoc_DAO;
 import dao.Voucher_DAO;
 import dao.XuatXu_DAO;
-import entity.ChiTietHoaDon;
-import entity.HoaDon;
-import entity.KhachHang;
-import entity.NhanVien;
-import entity.TaiKhoan;
-import entity.Thuoc;
-import entity.Voucher;
+import entity.*;
+
 import java.awt.HeadlessException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
@@ -79,6 +74,7 @@ public class HoaDon_GUI extends javax.swing.JPanel {
         initComponents();
         this.btnOptionsList = new JButton[]{btn_op1, btn_op2, btn_op3, btn_op4, btn_op5, btn_op6, btn_op7, btn_op8, btn_op9};
         this.tk = tk;
+        jtf_tienKhachDua.setText("0.0");
         initNhanvien();
         indexThuoc = new ArrayList<>();
         kh_DAO = new KhachHang_DAO();
@@ -122,7 +118,9 @@ public class HoaDon_GUI extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     public void renderID() {
         try {
-            hd = hd_DAO.createNewOrder(nv);
+            hd = new HoaDon();
+            hd.setMaHD(hd_DAO.generateID(nv));
+            jtf_maHoaDon.setText(hd_DAO.generateID(nv));
         } catch (Exception ex) {
             Logger.getLogger(HoaDon_GUI.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -407,7 +405,11 @@ public class HoaDon_GUI extends javax.swing.JPanel {
         ));
         tbl_tam.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tbl_tamMouseClicked(evt);
+                try {
+                    tbl_tamMouseClicked(evt);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         jScrollPane3.setViewportView(tbl_tam);
@@ -464,7 +466,11 @@ public class HoaDon_GUI extends javax.swing.JPanel {
         btn_xoaToanBo.setText("Xóa toàn bộ đơn tạm");
         btn_xoaToanBo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_xoaToanBoActionPerformed(evt);
+                try {
+                    btn_xoaToanBoActionPerformed(evt);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         DanhSachDonTam.getContentPane().add(btn_xoaToanBo, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 380, 230, -1));
@@ -472,7 +478,11 @@ public class HoaDon_GUI extends javax.swing.JPanel {
         btn_xuLy.setText("Xử lý đơn");
         btn_xuLy.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_xuLyActionPerformed(evt);
+                try {
+                    btn_xuLyActionPerformed(evt);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         DanhSachDonTam.getContentPane().add(btn_xuLy, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 380, 230, -1));
@@ -480,7 +490,11 @@ public class HoaDon_GUI extends javax.swing.JPanel {
         btn_xoaDon.setText("Xóa đơn tạm");
         btn_xoaDon.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_xoaDonActionPerformed(evt);
+                try {
+                    btn_xoaDonActionPerformed(evt);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         DanhSachDonTam.getContentPane().add(btn_xoaDon, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 380, 230, -1));
@@ -656,7 +670,11 @@ public class HoaDon_GUI extends javax.swing.JPanel {
         btn_thanhToan.setText("THANH TOÁN");
         btn_thanhToan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_thanhToanActionPerformed(evt);
+                try {
+                    btn_thanhToanActionPerformed(evt);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -703,7 +721,11 @@ public class HoaDon_GUI extends javax.swing.JPanel {
         btn_xuLyDonTam.setText("XỬ LÝ ĐƠN TẠM");
         btn_xuLyDonTam.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_xuLyDonTamActionPerformed(evt);
+                try {
+                    btn_xuLyDonTamActionPerformed(evt);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -944,8 +966,10 @@ public class HoaDon_GUI extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_jtf_tienKhachDuaActionPerformed
 
-    private void btn_thanhToanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_thanhToanActionPerformed
+    private void btn_thanhToanActionPerformed(java.awt.event.ActionEvent evt) throws Exception {//GEN-FIRST:event_btn_thanhToanActionPerformed
+        System.out.println("Nút Thanh Toán được nhấn!");
         taoHoaDon();
+
     }//GEN-LAST:event_btn_thanhToanActionPerformed
 
     private void btn_huyActionPerformed(java.awt.event.ActionEvent evt) throws Exception {//GEN-FIRST:event_btn_huyActionPerformed
@@ -1006,47 +1030,53 @@ public class HoaDon_GUI extends javax.swing.JPanel {
         obj[5] = new ChiTietHoaDon(soLuong, t.getGia(), t, hd).thanhTien();
         return obj;
     }
-    private void btn_themThuocActionPerformed(java.awt.event.ActionEvent evt) throws RemoteException {//GEN-FIRST:event_btn_themThuocActionPerformed
+    private void btn_themThuocActionPerformed(java.awt.event.ActionEvent evt) throws RemoteException {
         if (!jtf_sdt.getText().equalsIgnoreCase("")) {
             int index = tableSP.getSelectedRow();
-            if (!indexThuoc.contains(index)) {
-                Thuoc t = new Thuoc_DAO().getThuocTheoMa(tableSP.getValueAt(index, 0) + "");
-                if (t.getSoLuongTon() - 1 >= 0) {
-                    //mặc đinh thêm số lượng là 1 vào giỏ hàng
-                    ChiTietHoaDon cthd = new ChiTietHoaDon(1, t.getGia(), t, hd);
-                    Object objSP[] = initObjectSP(t, 1, stt++);
-                    indexThuoc.add(index);
-                    listCTHD.add(cthd);
-                    model_cart.addRow(objSP);
-                    initDoanhThu();
-                    initGoiY();
+            String maThuoc = tableSP.getValueAt(index, 0) + "";
+            Thuoc t = new Thuoc_DAO().getThuocTheoMa(maThuoc);
 
-                } else {
-                    Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, "Không đủ số lượng tồn");
-
+            ChiTietHoaDon existingCTHD = null;
+            int cthdIndex = -1;
+            for (int i = 0; i < listCTHD.size(); i++) {
+                if (listCTHD.get(i).getThuoc().getMaThuoc().equals(maThuoc)) {
+                    existingCTHD = listCTHD.get(i);
+                    cthdIndex = i;
+                    break;
                 }
-
-            } else {
-                // cho biến tạm để lưu vị trí
-                int n = -1;
-                String maThuoc = tableSP.getValueAt(index, 0) + "";
-                for (int i = 0; i < tableCart.getRowCount(); i++) {
-                    if (maThuoc.equalsIgnoreCase(tableCart.getValueAt(i, 1) + "")) {
-                        n = i;
-                        break;
-                    }
-                }
-
-                tableCart.setValueAt(Integer.valueOf(tableCart.getValueAt(n, 3).toString()) + 1, n, 3);
-                suaSoLuong();
-                initDoanhThu();
-                initGoiY();
             }
 
+            if (existingCTHD == null) {
+                // New medicine, add to cart
+                if (t.getSoLuongTon() >= 1) {
+                    ChiTietHoaDon cthd = new ChiTietHoaDon(new ChiTietHoaDonId(hd.getMaHD(), t.getMaThuoc()), 1, t.getGia(), t, hd);
+                    listCTHD.add(cthd);
+                    indexThuoc.add(index);
+                    Object objSP[] = initObjectSP(t, 1, stt++);
+                    model_cart.addRow(objSP);
+                } else {
+                    Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, "Không đủ số lượng tồn");
+                }
+            } else {
+                // Medicine exists, increment quantity
+                int currentQuantity = existingCTHD.getSoLuong();
+                if (t.getSoLuongTon() >= currentQuantity + 1) {
+                    existingCTHD.setSoLuong(currentQuantity + 1);
+                    for (int i = 0; i < tableCart.getRowCount(); i++) {
+                        if (tableCart.getValueAt(i, 1).toString().equals(maThuoc)) {
+                            tableCart.setValueAt(currentQuantity + 1, i, 3);
+                            break;
+                        }
+                    }
+                } else {
+                    Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_CENTER, "Không đủ số lượng tồn");
+                }
+            }
+            initDoanhThu();
+            initGoiY();
         } else {
             Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_LEFT, "Vui lòng nhập số điện thoại trước khi chọn sản phẩm");
         }
-
     }//GEN-LAST:event_btn_themThuocActionPerformed
 
     private void jtf_khachTraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtf_khachTraActionPerformed
@@ -1114,6 +1144,7 @@ public class HoaDon_GUI extends javax.swing.JPanel {
                 boolean isSaved = isOldOrder ? updateOrder(false) : saveOrder(false);
                 if (isSaved) {
                     Notifications.getInstance().show(Notifications.Type.SUCCESS, "Đã lưu tạm thành công đơn hàng " + hd.getMaHD());
+                    listCTHD.clear();
                     refeshForm();
                 } else {
                     Notifications.getInstance().show(Notifications.Type.ERROR, "Có lỗi xảy ra khi lưu đơn hàng vào cơ sở dữ liệu" + hd.getMaHD());
@@ -1122,15 +1153,15 @@ public class HoaDon_GUI extends javax.swing.JPanel {
                 Notifications.getInstance().show(Notifications.Type.ERROR, "Không thể lưu tạm hóa đơn " + hd.getMaHD() + ": " + ex.getMessage());
             }
         }
-    }//GEN-LAST:event_btn_luuTamActionPerformed
+    }
 
-    private void btn_xuLyDonTamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_xuLyDonTamActionPerformed
+    private void btn_xuLyDonTamActionPerformed(java.awt.event.ActionEvent evt) throws Exception {//GEN-FIRST:event_btn_xuLyDonTamActionPerformed
         DanhSachDonTam.setLocationRelativeTo(Main.app);
         renderSavedOrderTable();
         DanhSachDonTam.setVisible(true);
     }//GEN-LAST:event_btn_xuLyDonTamActionPerformed
 
-    private void btn_xuLyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_xuLyActionPerformed
+    private void btn_xuLyActionPerformed(java.awt.event.ActionEvent evt) throws Exception {//GEN-FIRST:event_btn_xuLyActionPerformed
         if (!listCTHD.isEmpty()) {
             Notifications.getInstance().show(Notifications.Type.WARNING, 3000, "Đơn hàng hiện tại vẫn chưa xử lí xong, hãy hoàn thành hoặc hủy bỏ đơn hiện tại để xử lí đơn lưu tạm");
             return;
@@ -1150,7 +1181,8 @@ public class HoaDon_GUI extends javax.swing.JPanel {
         Notifications.getInstance().show(Notifications.Type.INFO, "Đã tải lên thông tin của hóa đơn " + orderID);
     }//GEN-LAST:event_btn_xuLyActionPerformed
 
-    private void loadSavedOrder(String id) {
+    private void loadSavedOrder(String id) throws Exception {
+        isOldOrder = true;
         HoaDon savedOrder = hd_DAO.getHoaDon(id);
 //        update state
         hd = savedOrder;
@@ -1174,7 +1206,7 @@ public class HoaDon_GUI extends javax.swing.JPanel {
         jtf_tenKH.setText(kh.getTenKhachHang());
         jtf_sdt.setText(kh.getSdt());
     }
-    private void tbl_tamMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_tamMouseClicked
+    private void tbl_tamMouseClicked(java.awt.event.MouseEvent evt) throws Exception {//GEN-FIRST:event_tbl_tamMouseClicked
         tblModel_chiTietTam.setRowCount(0);
         int index = tbl_tam.getSelectedRow();
         ArrayList<ChiTietHoaDon> tam = hd_DAO.getChiTietHoaDon(tbl_tam.getValueAt(index, 0) + "");
@@ -1186,7 +1218,7 @@ public class HoaDon_GUI extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_tbl_tamMouseClicked
 
-    private void btn_xoaDonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_xoaDonActionPerformed
+    private void btn_xoaDonActionPerformed(java.awt.event.ActionEvent evt) throws Exception {//GEN-FIRST:event_btn_xoaDonActionPerformed
         int row = tbl_tam.getSelectedRow();
 
 //        Nếu đang không chọn dòng nào thì thông báo
@@ -1207,7 +1239,7 @@ public class HoaDon_GUI extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btn_xoaDonActionPerformed
 
-    private void btn_xoaToanBoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_xoaToanBoActionPerformed
+    private void btn_xoaToanBoActionPerformed(java.awt.event.ActionEvent evt) throws Exception {//GEN-FIRST:event_btn_xoaToanBoActionPerformed
         if (JOptionPane.showConfirmDialog(DanhSachDonTam, "Bạn có muốn xóa toàn bộ đơn hàng đã lưu tạm này (Không thể phục hồi)?", "Xóa đơn lưu tạm", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             //duyệt ngược mới thành công, do sau khi xóa 1 dòng thì dòng phía sau sẽ bị đẩy lên dẫn đến xóa không hết hoàn toàn
             for (int row = tblModel_savedOrder.getRowCount() - 1; row >= 0; row--) {
@@ -1248,7 +1280,7 @@ public class HoaDon_GUI extends javax.swing.JPanel {
     private void jtf_voucherActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtf_voucherActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jtf_voucherActionPerformed
-    private void renderSavedOrderTable() {
+    private void renderSavedOrderTable() throws Exception {
         tblModel_savedOrder = new DefaultTableModel(new String[]{"Mã hóa đơn", "Tên khách hàng", "Số điện thoại", "Ngày tạo"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -1264,9 +1296,8 @@ public class HoaDon_GUI extends javax.swing.JPanel {
         }
     }
 
-    private boolean saveOrder(boolean isComplete) throws RemoteException {
+    private boolean saveOrder(boolean isComplete) throws Exception {
         Notifications.getInstance().show(Notifications.Type.INFO, "Đang lưu trữ hóa đơn...");
-
         try {
             hd.setNhanVien(nv);
             hd.setNgayLap(LocalDate.now());
@@ -1274,52 +1305,45 @@ public class HoaDon_GUI extends javax.swing.JPanel {
             boolean isATMPayment = jcb_phuongThuc.getSelectedIndex() == 1;
             hd.setAtm(isATMPayment);
             hd.setTrangThai(isComplete);
-
+            hd.setMaHD(hd_DAO.createNewOrder(nv).getMaHD());
             if (!jtf_khachTra.getText().isEmpty()) {
                 hd.setTongTien(Double.valueOf(jtf_khachTra.getText()));
 
             } else {
+                jtf_khachTra.setText("0");
                 hd.setTongTien(0);
 
             }
-             if (Double.valueOf(jtf_tienKhachDua.getText()) < Double.valueOf(jtf_khachTra.getText())) {
-                Notifications.getInstance().show(Notifications.Type.ERROR, "Tiền khách đưa phải lớn hơn hoặc bằng tiền phải trả");
-                return false;
-            }
-            hd.setKhachHang(kh);
             if (!jtf_tienKhachDua.getText().isEmpty()) {
                 hd.setTienDaDua(Double.valueOf(jtf_tienKhachDua.getText()));
 
             } else {
+                jtf_tienKhachDua.setText("0");
                 hd.setTienDaDua(0);
 
             }
-
+            if (Double.valueOf(jtf_tienKhachDua.getText()) < Double.valueOf(jtf_khachTra.getText()))  {
+                Notifications.getInstance().show(Notifications.Type.ERROR, "Tiền khách đưa phải lớn hơn hoặc bằng tiền phải trả");
+                return false;
+            }
+            hd.setKhachHang(kh);
             if (jtf_voucher.getText().isEmpty()) {
-                hd.setVoucher(new Voucher(""));
-
+                hd.setVoucher(null);
             } else {
                 hd.setVoucher(new Voucher_DAO().getVoucher(jtf_voucher.getText()));
             }
+
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
-        if (!hd_DAO.create(hd)) {
-            return false;
-        }
-        for (ChiTietHoaDon cthd : hd.getListCTHD()) {
-            if (!new ChiTietHoaDon_DAO().create(cthd)) {
-                return false;
-            }
-        }
-        return true;
+        return hd_DAO.create(hd);
     }
 
-    private boolean updateOrder(boolean isComplete) {
-
+    private boolean updateOrder(boolean isComplete) throws Exception {
         Notifications.getInstance().show(Notifications.Type.INFO, "Đang lưu trữ hóa đơn...");
         try {
+            // Set HoaDon properties
             hd.setNhanVien(nv);
             hd.setNgayLap(LocalDate.now());
             hd.setListCTHD(listCTHD);
@@ -1330,33 +1354,53 @@ public class HoaDon_GUI extends javax.swing.JPanel {
                 hd.setTongTien(Double.valueOf(jtf_khachTra.getText()));
 
             } else {
+                jtf_khachTra.setText("0");
                 hd.setTongTien(0);
 
             }
-            hd.setKhachHang(kh);
             if (!jtf_tienKhachDua.getText().isEmpty()) {
                 hd.setTienDaDua(Double.valueOf(jtf_tienKhachDua.getText()));
 
             } else {
+                jtf_tienKhachDua.setText("0");
                 hd.setTienDaDua(0);
 
             }
-            if (Double.valueOf(jtf_tienKhachDua.getText()) < Double.valueOf(jtf_khachTra.getText())) {
+
+            hd.setKhachHang(kh);
+            if (Double.valueOf(jtf_tienKhachDua.getText()) < Double.valueOf(jtf_khachTra.getText()))  {
                 Notifications.getInstance().show(Notifications.Type.ERROR, "Tiền khách đưa phải lớn hơn hoặc bằng tiền phải trả");
                 return false;
             }
-
             if (jtf_voucher.getText().isEmpty()) {
                 hd.setVoucher(new Voucher(""));
-
             } else {
                 hd.setVoucher(new Voucher_DAO().getVoucher(jtf_voucher.getText()));
             }
+
+            // Update HoaDon
+            if (!hd_DAO.suaHoaDon(hd.getMaHD(), hd)) {
+                return false;
+            }
+
+            ChiTietHoaDon_DAO cthdDAO = new ChiTietHoaDon_DAO();
+            // Update or insert ChiTietHoaDon records
+            for (ChiTietHoaDon cthd : hd.getListCTHD()) {
+                ChiTietHoaDon existing = cthdDAO.getChiTietHoaDon(hd.getMaHD(), cthd.getThuoc().getMaThuoc());
+                if (existing != null) {
+                    // Update existing record
+                    existing.setSoLuong(cthd.getSoLuong());
+                    existing.setDonGia(cthd.getDonGia());
+                    if (!cthdDAO.suaChiTietHoaDon(existing.getHoaDon().getMaHD(),existing.getThuoc().getMaThuoc(),existing)) {
+                        return false;
+                    }
+                }
+            }
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
-        return hd_DAO.suaHoaDon(hd.getMaHD(), hd);
     }
 
 //    public String xuLyMaHoaDon() {
@@ -1468,18 +1512,20 @@ public class HoaDon_GUI extends javax.swing.JPanel {
     private javax.swing.JTable tbl_tam;
     // End of variables declaration//GEN-END:variables
 
-    public void taoHoaDon() {
+    public void taoHoaDon() throws Exception {
         if (!orderValidate(true)) {
             return;
         }
+        hd.setTrangThai(true);
 
+        if(!isOldOrder) {
+            hd.setMaHD(hd_DAO.createNewOrder(nv).getMaHD());
+        }
         try {
             boolean isSaved = isOldOrder ? updateOrder(isOldOrder) : saveOrder(true);
 
             if (isSaved) {
                 Notifications.getInstance().show(Notifications.Type.SUCCESS, "Đã tạo thành công đơn hàng" + hd.getMaHD());
-//              
-//                Rerender panel
                 refeshForm();
             } else {
                 Notifications.getInstance().show(Notifications.Type.ERROR, "Có lỗi xảy ra khi lưu đơn hàng vào cơ sở dữ liệu" + hd.getMaHD());

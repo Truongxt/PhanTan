@@ -8,22 +8,22 @@ import java.time.LocalDate;
 public class Voucher {
 
     @Id
-    @Column(name = "ma_voucher", nullable = false, length = 50)
+    @Column(name = "ma_voucher",length = 50)
     private String maVoucher;
 
-    @Column(name = "ten_voucher", nullable = false, length = 100)
+    @Column(name = "ten_voucher", length = 100)
     private String tenVoucher;
 
     @Column(name = "mo_ta", length = 255)
     private String moTa;
 
-    @Column(name = "ngay_ap_dung", nullable = false)
+    @Column(name = "ngay_ap_dung")
     private LocalDate ngayApDung;
 
-    @Column(name = "ngay_ket_thuc", nullable = false)
+    @Column(name = "ngay_ket_thuc")
     private LocalDate ngayKetThuc;
 
-    @Column(name = "gia_giam", nullable = false)
+    @Column(name = "gia_giam")
     private double giaGiam;
 
     public Voucher() {

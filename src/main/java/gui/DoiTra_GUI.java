@@ -424,7 +424,7 @@ public class DoiTra_GUI extends javax.swing.JPanel {
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    private void init() throws RemoteException {
+    private void init() throws Exception {
         hoaDon = hd_DAO.getHoaDon(txt_MaHD.getText());
         //set txt ma hoa don
         txtMaHD.setText(hoaDon.getMaHD());
@@ -556,15 +556,18 @@ public class DoiTra_GUI extends javax.swing.JPanel {
         }
     }
 
-    public Object[] initObjectSP(Thuoc t, int soLuong, int stt) {
+    public Object[] initObjectSP(Thuoc t, int soLuong, int stt, HoaDon hd) {
         Object[] obj = new Object[5];
         obj[0] = stt;
         obj[1] = t.getTenThuoc();
         obj[2] = soLuong;
         obj[3] = t.getGia();
+        // Khởi tạo đúng constructor và tính thành tiền
         obj[4] = new ChiTietHoaDon(soLuong, t.getGia(), t, hd).thanhTien();
         return obj;
     }
+
+
 
     public Object[] initObject(ChiTietHoaDon item) {
         Object[] obj = new Object[6];

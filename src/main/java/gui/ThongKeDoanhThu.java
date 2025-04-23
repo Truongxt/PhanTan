@@ -46,7 +46,7 @@ public class ThongKeDoanhThu extends javax.swing.JPanel {
     private ArrayList<ThangVaDoanhThu> arrThang;
     private ChiTietHoaDon_DAO cthd;
     private HoaDon_DAO hd;
-    public ThongKeDoanhThu() throws SQLException, RemoteException {
+    public ThongKeDoanhThu() throws Exception {
         initComponents();
 //        ConnectDB.connect();
         ThangTheoDoanhThu();
@@ -105,6 +105,8 @@ public class ThongKeDoanhThu extends javax.swing.JPanel {
                     btnNgayMouseClicked(evt);
                 } catch (RemoteException e) {
                     throw new RuntimeException(e);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
             }
         });
@@ -120,6 +122,8 @@ public class ThongKeDoanhThu extends javax.swing.JPanel {
                 try {
                     btnThangMouseClicked(evt);
                 } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -314,12 +318,12 @@ public class ThongKeDoanhThu extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnNgayActionPerformed
 
-    private void btnThangMouseClicked(java.awt.event.MouseEvent evt) throws RemoteException {//GEN-FIRST:event_btnThangMouseClicked
+    private void btnThangMouseClicked(java.awt.event.MouseEvent evt) throws Exception {//GEN-FIRST:event_btnThangMouseClicked
         ThangTheoDoanhThu();
         setTextFieldOfMonth();
     }//GEN-LAST:event_btnThangMouseClicked
 
-    private void btnNgayMouseClicked(java.awt.event.MouseEvent evt) throws RemoteException {//GEN-FIRST:event_btnNgayMouseClicked
+    private void btnNgayMouseClicked(java.awt.event.MouseEvent evt) throws Exception {//GEN-FIRST:event_btnNgayMouseClicked
         NgayTheoDoanhThu();
        // setTextFieldOfDay();
     }//GEN-LAST:event_btnNgayMouseClicked
@@ -328,7 +332,7 @@ public class ThongKeDoanhThu extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnThangActionPerformed
 
-  public void ThangTheoDoanhThu() throws RemoteException {
+  public void ThangTheoDoanhThu() throws Exception {
     Date selectedDate = jDateChooser1.getDate();
     
     if (selectedDate == null) {
@@ -411,7 +415,7 @@ public class ThongKeDoanhThu extends javax.swing.JPanel {
       System.out.println(chiTieuHoaDon+"?"+hd.getSizeOfYear(year)+"/"+countHoaDon );
 }
   
-   public void NgayTheoDoanhThu() throws RemoteException {
+   public void NgayTheoDoanhThu() throws Exception {
     Date selectedDate = jDateChooser1.getDate();
     
     if (selectedDate == null) {
@@ -497,7 +501,7 @@ public class ThongKeDoanhThu extends javax.swing.JPanel {
 }
   
 
-    public void setTextFieldOfMonth() throws RemoteException {
+    public void setTextFieldOfMonth() throws Exception {
         hd= new HoaDon_DAO();
         Date ngay = jDateChooser1.getDate();
         Calendar calendar = Calendar.getInstance();
@@ -552,7 +556,7 @@ public class ThongKeDoanhThu extends javax.swing.JPanel {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-    } catch (SQLException | RemoteException e) {
+    } catch (Exception e) {
         e.printStackTrace(); // In ra lỗi nếu có
     }
     }
