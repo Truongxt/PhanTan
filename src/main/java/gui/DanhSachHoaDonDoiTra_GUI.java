@@ -145,9 +145,9 @@ public class DanhSachHoaDonDoiTra_GUI extends javax.swing.JPanel {
         String loai;
         for (DoiTra returnOrder : allReturnOrder) {
             if(returnOrder.isLoai())
-                loai = "Đơn trả";
-            else 
                 loai = "Đơn đổi";
+            else 
+                loai = "Đơn trả";
    
             String[] newRow = {returnOrder.getMaHDDT(), returnOrder.getHoaDon().getMaHD(), returnOrder.getNgayDoiTra().toString(), loai, returnOrder.getTienTra() + ""};
             tblModel_returnOrder.addRow(newRow);

@@ -109,7 +109,7 @@ public class ChiTietDoiTra_DAO extends UnicastRemoteObject implements IChiTietDo
     public List<ChiTietDoiTra> getAllForOrderReturnID(String returnOrderID) throws Exception {
         var em = emf.createEntityManager();
         try {
-            String jpql = "SELECT c FROM ChiTietDoiTra c JOIN c.Thuoc  WHERE  c.doiTra.maHDDT = :maHDDT";
+            String jpql = "SELECT c FROM ChiTietDoiTra c JOIN FETCH c.thuoc WHERE c.doiTra.maHDDT = :maHDDT";
             TypedQuery<ChiTietDoiTra> query = em.createQuery(jpql, ChiTietDoiTra.class);
             query.setParameter("maHDDT", returnOrderID);
             return query.getResultList();
@@ -117,6 +117,7 @@ public class ChiTietDoiTra_DAO extends UnicastRemoteObject implements IChiTietDo
             em.close();
         }
     }
+
 
     @Override
     public void createReturnOrderDetail(DoiTra newReturnOrder, ArrayList<ChiTietDoiTra> cart) throws Exception {

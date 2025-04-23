@@ -119,6 +119,10 @@ public class OrderPrinter {
 
         return PrintStatus.COMPLETE;
     }
+//public PrintStatus printFile() {
+//    // Bỏ qua phần tìm kiếm máy in và in file.
+//    return PrintStatus.COMPLETE;
+//}
 
     public static byte[] resizeImage(byte[] imageData, int targetWidth, int targetHeight) throws IOException {
         BufferedImage originalImage = ImageIO.read(new ByteArrayInputStream(imageData));

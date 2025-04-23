@@ -8,7 +8,6 @@ import java.util.Objects;
 @Entity
 @Getter
 @Setter
-
 public class ChiTietDoiTra {
     public static final String ORDERID_EMPTY = "Hoá đơn không được phép rỗng";
     public static final String PRODUCT_EMPTY = "Sản phẩm không được phép rỗng";
@@ -33,14 +32,19 @@ public class ChiTietDoiTra {
     @Column(name = "donGia", nullable = false)
     private double donGia;
 
+    public ChiTietDoiTra() {
+    }
+
     public ChiTietDoiTra(DoiTra doiTra, Thuoc thuoc, int soLuong, double gia) {
+        if (doiTra == null) throw new IllegalArgumentException("DoiTra không được null");
+        if (thuoc == null) throw new IllegalArgumentException("Thuoc không được null");
+
         this.doiTra = doiTra;
         this.thuoc = thuoc;
         this.soLuong = soLuong;
         this.donGia = gia;
+        this.id = new ChiTietDoiTraId(doiTra.getMaHDDT(), thuoc.getMaThuoc());
     }
-
-
 
     public ChiTietDoiTra(DoiTra doiTra, Thuoc thuoc) {
         this.doiTra = doiTra;
@@ -53,65 +57,23 @@ public class ChiTietDoiTra {
         this.donGia = gia;
     }
 
-
-
-    public ChiTietDoiTra() {
-    }
-
-
-
-    public DoiTra getDoiTra() {
-        return doiTra;
-    }
-
-    public void setDoiTra(DoiTra doiTra) throws Exception {
-        this.doiTra = doiTra;
-        if(doiTra == null)
-            throw new Exception(ORDERID_EMPTY);
-        this.doiTra = doiTra;
-    }
-
-    public Thuoc getThuoc() {
-        return thuoc;
-    }
-
-    public void setThuoc(Thuoc thuoc) throws Exception {
-        if(thuoc == null)
-            throw new Exception(PRODUCT_EMPTY);
-        this.thuoc = thuoc;
-    }
-
-    public int getSoLuong() {
-        return soLuong;
-    }
-
-    public void setSoLuong(int soLuong) throws Exception {
-
-        if(soLuong < 0)
-            throw new Exception(QUANTITY_VALID);
-        this.soLuong = soLuong;
-    }
-
-    public double getGia() {
-        return donGia;
-    }
-
-    public void setGia(double gia) {
-        this.donGia = gia;
-    }
-    public double thanhTien(){
+    public double thanhTien() {
         return this.donGia * this.soLuong;
     }
 
-
-    public DoiTra getReturnOrder() {
-        return doiTra;
+    public void setDoiTra(DoiTra doiTra) throws Exception {
+        if (doiTra == null) throw new Exception(ORDERID_EMPTY);
+        this.doiTra = doiTra;
     }
 
-    public void setReturnOrder(DoiTra returnOrder) throws Exception {
-        if(returnOrder == null)
-            throw new Exception(ORDERID_EMPTY);
-        this.doiTra = returnOrder;
+    public void setThuoc(Thuoc thuoc) throws Exception {
+        if (thuoc == null) throw new Exception(PRODUCT_EMPTY);
+        this.thuoc = thuoc;
+    }
+
+    public void setSoLuong(int soLuong) throws Exception {
+        if (soLuong < 0) throw new Exception(QUANTITY_VALID);
+        this.soLuong = soLuong;
     }
 
     @Override
@@ -124,26 +86,20 @@ public class ChiTietDoiTra {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final ChiTietDoiTra other = (ChiTietDoiTra) obj;
-        if (!Objects.equals(this.doiTra, other.doiTra)) {
-            return false;
-        }
-        return Objects.equals(this.thuoc, other.thuoc);
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        ChiTietDoiTra other = (ChiTietDoiTra) obj;
+        return Objects.equals(this.doiTra, other.doiTra) &&
+                Objects.equals(this.thuoc, other.thuoc);
     }
 
     @Override
     public String toString() {
-        return "ChiTietDoiTra{" + "doiTra=" + doiTra + ", thuoc=" + thuoc + ", soLuong=" + soLuong + ", gia=" + donGia + '}';
+        return "ChiTietDoiTra{" +
+                "doiTra=" + doiTra +
+                ", thuoc=" + thuoc +
+                ", soLuong=" + soLuong +
+                ", gia=" + donGia +
+                '}';
     }
-
-
 }

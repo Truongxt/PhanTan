@@ -1,5 +1,6 @@
 package dao;
 
+import entity.ChiTietDoiTra;
 import entity.DoiTra;
 import interfaces.IDoiTra;
 import jakarta.persistence.EntityManagerFactory;
@@ -45,6 +46,32 @@ public class DoiTra_DAO extends UnicastRemoteObject implements IDoiTra {
         var em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
+            System.out.println("== Kiểm tra DoiTra trước persist ==");
+            if (doiTra == null) throw new RuntimeException("DoiTra bị null!");
+
+            System.out.println("Mã HDDT: " + doiTra.getMaHDDT());
+            System.out.println("Nhân viên: " + (doiTra.getNhanvien() != null ? doiTra.getNhanvien().getMaNhanVien() : "null"));
+            System.out.println("Hóa đơn: " + (doiTra.getHoaDon() != null ? doiTra.getHoaDon().getMaHD() : "null"));
+            System.out.println("Lý do: " + doiTra.getLiDO());
+            System.out.println("Danh sách ChiTietDoiTra:");
+
+            if (doiTra.getListDetail() == null) {
+                throw new RuntimeException("ListDetail bị null");
+            }
+
+            for (ChiTietDoiTra ctdt : doiTra.getListDetail()) {
+                if (ctdt == null) {
+                    throw new RuntimeException("Một phần tử trong listDetail bị null");
+                }
+                if (ctdt.getThuoc() == null) {
+                    throw new RuntimeException("Thuốc trong ChiTietDoiTra bị null");
+                }
+                if (ctdt.getDoiTra() == null) {
+                    throw new RuntimeException("ChiTietDoiTra chưa được gán doiTra");
+                }
+                System.out.println(" - Thuốc: " + ctdt.getThuoc().getMaThuoc() + ", SL: " + ctdt.getSoLuong() + ", Giá: " + ctdt.thanhTien());
+            }
+
             em.persist(doiTra);
             em.getTransaction().commit();
             return true;
@@ -56,6 +83,7 @@ public class DoiTra_DAO extends UnicastRemoteObject implements IDoiTra {
             em.close();
         }
     }
+
 
     @Override
     public boolean update(String id, DoiTra doiTra) throws Exception {
@@ -164,12 +192,21 @@ public class DoiTra_DAO extends UnicastRemoteObject implements IDoiTra {
                                     "SUM(CASE WHEN d.loai = true THEN d.tienTra ELSE 0 END) " +
                                     "FROM DoiTra d", Object[].class)
                     .getSingleResult();
-            int totalReturns = ((Number) result[0]).intValue();
-            int totalExchanges = ((Number) result[1]).intValue();
-            double totalAmount = ((Number) result[2]).doubleValue();
+
+            int totalReturns = 0;
+            int totalExchanges = 0;
+            double totalAmount = 0.0;
+
+            if (result != null) {
+                if (result[0] != null) totalReturns = ((Number) result[0]).intValue();
+                if (result[1] != null) totalExchanges = ((Number) result[1]).intValue();
+                if (result[2] != null) totalAmount = ((Number) result[2]).doubleValue();
+            }
+
             return new DoiTra(totalExchanges, totalReturns, totalAmount);
         } finally {
             em.close();
         }
     }
+
 }

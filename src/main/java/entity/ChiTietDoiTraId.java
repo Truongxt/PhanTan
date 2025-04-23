@@ -16,6 +16,11 @@ public class ChiTietDoiTraId implements Serializable {
     @Column(name = "maThuoc", nullable = false)
     private String maThuoc;
 
+    public ChiTietDoiTraId() {
+
+    }
+
+
     public String getMaHoaDonDoiTra() {
         return maHoaDonDoiTra;
     }
@@ -29,6 +34,11 @@ public class ChiTietDoiTraId implements Serializable {
     }
 
     public void setMaThuoc(String maThuoc) {
+        this.maThuoc = maThuoc;
+    }
+
+    public ChiTietDoiTraId(String maHoaDonDoiTra, String maThuoc) {
+        this.maHoaDonDoiTra = maHoaDonDoiTra;
         this.maThuoc = maThuoc;
     }
 

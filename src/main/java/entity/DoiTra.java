@@ -9,8 +9,7 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Objects;
-import java.util.regex.Pattern;
+import java.util.List;
 
 /**
  *
@@ -50,7 +49,7 @@ public class DoiTra {
     private double tienTra;
 
     @OneToMany(mappedBy = "doiTra", cascade = CascadeType.ALL)
-    private ArrayList<ChiTietDoiTra> listDetail;
+    private List<ChiTietDoiTra> listDetail;
     @Column(name = "liDo")
     private String liDO;
 
@@ -62,7 +61,7 @@ public class DoiTra {
 
 
     public DoiTra(Date ngayDoiTra, String maHDDT, NhanVien nhanvien, HoaDon hoaDon, boolean loai, double tienTra, ArrayList<ChiTietDoiTra> listDetail, String liDO) {
-        this.ngayDoiTra = ngayDoiTra;
+        this.ngayDoiTra = new Date();
         this.maHDDT = maHDDT;
         this.nhanvien = nhanvien;
         this.hoaDon = hoaDon;
@@ -137,16 +136,16 @@ public class DoiTra {
     }
 
     public void setTienTra(double tienTra) {
-        this.tienTra = tienTra;
-         if(this.loai == false
-                )
-            this.tienTra = 0;
-        else {
+        if (!loai) {
+            this.tienTra = 0;  // Nếu loai là false, tienTra = 0
+        } else {
+            this.tienTra = tienTra;  // Nếu loai là true, cộng các giá trị chi tiết
             for (ChiTietDoiTra returnOrderDetail : listDetail) {
                 this.tienTra += returnOrderDetail.getDonGia();
             }
         }
     }
+
 
     public String getLiDO() {
         return liDO;
@@ -160,11 +159,16 @@ public class DoiTra {
     }
 
     public ArrayList<ChiTietDoiTra> getListDetail() {
-        return listDetail;
+        return (ArrayList<ChiTietDoiTra>) listDetail;
     }
 
-    public void setListDetail(ArrayList<ChiTietDoiTra> listDetail) {
-        this.listDetail = listDetail;
+    public void setListDetail(List<ChiTietDoiTra> listDetail) {
+        if (listDetail == null) {
+            this.listDetail = new ArrayList<>();
+        } else {
+            this.listDetail = listDetail;
+        }
     }
+
 
 }

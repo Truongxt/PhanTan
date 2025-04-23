@@ -72,5 +72,3 @@ VALUES (N'T004', N'Oresol', 12000, '2026-03-20', '2024-03-20', 1.5, 100, N'Bù n
 
 INSERT INTO Thuoc (maThuoc, tenThuoc, gia, hsd, nsx, thue, soLuongTon, mota, maLoai, maXuatXu, maDonViTinh, maNCC)
 VALUES (N'T005', N'Thuốc ho Prospan', 45000, '2025-12-01', '2023-12-01', 4.0, 180, N'Giảm ho, tiêu đờm từ thảo dược', 'LT005', 'XX005', 'DVT005', 'NCC005');
-
-
