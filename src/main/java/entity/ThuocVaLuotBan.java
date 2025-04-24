@@ -4,11 +4,13 @@
  */
 package entity;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Lenovo
  */
-public class ThuocVaLuotBan {
+public class ThuocVaLuotBan implements Serializable {
    
     private Thuoc thuoc;  // Đối tượng thuốc
     private int luotBan;   // Số lượng bán

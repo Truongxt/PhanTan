@@ -220,7 +220,7 @@ public class OrderPrinter {
             document.add(table);
 
 //            Order footer    
-            if (order.getVoucher().getMaVoucher() != null) {
+            if (order.getVoucher() != null) {
                 document.add(new Paragraph("Voucher : " + order.getVoucher().getMaVoucher(), font));
                 document.add(new Paragraph("Số tiền đã giảm : " +(getVND(order.getVoucher().getGiaGiam()* sumOfPrice)), font));
             }

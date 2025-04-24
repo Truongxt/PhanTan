@@ -50,7 +50,7 @@ public class DoiTra_GUI extends javax.swing.JPanel {
     private HoaDon hd;
     private double refund = 0;
 
-    public DoiTra_GUI(TaiKhoan tk) throws RemoteException {
+    public DoiTra_GUI(TaiKhoan tk) throws Exception {
         initComponents();
         this.tk = tk;
         cart = new ArrayList<>();
@@ -925,6 +925,8 @@ public class DoiTra_GUI extends javax.swing.JPanel {
             Main.app.refeshReturnOrder();
         } catch (UnsupportedLookAndFeelException | RemoteException ex) {
             Logger.getLogger(DoiTra_GUI.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables

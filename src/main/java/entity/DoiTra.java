@@ -7,6 +7,7 @@ package entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
@@ -22,7 +23,7 @@ import java.util.regex.Pattern;
 @ToString
 @AllArgsConstructor
 //@NoArgsConstructor
-public class DoiTra {
+public class DoiTra implements Serializable {
     private final String ORDER_ERROR="Order không được rỗng";
     private final String EMPLOYEE_ERROR="Employee không được rỗng";
     private final String REASON_EMPTY = "Lý do không được rỗng";

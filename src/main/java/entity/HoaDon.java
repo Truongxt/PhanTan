@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 @Table(name = "hoa_don") // Ensure this matches the actual table name in the database
 @Getter
 @Setter
-public class HoaDon {
+public class HoaDon implements Serializable {
 
     @Id
     @Column(name = "ma_hd", nullable = false, unique = true)

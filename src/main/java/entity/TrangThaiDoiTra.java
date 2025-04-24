@@ -4,11 +4,13 @@
  */
 package entity;
 
+import java.io.Serializable;
+
 /**
  *
  * @author HÀ NHƯ
  */
-public enum TrangThaiDoiTra {    
+public enum TrangThaiDoiTra implements Serializable {
     PENDING(0), SUCCESS(1), CANCEL(2);
 
     private final int value;

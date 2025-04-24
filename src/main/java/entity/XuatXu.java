@@ -7,9 +7,11 @@ import jakarta.persistence.Id;
 import lombok.Data;
 import org.hibernate.annotations.Nationalized;
 
+import java.io.Serializable;
+
 @Entity
 @Data
-public class XuatXu {
+public class XuatXu implements Serializable {
     @Id
     @Column(name = "maXuatXu", nullable = false)
 

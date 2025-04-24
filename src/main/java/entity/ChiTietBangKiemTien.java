@@ -3,6 +3,7 @@ package entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
@@ -10,7 +11,7 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @ToString
-public class ChiTietBangKiemTien {
+public class ChiTietBangKiemTien implements Serializable {
     @EmbeddedId
     private ChiTietBangKiemTienId id;
 

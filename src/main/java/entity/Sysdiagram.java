@@ -5,9 +5,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "sysdiagrams")
-public class Sysdiagram {
+public class Sysdiagram implements Serializable {
     @Id
     @Column(name = "diagram_id", nullable = false)
     private Integer id;

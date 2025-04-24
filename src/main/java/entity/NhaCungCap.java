@@ -7,10 +7,12 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 
+import java.io.Serializable;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class NhaCungCap {
+public class NhaCungCap implements Serializable {
     @Id
     @Column(name = "maNCC", nullable = false)
     private String maNCC;

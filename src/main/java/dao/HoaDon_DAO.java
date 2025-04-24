@@ -22,7 +22,7 @@ public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
 
     private EntityManagerFactory emf;
 
-    public HoaDon_DAO() throws RemoteException {
+    public HoaDon_DAO() throws Exception {
         super();
         emf = Persistence.createEntityManagerFactory("default");
     }

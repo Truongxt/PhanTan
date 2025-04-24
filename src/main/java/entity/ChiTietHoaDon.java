@@ -3,6 +3,7 @@ package entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
@@ -10,7 +11,7 @@ import java.util.Objects;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChiTietHoaDon {
+public class ChiTietHoaDon implements Serializable {
     @EmbeddedId
     private ChiTietHoaDonId id;
 

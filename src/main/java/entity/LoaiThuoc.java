@@ -5,8 +5,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import org.hibernate.annotations.Nationalized;
 
+import java.io.Serializable;
+
 @Entity
-public class LoaiThuoc {
+public class LoaiThuoc implements Serializable {
 
     @Id
     @Column(name = "maLoai", nullable = false)

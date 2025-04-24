@@ -3,13 +3,15 @@ package entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
+
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class KiemTien {
+public class KiemTien implements Serializable {
 
     @EmbeddedId
     private KiemTienId id;

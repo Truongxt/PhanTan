@@ -70,14 +70,14 @@ public class OTP_DAO extends UnicastRemoteObject implements IOTP {
             if (existingOtp != null) {
                 // Cập nhật OTP hiện có
                 existingOtp.setMaXacNhan(otp);
-                existingOtp.setCreatedAt(LocalDate.now());
+                existingOtp.setCreatedAt(Instant.now());
                 em.merge(existingOtp);
             } else {
                 // Tạo OTP mới
                 Otp otpEntity = new Otp();
                 otpEntity.setTentaiKhoan(nhanVien);
                 otpEntity.setMaXacNhan(otp);
-                otpEntity.setCreatedAt(LocalDate.now());
+                otpEntity.setCreatedAt(Instant.now());
                 em.persist(otpEntity);
             }
             em.getTransaction().commit();

@@ -3,13 +3,14 @@ package entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @Getter
 @Setter
 
-public class ChiTietDoiTra {
+public class ChiTietDoiTra implements Serializable {
     public static final String ORDERID_EMPTY = "Hoá đơn không được phép rỗng";
     public static final String PRODUCT_EMPTY = "Sản phẩm không được phép rỗng";
     public static final String QUANTITY_VALID = "Số lượng phải là số dương";
