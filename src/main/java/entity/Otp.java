@@ -4,14 +4,13 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Nationalized;
 
+import java.io.Serializable;
 import java.time.Instant;
-
-import java.time.LocalDateTime;
-
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "OTP")
-public class Otp {
+public class Otp implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,9 +27,7 @@ public class Otp {
 
     @ColumnDefault("getdate()")
     @Column(name = "created_at", nullable = false)
-
-    private LocalDateTime createdAt;
-
+    private Instant createdAt;
 
     public Long getId() {
         return id;
@@ -56,13 +53,11 @@ public class Otp {
         this.maXacNhan = maXacNhan;
     }
 
-
-    public LocalDateTime getCreatedAt() {
+    public Instant getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-
+    public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
     }
 }

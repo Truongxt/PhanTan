@@ -11,8 +11,6 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class KhachHang_DAO extends UnicastRemoteObject implements IKhachHang {
 
@@ -177,22 +175,18 @@ public class KhachHang_DAO extends UnicastRemoteObject implements IKhachHang {
     }
 
     @Override
-    public ArrayList<KhachHang> getTKKhachHangDoanhThu(String havingClause) throws RemoteException {
-        EntityManager em = null;
+    public ArrayList<KhachHang> getTKKhachHangDoanhThu(String dau) {
+        var em = emf.createEntityManager();
         try {
-            em = emf.createEntityManager();
-            String jpql = "SELECT k FROM KhachHang k LEFT JOIN HoaDon h ON h.khachHang = k " +
-                    "GROUP BY k " + havingClause;
+            String jpql = "SELECT k FROM KhachHang k WHERE k.diaChi LIKE :dau";
             TypedQuery<KhachHang> query = em.createQuery(jpql, KhachHang.class);
+            query.setParameter("dau", dau + "%");
             return new ArrayList<>(query.getResultList());
         } catch (Exception e) {
-            Logger.getLogger(KhachHang_DAO.class.getName()).log(Level.SEVERE,
-                    "Lỗi khi lọc khách hàng theo doanh thu: " + e.getMessage(), e);
-            throw new RemoteException("Lỗi khi lọc khách hàng theo doanh thu", e);
+            e.printStackTrace();
+            return new ArrayList<>();
         } finally {
-            if (em != null) {
-                em.close();
-            }
+            em.close();
         }
     }
 }

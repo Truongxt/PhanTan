@@ -526,44 +526,37 @@ public class ThongKeKhachHang extends javax.swing.JPanel {
         arr.clear();
         model.setRowCount(0);
 
-        String dau = "";
+        String dau;
 
-        try {
-            range = range.trim();
-            switch (range) {
-                case "<200 000":
-                    dau = "HAVING COALESCE(SUM(h.tongTien), 0) <= 200000";
-                    break;
-                case "200 000 - 500 000":
-                    dau = "HAVING SUM(h.tongTien) > 200000 AND SUM(h.tongTien) <= 500000";
-                    break;
-                case "500 000 - 1 000 000":
-                    dau = "HAVING SUM(h.tongTien) > 500000 AND SUM(h.tongTien) <= 1000000";
-                    break;
-                case ">1 000 000":
-                    dau = "HAVING SUM(h.tongTien) > 1000000";
-                    break;
-                default:
-                    throw new IllegalArgumentException("Invalid range: " + range);
-            }
+        switch (range) {
+            case "<200 000":
+                dau = "HAVING "
+                        + "  SUM(h.tongTien) <= 200000 ";
+                arr = kh_dao.getTKKhachHangDoanhThu(dau);
+                updateDSKH(arr);
+                break;
+            case "200 000 - 500 000":
+                dau = "HAVING "
+                        + "  SUM(h.tongTien) > 200000 and  SUM(h.tongTien)<=500000 ";
+                arr = kh_dao.getTKKhachHangDoanhThu(dau);
+                updateDSKH(arr);
+                break;
+            case "500 000 - 1 000 000":
+                dau = "HAVING  SUM(h.tongTien) > 500000 and  SUM(h.tongTien)<=1000000 ";
+                arr = kh_dao.getTKKhachHangDoanhThu(dau);
+                updateDSKH(arr);
+                break;
+            case ">1 000 000":
+                dau = "HAVING "
+                        + "  SUM(h.tongTien) > 1000000 ";
+                arr = kh_dao.getTKKhachHangDoanhThu(dau);
+                updateDSKH(arr);
 
-            // Debugging: Log the query condition
-            System.out.println("Query condition: " + dau);
-
-            // Fetch data from DAO
-            arr = kh_dao.getTKKhachHangDoanhThu(dau);
-
-            // Debugging: Log the results
-            System.out.println("Results: " + arr);
-
-            // Update the table with the results
-            updateDSKH(arr);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new Exception("Error filtering by revenue range: " + e.getMessage());
+                break;
         }
+
     }
+
     // Cập nhật lại bảng chỉ hiển thị các dòng hợp lệ
     public void updateDSKH(ArrayList<KhachHang> arr) throws Exception {
 

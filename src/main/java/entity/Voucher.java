@@ -1,11 +1,13 @@
 package entity;
 
 import jakarta.persistence.*;
+
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "Voucher")
-public class Voucher {
+public class Voucher  implements Serializable {
 
     @Id
     @Column(name = "ma_voucher",length = 50)

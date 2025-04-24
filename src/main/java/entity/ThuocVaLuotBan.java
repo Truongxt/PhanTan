@@ -1,31 +1,45 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import java.io.Serializable;
 
 /**
- * Lớp ThuocVaLuotBan lưu thông tin về thuốc, số lượng bán và doanh thu.
+ *
+ * @author Lenovo
  */
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class ThuocVaLuotBan {
-    private Thuoc thuoc;    // Đối tượng thuốc
-    private int luotBan;    // Số lượng bán
-    private double doanhThu; // Doanh thu
+public class ThuocVaLuotBan implements Serializable {
+   
+    private Thuoc thuoc;  // Đối tượng thuốc
+    private int luotBan;   // Số lượng bán
 
-    // Constructor cho JPQL
-    public ThuocVaLuotBan(Thuoc thuoc, Number luotBan, Number doanhThu) {
+    // Constructor
+    public ThuocVaLuotBan(Thuoc thuoc, int luotBan) {
         this.thuoc = thuoc;
-        this.luotBan = luotBan.intValue();
-        this.doanhThu = doanhThu.doubleValue();
+        this.luotBan = luotBan;
     }
 
-    public ThuocVaLuotBan(Thuoc thuoc, int i) {
-        this.thuoc = thuoc;
-        this.luotBan = i;
+    // Getter cho thuốc
+    public Thuoc getThuoc() {
+        return thuoc;
     }
+
+    // Getter cho số lượng bán
+    public int getLuotBan() {
+        return luotBan;
+    }
+
+    // Setter cho thuốc
+    public void setThuoc(Thuoc thuoc) {
+        this.thuoc = thuoc;
+    }
+
+    // Setter cho số lượng bán
+    public void setLuotBan(int luotBan) {
+        this.luotBan = luotBan;
+    }
+
+
 }

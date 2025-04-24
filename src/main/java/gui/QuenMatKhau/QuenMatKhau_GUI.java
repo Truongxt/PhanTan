@@ -142,7 +142,7 @@ public class QuenMatKhau_GUI extends JPanel {
 
         jLabel6.setIcon(new javax.swing.ImageIcon("/icon_Nhan/pharmacy64.png")); // NOI18N
 
-        tf_tenTK.setText("NVTRANVietNHan");
+        tf_tenTK.setText("NV120924006");
         tf_tenTK.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tf_tenTKActionPerformed(evt);
@@ -152,7 +152,7 @@ public class QuenMatKhau_GUI extends JPanel {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel1.setText("Tên tài khoản");
 
-        tf_Email.setText("nhantran.03042021@gmail.com");
+        tf_Email.setText("nguyenthihanhu13082004@gmail.com ");
 
         lb_Second.setText("*");
 

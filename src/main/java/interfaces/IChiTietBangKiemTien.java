@@ -12,7 +12,7 @@ public interface IChiTietBangKiemTien extends Remote {
     ChiTietBangKiemTien getOne(String maBangKiemTien) throws Exception;
 
     List<ChiTietBangKiemTien> findAll() throws Exception;
-    ArrayList<ChiTietBangKiemTien> getAllCashCountSheetDetailInCashCountSheet(String maBangKiemTien);
+    ArrayList<ChiTietBangKiemTien> getAllCashCountSheetDetailInCashCountSheet(String maBangKiemTien) throws Exception;
 
     boolean create(ChiTietBangKiemTien chiTietBangKiemTien) throws Exception;
 

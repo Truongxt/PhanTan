@@ -7,10 +7,12 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import org.hibernate.annotations.Nationalized;
 
+import java.io.Serializable;
+
 @Data
 @Entity
 @Table(name = "DonViTinh")
-public class DonViTinh {
+public class DonViTinh implements Serializable {
     @Id
     @Column(name = "maDonViTinh", nullable = false)
     private String maDonViTinh;

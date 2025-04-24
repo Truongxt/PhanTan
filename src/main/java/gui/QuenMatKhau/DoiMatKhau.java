@@ -91,7 +91,7 @@ public class DoiMatKhau extends javax.swing.JPanel {
         lb_thongBao.setForeground(new java.awt.Color(255, 51, 51));
         lb_thongBao.setText("*");
 
-        jLabel4.setIcon(new javax.swing.ImageIcon("/icon_Nhan/pharmacy64.png")); // NOI18N
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon_Nhan/pharmacy64.png"))); // NOI18N
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel3.setText("PharmaHome");

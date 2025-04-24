@@ -4,11 +4,13 @@
  */
 package entity;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Lenovo
  */
-public class ThuocvaDoanhThu {
+public class ThuocvaDoanhThu implements Serializable {
     private Thuoc thuoc;
     private double doanhThu;
 

@@ -22,7 +22,7 @@ public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
 
     private EntityManagerFactory emf;
 
-    public HoaDon_DAO() throws RemoteException {
+    public HoaDon_DAO() throws Exception {
         super();
         emf = Persistence.createEntityManagerFactory("default");
     }
@@ -463,7 +463,7 @@ public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<Long> query = cb.createQuery(Long.class);
             Root<HoaDon> root = query.from(HoaDon.class);
-            query.select(cb.count(root)).where(cb.equal(root.get("khachHang").get("maKhachHang"), maKH));
+            query.select(cb.count(root)).where(cb.equal(root.get("khachHang").get("maKH"), maKH));
             return em.createQuery(query).getSingleResult().intValue();
         } finally {
             em.close();
@@ -477,7 +477,7 @@ public class HoaDon_DAO extends UnicastRemoteObject implements IHoaDon {
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<Double> query = cb.createQuery(Double.class);
             Root<HoaDon> root = query.from(HoaDon.class);
-            query.select(cb.sum(root.get("tongTien"))).where(cb.equal(root.get("khachHang").get("maKhachHang"), maKH));
+            query.select(cb.sum(root.get("tongTien"))).where(cb.equal(root.get("khachHang").get("maKH"), maKH));
             Double result = em.createQuery(query).getSingleResult();
             return (result != null) ? result : 0.0;
         } finally {

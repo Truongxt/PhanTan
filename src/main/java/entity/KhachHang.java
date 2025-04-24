@@ -7,13 +7,14 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.time.LocalDate;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class KhachHang {
+public class KhachHang implements Serializable {
     @Id
     @Column(name = "maKhachHang", nullable = false)
     private String maKhachHang;

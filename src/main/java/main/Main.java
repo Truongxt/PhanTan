@@ -147,7 +147,7 @@ public class Main extends JFrame {
         main.showForm(new NhaCungCap_GUI());
     }
 
-    public static void refeshReturnOrder() throws SQLException, UnsupportedLookAndFeelException, RemoteException {
+    public static void refeshReturnOrder() throws Exception {
         main.showForm(new DoiTra_GUI(tk));
     }
 

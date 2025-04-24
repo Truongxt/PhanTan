@@ -378,29 +378,4 @@ public class Thuoc_DAO extends UnicastRemoteObject implements IThuoc {
             em.close();
         }
     }
-
-    @Override
-   public ArrayList<Thuoc> searchThuoc(String query) throws RemoteException {
-   EntityManager em = emf.createEntityManager();
-    if (query == null || query.trim().isEmpty()) {
-        return new ArrayList<>();
-    }
-    try {
-        List<Thuoc> result = em.createQuery(
-                "SELECT t FROM Thuoc t WHERE t.maThuoc = :query OR t.tenThuoc LIKE :queryLike",
-                Thuoc.class
-        )
-                .setParameter("query", query)
-                .setParameter("queryLike", "%" + query + "%")
-                .getResultList();
-        return new ArrayList<>(result);
-    } catch (Exception e) {
-        LOGGER.log(Level.SEVERE, "Lỗi khi tìm kiếm thuốc với từ khóa = " + query + ": " + e.getMessage(), e);
-        return new ArrayList<>();
-    } finally {
-        em.close();
-    }
 }
-// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-    

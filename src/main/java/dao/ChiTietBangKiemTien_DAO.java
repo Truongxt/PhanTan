@@ -56,7 +56,7 @@ public class ChiTietBangKiemTien_DAO extends UnicastRemoteObject implements IChi
     }
 
     @Override
-    public ArrayList<ChiTietBangKiemTien> getAllCashCountSheetDetailInCashCountSheet(String maBangKiemTien) {
+    public ArrayList<ChiTietBangKiemTien> getAllCashCountSheetDetailInCashCountSheet(String maBangKiemTien) throws Exception {
         var em = emf.createEntityManager();
         try {
             List<ChiTietBangKiemTien> result = em.createQuery(

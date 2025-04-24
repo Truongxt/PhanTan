@@ -6,10 +6,11 @@ import interfaces.IXuatXu;
 import jakarta.persistence.*;
 
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class XuatXu_DAO implements IXuatXu {
+public class XuatXu_DAO extends UnicastRemoteObject implements IXuatXu {
 
     private final EntityManagerFactory emf;
 
@@ -19,7 +20,7 @@ public class XuatXu_DAO implements IXuatXu {
     }
 
     @Override
-    public boolean create(XuatXu xx) {
+    public boolean create(XuatXu xx) throws RemoteException {
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         try {
@@ -37,7 +38,7 @@ public class XuatXu_DAO implements IXuatXu {
     }
 
     @Override
-    public ArrayList<XuatXu> getAllXuatXu() {
+    public ArrayList<XuatXu> getAllXuatXu() throws RemoteException {
         EntityManager em = emf.createEntityManager();
         try {
             TypedQuery<XuatXu> query = em.createQuery("SELECT x FROM XuatXu x", XuatXu.class);
@@ -49,7 +50,7 @@ public class XuatXu_DAO implements IXuatXu {
     }
 
     @Override
-    public XuatXu getXuatXuById(String maXuatXu) {
+    public XuatXu getXuatXuById(String maXuatXu) throws RemoteException {
         EntityManager em = emf.createEntityManager();
         try {
             return em.find(XuatXu.class, maXuatXu);
@@ -59,7 +60,7 @@ public class XuatXu_DAO implements IXuatXu {
     }
 
     @Override
-    public boolean updateXuatXu(String maXuatXu, XuatXu newXuatXu) {
+    public boolean updateXuatXu(String maXuatXu, XuatXu newXuatXu) throws RemoteException {
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         try {
@@ -82,7 +83,7 @@ public class XuatXu_DAO implements IXuatXu {
     }
 
     @Override
-    public boolean deleteXuatXu(String maXuatXu) {
+    public boolean deleteXuatXu(String maXuatXu) throws RemoteException {
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         try {
@@ -104,7 +105,7 @@ public class XuatXu_DAO implements IXuatXu {
     }
 
     @Override
-    public int getSize() {
+    public int getSize() throws RemoteException {
         EntityManager em = emf.createEntityManager();
         try {
             TypedQuery<Long> query = em.createQuery("SELECT COUNT(x) FROM XuatXu x", Long.class);

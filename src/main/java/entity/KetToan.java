@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -14,7 +15,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @AllArgsConstructor
-public class KetToan implements Comparable<KetToan>  {
+public class KetToan implements Comparable<KetToan>, Serializable {
 
     @Id
     private String maKetToan;
