@@ -7,10 +7,10 @@
         <class>entity.BangKiemTien</class>
         <class>entity.ChiTietBangKiemTien</class>
         <class>entity.ChiTietBangKiemTienId</class>
+        <class>entity.HoaDon</class>
         <class>entity.ChiTietHoaDon</class>
         <class>entity.ChiTietHoaDonId</class>
         <class>entity.TaiKhoan</class>
-        <class>entity.HoaDon</class>
         <class>entity.KhachHang</class>
         <class>entity.NhaCungCap</class>
         <class>entity.NhanVien</class>
@@ -27,6 +27,7 @@
         <class>entity.KiemTien</class>
         <class>entity.KiemTienId</class>
         <class>entity.Voucher</class>
+
         <properties>
             <property name="jakarta.persistence.jdbc.url"
                       value="jdbc:sqlserver://localhost:1433;databaseName=QLNT;encrypt=false;trustServerCertificate=true" />

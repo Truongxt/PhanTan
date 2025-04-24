@@ -3,17 +3,18 @@ package dao;
 import entity.NhanVien;
 import entity.Otp;
 import interfaces.IOTP;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.Persistence;
+import jakarta.persistence.*;
+
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.time.Instant;
-import java.time.LocalDate;
+
+import java.time.LocalDateTime;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class OTP_DAO extends UnicastRemoteObject implements IOTP {
 
@@ -22,7 +23,7 @@ public class OTP_DAO extends UnicastRemoteObject implements IOTP {
     public OTP_DAO() throws RemoteException {
         super();
         emf = Persistence.createEntityManagerFactory("default");
-        scheduleDeleteOTP60s(); // Khởi động scheduler khi khởi tạo
+        scheduleDeleteOTP60s(); // Start scheduler on initialization
     }
 
     @Override
@@ -36,7 +37,7 @@ public class OTP_DAO extends UnicastRemoteObject implements IOTP {
         } catch (NoResultException e) {
             return null;
         } catch (Exception e) {
-            System.err.println("Lỗi khi lấy OTP từ cơ sở dữ liệu: " + e.getMessage());
+            System.err.println("Error retrieving OTP from database: " + e.getMessage());
             return null;
         } finally {
             em.close();
@@ -48,49 +49,60 @@ public class OTP_DAO extends UnicastRemoteObject implements IOTP {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
-            // Tìm NhanVien theo tenTaiKhoan (giả định tenTaiKhoan là email hoặc một định danh duy nhất)
-            NhanVien nhanVien = em.createQuery("SELECT n FROM NhanVien n WHERE n.email = :tenTaiKhoan", NhanVien.class)
-                    .setParameter("tenTaiKhoan", tenTaiKhoan)
-                    .getSingleResult();
-            if (nhanVien == null) {
-                System.err.println("Không tìm thấy NhanVien với tenTaiKhoan: " + tenTaiKhoan);
+
+            // Chuẩn hóa tenTaiKhoan
+            tenTaiKhoan = tenTaiKhoan.trim();
+            Logger.getLogger(getClass().getName()).info("Looking for NhanVien with maNhanVien: '" + tenTaiKhoan + "'");
+
+            // Tìm NhanVien theo maNhanVien
+            TypedQuery<NhanVien> query = em.createQuery(
+                            "SELECT n FROM NhanVien n WHERE n.maNhanVien = :tenTaiKhoan", NhanVien.class)
+                    .setParameter("tenTaiKhoan", tenTaiKhoan);
+
+            NhanVien nhanVien;
+            try {
+                nhanVien = query.getSingleResult();
+            } catch (NoResultException e) {
+                Logger.getLogger(getClass().getName()).log(Level.WARNING,
+                        "No NhanVien found for maNhanVien: " + tenTaiKhoan);
                 return false;
             }
 
-            // Kiểm tra OTP hiện có
+            // Tìm OTP hiện có
             Otp existingOtp = null;
             try {
-                existingOtp = em.createQuery("SELECT o FROM Otp o WHERE o.tentaiKhoan.email = :tenTaiKhoan", Otp.class)
+                existingOtp = em.createQuery(
+                                "SELECT o FROM Otp o WHERE o.tentaiKhoan.maNhanVien = :tenTaiKhoan", Otp.class)
                         .setParameter("tenTaiKhoan", tenTaiKhoan)
                         .getSingleResult();
             } catch (NoResultException ignored) {
-                // Không có OTP hiện có, tiếp tục tạo mới
             }
 
+            // Cập nhật hoặc tạo mới OTP
             if (existingOtp != null) {
-                // Cập nhật OTP hiện có
                 existingOtp.setMaXacNhan(otp);
-                existingOtp.setCreatedAt(LocalDate.now());
+                existingOtp.setCreatedAt(LocalDateTime.now());
                 em.merge(existingOtp);
             } else {
-                // Tạo OTP mới
                 Otp otpEntity = new Otp();
                 otpEntity.setTentaiKhoan(nhanVien);
                 otpEntity.setMaXacNhan(otp);
-                otpEntity.setCreatedAt(LocalDate.now());
+                otpEntity.setCreatedAt(LocalDateTime.now());
                 em.persist(otpEntity);
             }
+
             em.getTransaction().commit();
+            Logger.getLogger(getClass().getName()).info("Successfully saved OTP for maNhanVien: " + tenTaiKhoan);
             return true;
         } catch (Exception e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE,
+                    "Error saving OTP to database: " + e.getMessage(), e);
             em.getTransaction().rollback();
-            System.err.println("Lỗi khi lưu OTP vào cơ sở dữ liệu: " + e.getMessage());
             return false;
         } finally {
             em.close();
         }
     }
-
     @Override
     public boolean deleteOtpFromDatabase(String email) throws RemoteException {
         EntityManager em = emf.createEntityManager();
@@ -109,7 +121,7 @@ public class OTP_DAO extends UnicastRemoteObject implements IOTP {
             return false;
         } catch (Exception e) {
             em.getTransaction().rollback();
-            System.err.println("Lỗi khi xóa OTP khỏi cơ sở dữ liệu: " + e.getMessage());
+            System.err.println("Error deleting OTP from database: " + e.getMessage());
             return false;
         } finally {
             em.close();
@@ -120,14 +132,14 @@ public class OTP_DAO extends UnicastRemoteObject implements IOTP {
     public String getMaXacNhan(String ten) throws RemoteException {
         EntityManager em = emf.createEntityManager();
         try {
-            Otp otp = em.createQuery("SELECT o FROM Otp o WHERE o.tentaiKhoan.email = :ten", Otp.class)
+            Otp otp = em.createQuery("SELECT o FROM Otp o WHERE o.tentaiKhoan.maNhanVien = :ten", Otp.class)
                     .setParameter("ten", ten)
                     .getSingleResult();
             return otp.getMaXacNhan();
         } catch (NoResultException e) {
             return null;
         } catch (Exception e) {
-            System.err.println("Lỗi khi lấy mã xác nhận: " + e.getMessage());
+            System.err.println("Error retrieving confirmation code: " + e.getMessage());
             return null;
         } finally {
             em.close();
@@ -140,13 +152,13 @@ public class OTP_DAO extends UnicastRemoteObject implements IOTP {
         try {
             em.getTransaction().begin();
             int deletedRows = em.createQuery("DELETE FROM Otp o WHERE o.createdAt < :expiryTime")
-                    .setParameter("expiryTime", Instant.now().minusSeconds(60))
+                    .setParameter("expiryTime", LocalDateTime.now().minusSeconds(60))
                     .executeUpdate();
             em.getTransaction().commit();
             System.out.println("Deleted " + deletedRows + " expired OTP(s).");
         } catch (Exception e) {
             em.getTransaction().rollback();
-            System.err.println("Lỗi khi xóa OTP hết hạn: " + e.getMessage());
+            System.err.println("Error deleting expired OTPs: " + e.getMessage());
         } finally {
             em.close();
         }
@@ -163,7 +175,7 @@ public class OTP_DAO extends UnicastRemoteObject implements IOTP {
             try {
                 deleteExpiredOTPs();
             } catch (RemoteException e) {
-                System.err.println("Lỗi khi chạy lịch xóa OTP: " + e.getMessage());
+                System.err.println("Error running OTP deletion scheduler: " + e.getMessage());
             }
         }, 0, 1, TimeUnit.MINUTES);
     }

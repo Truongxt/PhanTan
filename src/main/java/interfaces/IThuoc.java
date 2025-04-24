@@ -22,4 +22,5 @@ public interface IThuoc extends Remote {
     ArrayList<Thuoc> getThuocHetHan1Thang() throws RemoteException;
     ArrayList<Thuoc> getThuocTheoLoai(String tenLoai) throws RemoteException;
     String generateID() throws RemoteException;
+    ArrayList<Thuoc> searchThuoc(String query) throws RemoteException;
 }
